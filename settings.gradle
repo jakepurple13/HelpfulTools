@@ -1,0 +1,7 @@
+include ':reflectionutils'
+include ':gsonutils'
+include ':helpfulutils'
+include ':flowutils'
+include ':loggingutils'
+include ':app'
+rootProject.name = "HelpfulTools"
