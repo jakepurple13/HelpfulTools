@@ -33,8 +33,8 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    implementation 'com.github.jakepurple13.HelpfulTools:flowutils:+'
-    implementation 'com.github.jakepurple13.HelpfulTools:gsonutils:+'
-    implementation 'com.github.jakepurple13.HelpfulTools:helpfulutils:+'
-    implementation 'com.github.jakepurple13.HelpfulTools:loggingutils:+'
+    implementation "com.github.jakepurple13.HelpfulTools:flowutils:$jakepurple13"
+    implementation "com.github.jakepurple13.HelpfulTools:gsonutils:$jakepurple13"
+    implementation "com.github.jakepurple13.HelpfulTools:helpfulutils:$jakepurple13"
+    implementation "com.github.jakepurple13.HelpfulTools:loggingutils:$jakepurple13"
 }
