@@ -20,7 +20,7 @@ class ExampleUnitTest {
     }
 
     @Test
-    fun addition_isCorrect() {
+    fun stringTimeTest() {
         Loged.f(100000L.stringForTime())
     }
 }
