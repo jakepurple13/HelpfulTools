@@ -42,15 +42,32 @@ class FlowItem<T>(startingValue: T, capacity: Int = 1) {
      */
     fun <R : View> bindToUI(view: R, action: R.(T) -> Unit) = itemFlow.flowQuery { view.post { view.action(it) } }
 
+    /**
+     * calls [getValue]
+     * @see getValue
+     */
     operator fun invoke() = getValue()
+
+    /**
+     * called [setValue]
+     * @see setValue
+     */
     operator fun invoke(value: T) = setValue(value)
+
+    /**
+     * get the current value
+     */
     fun getValue() = flowItem
+
+    /**
+     * set the value
+     */
     fun setValue(value: T) = run { flowItem = value }
 
     /**
      * set the flow to itself just to get a call
      */
-    fun now() = run { flowItem = flowItem }
+    fun now() = setValue(flowItem)
 
     private fun <T> SendChannel<T>.sendLaunch(value: T) = GlobalScope.launch { send(value) }
     private fun <T> Flow<T>.flowQuery(block: suspend (T) -> Unit) = GlobalScope.launch { collect(block) }

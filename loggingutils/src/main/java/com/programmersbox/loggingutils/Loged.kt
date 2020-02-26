@@ -21,7 +21,7 @@ object Loged {
     /**
      * Makes this the name of your package to prevent unwanted logs
      */
-    var FILTER_BY_CLASS_NAME = ""
+    var FILTER_BY_PACKAGE_NAME = ""
     /**
      * A log tag for all log messages using the [Loged] class
      * Default is "Loged"
@@ -38,8 +38,10 @@ object Loged {
     /**
      * Filtering out the classes we do not want to see
      */
-    private val filter: (StackTraceElement) -> Boolean =
-        { !it.className.contains("Loged") && !it.className.contains("Framing") && it.className.contains(FILTER_BY_CLASS_NAME) && OTHER_CLASS_FILTER(it.className) }
+    private val filter: (StackTraceElement) -> Boolean = {
+        !it.className.contains("Loged") && !it.className.contains("Framing") &&
+                it.className.contains(FILTER_BY_PACKAGE_NAME) && OTHER_CLASS_FILTER(it.className)
+    }
 
     /**
      * If you want to set the [OTHER_CLASS_FILTER] up via Higher-Order Functions

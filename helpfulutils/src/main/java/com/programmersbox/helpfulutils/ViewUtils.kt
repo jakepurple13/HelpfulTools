@@ -1,8 +1,13 @@
 package com.programmersbox.helpfulutils
 
+import android.content.Context
+import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.util.TypedValue
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.AttrRes
+import androidx.annotation.ColorInt
 
 var TextView.startDrawable: Drawable?
     get() = compoundDrawables[0]
@@ -17,4 +22,15 @@ var TextView.bottomDrawable: Drawable?
     get() = compoundDrawables[3]
     set(value) = setCompoundDrawablesWithIntrinsicBounds(startDrawable, topDrawable, endDrawable, value)
 
+/**
+ * Default [View.postDelayed] method but with the two parameters swapped
+ */
 fun View.postDelayed(delayMillis: Long, block: () -> Unit) = postDelayed(block, delayMillis)
+
+/**
+ * get a color from the theme
+ */
+@ColorInt
+fun Context.colorFromTheme(@AttrRes colorAttr: Int, @ColorInt defaultColor: Int = Color.BLACK): Int = TypedValue().run typedValue@{
+    this@colorFromTheme.theme.resolveAttribute(colorAttr, this@typedValue, true).run { if (this) data else defaultColor }
+}
