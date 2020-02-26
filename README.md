@@ -2,8 +2,7 @@
 
 Just some small simple tools that I have found myself copying+pasting to almost all projects I do.
 
-[![Release](https://jitpack.io/#jakepurple13/HelpfulTools.svg)]
-(https://jitpack.io/#jakepurple13/HelpfulTools/)
+[![](https://jitpack.io/v/jakepurple13/HelpfulTools.svg)](https://jitpack.io/#jakepurple13/HelpfulTools)
 
           implementation 'com.github.jakepurple13.HelpfulTools:flowutils:{version}'
           implementation 'com.github.jakepurple13.HelpfulTools:gsonutils:{version}'
