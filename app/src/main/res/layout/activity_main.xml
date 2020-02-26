@@ -6,13 +6,63 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <TextView
+    <Button
+        android:id="@+id/flowItemChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        android:text="Change Flow Item"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/flowItemValue"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:text="FlowItem Value:"
+        app:layout_constraintBottom_toBottomOf="@id/flowItemChange"
+        app:layout_constraintStart_toEndOf="@id/flowItemChange"
+        app:layout_constraintTop_toTopOf="@id/flowItemChange" />
+
+    <Button
+        android:id="@+id/logedInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Print Loged"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/flowItemChange" />
+
+    <Button
+        android:id="@+id/gsonInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gson"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/logedInfo" />
+
+    <Button
+        android:id="@+id/colorInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Color"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gsonInfo" />
+
+    <Button
+        android:id="@+id/viewInfo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="View"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/colorInfo" />
+
+    <TextView
+        android:id="@+id/viewValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="View Info"
+        app:layout_constraintStart_toStartOf="@id/viewInfo"
+        app:layout_constraintTop_toBottomOf="@id/viewInfo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -58,6 +58,8 @@ class FlowItem<T>(startingValue: T, capacity: Int = 1) {
 
 fun <T> T.asFlowItem() = FlowItem(this)
 
+operator fun FlowItem<Boolean>.not() = setValue(!invoke())
+
 operator fun FlowItem<Int>.plusAssign(other: Int) = setValue(invoke() + other)
 operator fun FlowItem<Float>.plusAssign(other: Float) = setValue(invoke() + other)
 operator fun FlowItem<Double>.plusAssign(other: Double) = setValue(invoke() + other)

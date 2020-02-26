@@ -2,7 +2,9 @@
   <dictionary name="jrein">
     <words>
       <w>gson</w>
+      <w>helpfultools</w>
       <w>loged</w>
+      <w>programmersbox</w>
       <w>sharedpreferences</w>
     </words>
   </dictionary>

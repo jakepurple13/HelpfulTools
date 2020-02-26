@@ -1,6 +1,8 @@
 package com.programmersbox.helpfultools
 
+import com.programmersbox.helpfulutils.stringForTime
 import com.programmersbox.loggingutils.Loged
+import com.programmersbox.loggingutils.f
 import org.junit.Before
 import org.junit.Test
 
@@ -19,6 +21,6 @@ class ExampleUnitTest {
 
     @Test
     fun addition_isCorrect() {
-        //Loged.f(100000L.stringForTime())
+        Loged.f(100000L.stringForTime())
     }
 }
