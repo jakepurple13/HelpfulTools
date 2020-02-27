@@ -1,7 +1,5 @@
 package com.programmersbox.flowutils
 
-import android.view.View
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -22,25 +20,12 @@ class FlowItem<T>(startingValue: T, capacity: Int = 1) {
      */
     val flow get() = itemFlow
     private var flowItem: T = startingValue
-        set(value) {
-            field = value
-            itemBroadcast.sendLaunch(value)
-        }
+        set(value) = run { field = value }.also { itemBroadcast.sendLaunch(value) }
 
     /**
      * collect from the flow
      */
     fun collect(action: suspend (value: T) -> Unit) = itemFlow.flowQuery(action)
-
-    /**
-     * collect from the flow on the ui loop
-     */
-    fun collectOnUI(action: (value: T) -> Unit) = itemFlow.flowQuery { GlobalScope.launch(Dispatchers.Main) { action(it) } }
-
-    /**
-     * Bind the flow to a view
-     */
-    fun <R : View> bindToUI(view: R, action: R.(T) -> Unit) = itemFlow.flowQuery { view.post { view.action(it) } }
 
     /**
      * calls [getValue]
@@ -76,55 +61,3 @@ class FlowItem<T>(startingValue: T, capacity: Int = 1) {
 }
 
 fun <T> T.asFlowItem() = FlowItem(this)
-
-operator fun FlowItem<Boolean>.not() = setValue(!invoke())
-
-inline operator fun <reified T : Number> FlowItem<T>.plusAssign(other: T) = when (getValue()) {
-    is Int -> invoke().toInt() + other.toInt()
-    is Float -> invoke().toFloat() + other.toFloat()
-    is Long -> invoke().toLong() + other.toLong()
-    is Double -> invoke().toDouble() + other.toDouble()
-    is Short -> (invoke().toShort() + other.toShort()).toShort()
-    is Byte -> invoke().toByte() + other.toByte()
-    else -> invoke()
-}.let { setValue(it as T) }
-
-inline operator fun <reified T : Number> FlowItem<T>.timesAssign(other: T) = when (getValue()) {
-    is Int -> invoke().toInt() * other.toInt()
-    is Float -> invoke().toFloat() * other.toFloat()
-    is Long -> invoke().toLong() * other.toLong()
-    is Double -> invoke().toDouble() * other.toDouble()
-    is Short -> (invoke().toShort() * other.toShort()).toShort()
-    is Byte -> invoke().toByte() * other.toByte()
-    else -> invoke()
-}.let { setValue(it as T) }
-
-inline operator fun <reified T : Number> FlowItem<T>.minusAssign(other: T) = when (getValue()) {
-    is Int -> invoke().toInt() - other.toInt()
-    is Float -> invoke().toFloat() - other.toFloat()
-    is Long -> invoke().toLong() - other.toLong()
-    is Double -> invoke().toDouble() - other.toDouble()
-    is Short -> (invoke().toShort() - other.toShort()).toShort()
-    is Byte -> invoke().toByte() - other.toByte()
-    else -> invoke()
-}.let { setValue(it as T) }
-
-inline operator fun <reified T : Number> FlowItem<T>.divAssign(other: T) = when (getValue()) {
-    is Int -> invoke().toInt() / other.toInt()
-    is Float -> invoke().toFloat() / other.toFloat()
-    is Long -> invoke().toLong() / other.toLong()
-    is Double -> invoke().toDouble() / other.toDouble()
-    is Short -> (invoke().toShort() / other.toShort()).toShort()
-    is Byte -> invoke().toByte() / other.toByte()
-    else -> invoke()
-}.let { setValue(it as T) }
-
-inline operator fun <reified T : Number> FlowItem<T>.remAssign(other: T) = when (getValue()) {
-    is Int -> invoke().toInt() % other.toInt()
-    is Float -> invoke().toFloat() % other.toFloat()
-    is Long -> invoke().toLong() % other.toLong()
-    is Double -> invoke().toDouble() % other.toDouble()
-    is Short -> (invoke().toShort() % other.toShort()).toShort()
-    is Byte -> invoke().toByte() % other.toByte()
-    else -> invoke()
-}.let { setValue(it as T) }

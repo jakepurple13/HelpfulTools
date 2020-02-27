@@ -30,17 +30,29 @@ fun Random.nextColor(
     blue: Int = nextInt(0, 255)
 ): Int = Color.argb(alpha, red, green, blue)
 
-data class DeviceInfo(
-    val board: String = Build.BOARD,
-    val brand: String = Build.BRAND,
-    val device: String = Build.DEVICE,
-    val manufacturer: String = Build.MANUFACTURER,
-    val model: String = Build.MODEL,
-    val product: String = Build.PRODUCT,
-    val sdkInt: Int = Build.VERSION.SDK_INT,
-    val versionCode: String = Build.VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name,
-    val versionNumber: String = Build.VERSION.RELEASE
-)
+object DeviceInfo {
+    val board: String get() = Build.BOARD
+    val brand: String get() = Build.BRAND
+    val device: String get() = Build.DEVICE
+    val manufacturer: String get() = Build.MANUFACTURER
+    val model: String get() = Build.MODEL
+    val product: String get() = Build.PRODUCT
+    val sdkInt: Int = Build.VERSION.SDK_INT
+    val versionCode: String get() = Build.VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name
+    val versionNumber: String get() = Build.VERSION.RELEASE
+
+    data class Info(
+        val board: String = Build.BOARD,
+        val brand: String = Build.BRAND,
+        val device: String = Build.DEVICE,
+        val manufacturer: String = Build.MANUFACTURER,
+        val model: String = Build.MODEL,
+        val product: String = Build.PRODUCT,
+        val sdkInt: Int = Build.VERSION.SDK_INT,
+        val versionCode: String = Build.VERSION_CODES::class.java.fields[Build.VERSION.SDK_INT].name,
+        val versionNumber: String = Build.VERSION.RELEASE
+    )
+}
 
 /**
  * Gives a time representation for this long.

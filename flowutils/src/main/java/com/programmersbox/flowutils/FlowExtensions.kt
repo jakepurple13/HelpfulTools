@@ -1,5 +1,6 @@
 package com.programmersbox.flowutils
 
+import android.view.View
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -18,3 +19,13 @@ fun timerFlow(delayMillis: Long, startInMs: Long = delayMillis, action: suspend 
  * Collect on the ui thread
  */
 fun <T> Flow<T>.collectOnUi(action: (T) -> Unit) = GlobalScope.launch { collect { GlobalScope.launch(Dispatchers.Main) { action(it) } } }
+
+/**
+ * collect from the flow on the ui loop
+ */
+fun <T> FlowItem<T>.collectOnUI(action: (value: T) -> Unit) = collect { GlobalScope.launch(Dispatchers.Main) { action(it) } }
+
+/**
+ * Bind the flow to a view
+ */
+fun <T, R : View> FlowItem<T>.bindToUI(view: R, action: R.(T) -> Unit) = collect { view.post { view.action(it) } }

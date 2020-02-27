@@ -95,4 +95,28 @@ class ExampleUnitTest {
         delay(1000)
     }
 
+    private val mutableListItem = FlowItem(mutableListOf(1, 2, 3, 4, 5))
+
+    @Test
+    fun flowItemListTest() = runBlocking {
+        newLine("List")
+        val listItem = FlowItem(listOf(1, 2, 3, 4, 5))
+        println(listItem[3])
+        newLine("Mutable")
+        mutableListItem.collect { println("MutableList(${mutableListItem.size}): $it") }
+        delay(1000)
+        println(mutableListItem[2])
+        mutableListItem[2] = 10
+        println(mutableListItem[2])
+        delay(1000)
+        for (i in mutableListItem) println(i)
+        delay(1000)
+        println(10 in mutableListItem)
+        delay(1000)
+        mutableListItem += 50
+        delay(1000)
+        mutableListItem.add(20)
+        delay(1000)
+    }
+
 }

@@ -1,12 +1,12 @@
 package com.programmersbox.gsonutils
 
-import androidx.test.platform.app.InstrumentationRegistry
+import android.content.Context
+import android.content.Intent
 import androidx.test.ext.junit.runners.AndroidJUnit4
-
+import androidx.test.platform.app.InstrumentationRegistry
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
-
-import org.junit.Assert.*
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -20,5 +20,26 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.programmersbox.gsonutils.test", appContext.packageName)
+    }
+
+    data class AnotherObject(val item: String)
+
+    data class GsonObject(val string: String, val int: Int, val anotherObject: AnotherObject)
+
+    @Test
+    fun gsonTest() {
+        val item = GsonObject("Hello", 5, AnotherObject("World"))
+        // Context of the app under test.
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        Intent(appContext, ExampleInstrumentedTest::class.java).apply {
+            putExtra("gson", item)
+        }.apply {
+            val getting = getObjectExtra<GsonObject?>("gson", null)
+            println(getting)
+        }
+
+        appContext.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE).edit().putObject("gson", item).apply()
+        val getting = appContext.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE).getObject<GsonObject>("gson")
+        println(getting)
     }
 }
