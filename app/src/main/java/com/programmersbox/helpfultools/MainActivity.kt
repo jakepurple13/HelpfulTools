@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         }
         //----------------------------------------------
         //usually put these or any other Loged modifiers in the application class
-        Loged.FILTER_BY_CLASS_NAME = "com.programmersbox.helpfultools"
+        Loged.FILTER_BY_PACKAGE_NAME = "com.programmersbox.helpfultools"
         Loged.TAG = "HelpfulTools"
 
         logedInfo.setOnClickListener {
@@ -40,6 +40,7 @@ class MainActivity : AppCompatActivity() {
             Loged.e("Hello World")
             Loged.d("Hello World")
             Loged.wtf("Hello World")
+            Loged.r("Hello World")
             //These will put a box around the log
             Loged.f("Hello World")
             Loged.fw("Hello World")

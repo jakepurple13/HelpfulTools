@@ -166,12 +166,39 @@ enum class FrameType(frame: Frame) {
         )
     }
 
+    fun copy(frame: Frame) = with(frame) {
+        this@FrameType.copy(
+            top = top,
+            bottom = bottom,
+            left = left,
+            right = right,
+            topLeft = topLeft,
+            topRight = topRight,
+            bottomLeft = bottomLeft,
+            bottomRight = bottomRight,
+            topFillIn = topFillIn,
+            bottomFillIn = bottomFillIn
+        )
+    }
+
+    class FrameBuilder internal constructor(
+        var top: String = "", var bottom: String = "",
+        var left: String = "", var right: String = "",
+        var topLeft: String = "", var topRight: String = "",
+        var bottomLeft: String = "", var bottomRight: String = "",
+        var topFillIn: String = "", var bottomFillIn: String = ""
+    ) {
+        internal fun build() = Frame(top, bottom, left, right, topLeft, topRight, bottomLeft, bottomRight, topFillIn, bottomFillIn)
+    }
+
+    private fun copy(frame: FrameBuilder) = copy(frame.build())
+
     companion object {
         /**
          * Use this to create a custom [FrameType]
          */
         @Suppress("FunctionName")
-        fun CUSTOM(frame: Frame.() -> Unit) = CUSTOM.frame.apply(frame)
+        fun CUSTOM(frame: FrameBuilder.() -> Unit) = CUSTOM.copy(FrameBuilder().apply(frame))
     }
 }
 
@@ -202,7 +229,7 @@ fun <T> Iterable<T>.frame(
 ): String {
     val fullLength = mutableListOf(top, bottom).apply { addAll(this@frame.map(transform)) }.maxBy { it.length }!!.length + 2
     val space: (String) -> String = { " ".repeat(fullLength - it.length - 1) }
-    val mid = joinToString(separator = "\n") { "$left${if (rtl) space(transform(it)) else " "}$it${if (rtl) " " else space(transform(it))}$right" }
+    val mid = map(transform).joinToString(separator = "\n") { "$left${if (rtl) space(it) else " "}$it${if (rtl) " " else space(it)}$right" }
     val space2: (String, Boolean) -> String = { spacing, b -> (if (b) topFillIn else bottomFillIn).repeat((fullLength - spacing.length) / 2) }
     val topBottomText: (String, Boolean) -> String = { s, b ->
         if (s.length == 1) s.repeat(fullLength)

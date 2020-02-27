@@ -1,5 +1,6 @@
 package com.programmersbox.helpfultools
 
+import com.programmersbox.flowutils.FlowItem
 import com.programmersbox.helpfulutils.stringForTime
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
@@ -16,11 +17,12 @@ class ExampleUnitTest {
     @Before
     fun setup() {
         Loged.UNIT_TESTING = true
-        Loged.FILTER_BY_CLASS_NAME = "com.programmersbox.helpfultools"
+        Loged.FILTER_BY_PACKAGE_NAME = "com.programmersbox.helpfultools"
     }
 
     @Test
     fun stringTimeTest() {
         Loged.f(100000L.stringForTime())
+        Loged.f(FlowItem(100).toString())
     }
 }
