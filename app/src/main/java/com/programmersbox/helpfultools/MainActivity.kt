@@ -72,6 +72,5 @@ class MainActivity : AppCompatActivity() {
             }
             showOrNot = !showOrNot
         }
-
     }
 }
