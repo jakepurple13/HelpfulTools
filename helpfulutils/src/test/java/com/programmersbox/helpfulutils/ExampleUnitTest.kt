@@ -32,6 +32,14 @@ class ExampleUnitTest {
         val list = mutableListOf<Int>()
         list.addAll(1, 3, 5, 6, 7)
         println(list)
+        println(list.randomRemove())
+        println(list)
+        println(list.randomRemove { it % 2 == 1 })
+        println(list)
+        println(list.random { it % 2 == 0 })
+        val list2 = listOf(1, 2, 4, 8)
+        val list3 = list.intersect(list2) { l1, l2 -> l1 == l2 }
+        println(list3)
     }
 
     @Test
@@ -42,6 +50,14 @@ class ExampleUnitTest {
         //Int
         println(360000.stringForTime())
         assertEquals("360000 should be 06:00", "06:00", 360000.stringForTime())
+    }
+
+    @Test
+    fun numberTest() {
+        println(30.randomString())
+        println(30.randomString().length)
+        println(Random.nextString(30))
+        println(Random.nextString(30).length)
     }
 
 }

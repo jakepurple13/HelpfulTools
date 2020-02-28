@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.programmersbox.flowutils.FlowItem
+import com.programmersbox.flowutils.bindToUI
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.gsonutils.toPrettyJson
 import com.programmersbox.helpfulutils.*
@@ -52,8 +53,8 @@ class MainActivity : AppCompatActivity() {
         }
         //----------------------------------------------
         gsonInfo.setOnClickListener {
-            Log.d("Gson", DeviceInfo().toPrettyJson())
-            Log.d("Gson", DeviceInfo().toPrettyJson().fromJson<DeviceInfo>().toString())
+            Log.d("Gson", DeviceInfo.Info().toPrettyJson())
+            Log.d("Gson", DeviceInfo.Info().toPrettyJson().fromJson<DeviceInfo.Info>().toString())
         }
         //----------------------------------------------
         colorInfo.setOnClickListener { colorInfo.setBackgroundColor(Random.nextColor()) }

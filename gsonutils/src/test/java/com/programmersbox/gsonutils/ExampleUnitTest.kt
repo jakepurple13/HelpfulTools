@@ -1,5 +1,7 @@
 package com.programmersbox.gsonutils
 
+import com.google.gson.JsonObject
+import com.google.gson.JsonSerializer
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -23,5 +25,13 @@ class ExampleUnitTest {
         val json = item.toJson()
         println(json.fromJson<GsonObject>())
         assertEquals("These should be equal", item, json.fromJson<GsonObject>())
+
+        //I know this is redundant but its just for an example
+        val toJsonAdapter =
+            item.toJson(AnotherObject::class.java to JsonSerializer<AnotherObject?> { a, _, _ ->
+                JsonObject().apply { addProperty("anotherObject", a.toJson()) }
+            })
+
+        println(toJsonAdapter)
     }
 }

@@ -30,6 +30,9 @@ class ExampleUnitTest {
         delay(1000)
         item.now()
         GlobalScope.launch { item.flow.collect { println("From item.flow $it") } }
+        item(20)
+        delay(1000)
+        item.setValue(60)
         delay(1000)
     }
 

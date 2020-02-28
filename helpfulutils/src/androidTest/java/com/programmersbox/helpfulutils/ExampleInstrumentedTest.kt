@@ -1,6 +1,7 @@
 package com.programmersbox.helpfulutils
 
 import android.view.View
+import android.widget.LinearLayout
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
@@ -26,15 +27,14 @@ class ExampleInstrumentedTest {
     fun otherUtil() {
         println(Random.nextColor())
         println(DeviceInfo.Info())
-        println(DeviceInfo.board)
-        println(DeviceInfo.brand)
-        println(DeviceInfo.device)
-        println(DeviceInfo.manufacturer)
-        println(DeviceInfo.model)
-        println(DeviceInfo.product)
-        println(DeviceInfo.sdkInt)
-        println(DeviceInfo.versionCode)
-        println(DeviceInfo.versionNumber)
+        println(DeviceInfo.RuntimeInfo())
+    }
+
+    @Test
+    fun sharedPref() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        appContext.defaultSharedPref.edit().putBoolean("boolean", true).commit()
+        appContext.defaultSharedPrefName = "Something Else"
     }
 
     @Test
@@ -44,5 +44,10 @@ class ExampleInstrumentedTest {
         view.postDelayed(1000) { }
         val color = appContext.colorFromTheme(R.attr.actionMenuTextColor)
         println(color)
+        val linearLayout = LinearLayout(appContext)
+        linearLayout.addView(view)
+        linearLayout.animateChildren {
+            view.visibility = View.GONE
+        }
     }
 }

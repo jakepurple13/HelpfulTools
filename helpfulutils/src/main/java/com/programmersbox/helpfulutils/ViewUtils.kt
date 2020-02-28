@@ -3,8 +3,12 @@ package com.programmersbox.helpfulutils
 import android.content.Context
 import android.graphics.Color
 import android.graphics.drawable.Drawable
+import android.transition.AutoTransition
+import android.transition.Transition
+import android.transition.TransitionManager
 import android.util.TypedValue
 import android.view.View
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -34,3 +38,9 @@ fun View.postDelayed(delayMillis: Long, block: () -> Unit) = postDelayed(block, 
 fun Context.colorFromTheme(@AttrRes colorAttr: Int, @ColorInt defaultColor: Int = Color.BLACK): Int = TypedValue().run typedValue@{
     this@colorFromTheme.theme.resolveAttribute(colorAttr, this@typedValue, true).run { if (this) data else defaultColor }
 }
+
+/**
+ * Starts a transition manager
+ */
+fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition(), block: T.() -> Unit) =
+    TransitionManager.beginDelayedTransition(this, transition).apply { block() }
