@@ -58,6 +58,20 @@ class ExampleUnitTest {
         println(30.randomString().length)
         println(Random.nextString(30))
         println(Random.nextString(30).length)
+        println(0x0000FF.toHexString())
+        println(0x0000FF.toARGB())
+        println(0x0000FF.toRGB())
+        println(0x0000FF.toRGB().toInt())
+        println(0x0000FF)
+        println(0x0000FF.toARGB().toInt())
+        println(0x0000FF.toCMYK().toInt())
+        println(0x0000FF.toCMYK())
+        println(0x0000FF.toARGB().toRGB())
+        println(0x0000FF.toRGB().toARGB())
+        println(0x0000FF.toCMYK().toRGB())
+        println(0x0000FF.toARGB().toCMYK())
+        println(0x0000FF.toRGB().toCMYK())
+        println(0x0000FF.toCMYK().toARGB())
     }
 
 }

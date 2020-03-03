@@ -28,6 +28,15 @@ class ExampleInstrumentedTest {
         println(Random.nextColor())
         println(DeviceInfo.Info())
         println(DeviceInfo.RuntimeInfo())
+        println(0x0000FF.toARGB().toColor())
+        println(0x0000FF.toRGB().toColor())
+        println(0x0000FF.toCMYK().toColor())
+        println(0x0000FF.toARGB().toRGB())
+        println(0x0000FF.toRGB().toARGB())
+        println(0x0000FF.toCMYK().toRGB())
+        println(0x0000FF.toARGB().toCMYK())
+        println(0x0000FF.toRGB().toCMYK())
+        println(0x0000FF.toCMYK().toARGB())
     }
 
     @Test
