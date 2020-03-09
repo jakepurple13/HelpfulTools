@@ -11,6 +11,7 @@ import com.programmersbox.gsonutils.toPrettyJson
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.layout_item.view.*
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -72,6 +73,10 @@ class MainActivity : AppCompatActivity() {
                 viewValue.bottomDrawable = it
             }
             showOrNot = !showOrNot
+        }
+
+        recyclerView.quickAdapter(R.layout.layout_item, "Hello", "World") {
+            textView.text = it
         }
     }
 }
