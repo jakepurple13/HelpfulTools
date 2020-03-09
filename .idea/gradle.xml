@@ -17,6 +17,7 @@
             <option value="$PROJECT_DIR$/gsonutils" />
             <option value="$PROJECT_DIR$/helpfulutils" />
             <option value="$PROJECT_DIR$/loggingutils" />
+            <option value="$PROJECT_DIR$/rxutils" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />
