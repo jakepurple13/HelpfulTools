@@ -2,6 +2,7 @@ package com.programmersbox.helpfulutils
 
 import android.view.View
 import android.widget.LinearLayout
+import androidx.recyclerview.widget.RecyclerView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
@@ -58,5 +59,26 @@ class ExampleInstrumentedTest {
         linearLayout.animateChildren {
             view.visibility = View.GONE
         }
+        val recycle = RecyclerView(appContext)
+        recycle.quickAdapter<String>()
+        recycle.quickAdapter(R.layout.support_simple_spinner_dropdown_item, "Hello", "World") {
+            //this is to render the view
+            println(it)
+        }
+        recycle.adapter = QuickAdapter<String>(appContext)
+        QuickAdapter<String>(appContext).add(R.layout.support_simple_spinner_dropdown_item, "Hello") {
+            println(it)
+        }
+
+        val quick = QuickAdapter<String>(appContext)
+        quick.add(R.layout.support_simple_spinner_dropdown_item, "Hello", "World") {
+            println(it)
+        }
+
+        val item = quick[0]
+        println(item)
+        quick[0] = "Goodbye"
+        println(quick[0])
+
     }
 }
