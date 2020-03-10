@@ -14,9 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 @Suppress("UNCHECKED_CAST")
 fun <T> RecyclerView.quickAdapter(@LayoutRes layout: Int? = null, vararg item: T, setup: (View.(T) -> Unit)? = null) {
     adapter = (adapter as? QuickAdapter<T>) ?: QuickAdapter<T>(context)
-    if (layout != null && setup != null && item.isNotEmpty()) {
-        (adapter as QuickAdapter<T>).add(layout, *item, setup = setup)
-    }
+    if (layout != null && setup != null && item.isNotEmpty()) (adapter as QuickAdapter<T>).add(layout, *item, setup = setup)
 }
 
 /**
@@ -30,6 +28,7 @@ class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<Quick
     }
 
     private val data = mutableListOf<QuickAdapterItem<T>>()
+    val dataList get() = data.map(QuickAdapterItem<T>::item)
     fun add(@LayoutRes layout: Int, item: T, setup: View.(T) -> Unit) = data.add(QuickAdapterItem(layout, item, setup))
     fun add(@LayoutRes layout: Int, vararg item: T, setup: View.(T) -> Unit) = data.addAll(item.map { QuickAdapterItem(layout, it, setup) })
     operator fun get(index: Int) = data[index].item

@@ -79,6 +79,7 @@ class ExampleInstrumentedTest {
         println(item)
         quick[0] = "Goodbye"
         println(quick[0])
+        println(quick.dataList)
 
     }
 }

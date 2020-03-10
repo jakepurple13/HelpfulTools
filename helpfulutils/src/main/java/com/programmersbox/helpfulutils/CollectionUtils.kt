@@ -5,7 +5,7 @@ import kotlin.random.Random
 /**
  * a vararg version of [MutableList.addAll]
  */
-fun <T> MutableList<T>.addAll(vararg args: T) = addAll(args)
+fun <T> MutableCollection<T>.addAll(vararg args: T) = addAll(args)
 
 /**
  * Finds similarities between two lists based on a predicate

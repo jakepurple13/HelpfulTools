@@ -15,3 +15,33 @@ operator fun <T> Observer<T>.invoke(item: T) = onNext(item)
 operator fun <T> Observer<T>.invoke(throwable: Throwable) = onError(throwable)
 operator fun <T> Observer<T>.invoke(d: Disposable) = onSubscribe(d)
 operator fun <T> Observer<T>.invoke() = onComplete()
+
+/**
+ * An easy way to set up onNext, onError, and onComplete
+ */
+fun <T> Observable<T>.build(builder: ObservableBuilder<T>.() -> Unit): Observable<T> = ObservableBuilder<T>().apply(builder).build(this)
+
+@DslMarker
+annotation class ObservableBuildMarker
+
+@ObservableBuildMarker
+class ObservableBuilder<T> {
+
+    private var onNext: (T) -> Unit = {}
+
+    @ObservableBuildMarker
+    fun onNext(block: (T) -> Unit) = run { onNext = block }
+
+    private var onError: (Throwable) -> Unit = {}
+
+    @ObservableBuildMarker
+    fun onError(block: (Throwable) -> Unit) = run { onError = block }
+
+    private var onComplete: () -> Unit = {}
+
+    @ObservableBuildMarker
+    fun onComplete(block: () -> Unit) = run { onComplete = block }
+
+    internal fun build(observe: Observable<T>) = observe.doOnNext(onNext).doOnError(onError).doOnComplete(onComplete)
+
+}

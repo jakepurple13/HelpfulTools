@@ -3,7 +3,7 @@ package com.programmersbox.helpfulutils
 import android.content.Context
 import android.content.SharedPreferences
 
-private var sharedPrefName: String = "Prefs"
+private var sharedPrefName: String = "HelpfulUtils"
 
 /**
  * A name for shared preferences
