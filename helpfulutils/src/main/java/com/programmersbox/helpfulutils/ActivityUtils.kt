@@ -40,7 +40,7 @@ fun ComponentActivity.requestPermissions(vararg permissions: String, onResult: (
     }
 }
 
-private fun Context.checkSelfPermissions(vararg permissions: String): PermissionInfo =
+fun Context.checkSelfPermissions(vararg permissions: String): PermissionInfo =
     permissions.partition { ContextCompat.checkSelfPermission(this, it) == PackageManager.PERMISSION_GRANTED }
         .let { PermissionInfo(it.second.isEmpty(), it.first, it.second) }
 

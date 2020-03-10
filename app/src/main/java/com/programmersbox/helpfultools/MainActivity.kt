@@ -1,5 +1,6 @@
 package com.programmersbox.helpfultools
 
+import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
@@ -77,6 +78,10 @@ class MainActivity : AppCompatActivity() {
 
         recyclerView.quickAdapter(R.layout.layout_item, "Hello", "World") {
             textView.text = it
+        }
+
+        requestPermissions(Manifest.permission.READ_EXTERNAL_STORAGE) {
+            println(it)
         }
     }
 }

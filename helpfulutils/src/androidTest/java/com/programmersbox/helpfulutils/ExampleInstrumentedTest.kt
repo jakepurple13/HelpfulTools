@@ -1,7 +1,9 @@
 package com.programmersbox.helpfulutils
 
+import android.Manifest
 import android.view.View
 import android.widget.LinearLayout
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -45,6 +47,7 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         appContext.defaultSharedPref.edit().putBoolean("boolean", true).commit()
         appContext.defaultSharedPrefName = "Something Else"
+        appContext.defaultSharedPref.edit().put("Hello" to "World").commit()
     }
 
     @Test
@@ -86,4 +89,17 @@ class ExampleInstrumentedTest {
         }
 
     }
+
+    @Test
+    fun activity() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        appContext.startActivity<TestActivity>("Hello" to "World")
+        TestActivity().requestPermissions(Manifest.permission.READ_EXTERNAL_STORAGE) {
+            println(it.isGranted)
+            println(it.grantedPermissions)
+            println(it.deniedPermissions)
+        }
+    }
+
+    class TestActivity : AppCompatActivity()
 }

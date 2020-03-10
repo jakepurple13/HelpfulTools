@@ -40,6 +40,8 @@ class ExampleUnitTest {
         val list2 = listOf(1, 2, 4, 8)
         val list3 = list.intersect(list2) { l1, l2 -> l1 == l2 }
         println(list3)
+        val pair = list to list2
+        println(pair.intersect { i, i2 -> i == i2 })
     }
 
     @Test

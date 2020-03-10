@@ -10,7 +10,13 @@ fun <T> MutableCollection<T>.addAll(vararg args: T) = addAll(args)
 /**
  * Finds similarities between two lists based on a predicate
  */
-fun <T, R> List<T>.intersect(uList: List<R>, filterPredicate: (T, R) -> Boolean) = filter { m -> uList.any { filterPredicate(m, it) } }
+fun <T, R> Iterable<T>.intersect(uList: Iterable<R>, filterPredicate: (T, R) -> Boolean) = filter { m -> uList.any { filterPredicate(m, it) } }
+
+/**
+ * Another way to call the [Iterable.intersect] method
+ * @see intersect
+ */
+fun <T, R> Pair<Iterable<T>, Iterable<R>>.intersect(predicate: (T, R) -> Boolean) = first.intersect(second, predicate)
 
 /**
  * randomly removes one element
