@@ -81,5 +81,9 @@ class ExampleInstrumentedTest {
         println(quick[0])
         println(quick.dataList)
 
+        runOnUIThread {
+            println("On the ui thread now!")
+        }
+
     }
 }
