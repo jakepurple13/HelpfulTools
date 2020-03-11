@@ -77,6 +77,7 @@ class ExampleInstrumentedTest {
         quick.add(R.layout.support_simple_spinner_dropdown_item, "Hello", "World") {
             println(it)
         }
+        quick.remove()
 
         val item = quick[0]
         println(item)

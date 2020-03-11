@@ -29,8 +29,12 @@ class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<Quick
 
     private val data = mutableListOf<QuickAdapterItem<T>>()
     val dataList get() = data.map(QuickAdapterItem<T>::item)
-    fun add(@LayoutRes layout: Int, item: T, setup: View.(T) -> Unit) = data.add(QuickAdapterItem(layout, item, setup))
+
     fun add(@LayoutRes layout: Int, vararg item: T, setup: View.(T) -> Unit) = data.addAll(item.map { QuickAdapterItem(layout, it, setup) })
+        .also { notifyDataSetChanged() }
+
+    fun remove(index: Int = data.size - 1) = data.removeAt(index).also { notifyDataSetChanged() }.item
+    operator fun contains(item: T) = data.any { it.item == item }
     operator fun get(index: Int) = data[index].item
     operator fun set(index: Int, item: T) {
         data[index] = data[index].let { QuickAdapterItem(it.layout, item, it.setup) }
