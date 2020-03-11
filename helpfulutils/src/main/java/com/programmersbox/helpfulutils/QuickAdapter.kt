@@ -33,7 +33,7 @@ class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<Quick
     fun add(@LayoutRes layout: Int, vararg item: T, setup: View.(T) -> Unit) = data.addAll(item.map { QuickAdapterItem(layout, it, setup) })
         .also { notifyDataSetChanged() }
 
-    fun remove(index: Int = data.size - 1) = data.removeAt(index).also { notifyDataSetChanged() }.item
+    fun remove(index: Int = data.size - 1) = data.removeAt(index).also { notifyItemRemoved(index) }.item
     operator fun contains(item: T) = data.any { it.item == item }
     operator fun get(index: Int) = data[index].item
     operator fun set(index: Int, item: T) {
