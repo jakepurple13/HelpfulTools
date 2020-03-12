@@ -13,6 +13,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/app" />
+            <option value="$PROJECT_DIR$/dragswipe" />
             <option value="$PROJECT_DIR$/flowutils" />
             <option value="$PROJECT_DIR$/gsonutils" />
             <option value="$PROJECT_DIR$/helpfulutils" />

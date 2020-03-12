@@ -1,3 +1,4 @@
+include ':dragswipe'
 include ':testingplayground'
 include ':rxutils'
 include ':gsonutils'
