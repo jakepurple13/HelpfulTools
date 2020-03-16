@@ -38,6 +38,12 @@ inline fun <reified T> SharedPreferences.getObject(key: String, defaultValue: T?
 }
 
 /**
+ * Update an object that's in sharedpreferences
+ */
+inline fun <reified T> SharedPreferences.updateObject(key: String, defaultValue: T? = null, block: T.() -> Unit) =
+    edit().putObject(key, getObject<T>(key, defaultValue)?.apply(block)).apply()
+
+/**
  * converts [this] to a Json string
  */
 fun Any?.toJson(): String = Gson().toJson(this)

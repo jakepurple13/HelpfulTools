@@ -4,7 +4,11 @@ import android.Manifest
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.RecyclerView
+import com.programmersbox.dragswipe.DragSwipeAdapter
 import com.programmersbox.flowutils.FlowItem
 import com.programmersbox.flowutils.bindToUI
 import com.programmersbox.gsonutils.fromJson
@@ -133,5 +137,19 @@ class MainActivity : AppCompatActivity() {
         ) {
             println(it)
         }
+
+        //DragSwipeUtils.setDragSwipeUp(adapter, recyclerView, Direction.UP + Direction.DOWN, Direction.START + Direction.END)
+
     }
+
+    inner class CustomAdapter(dataList: MutableList<String>) : DragSwipeAdapter<String, ViewHolder>(dataList) {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
+            ViewHolder(layoutInflater.inflate(R.layout.layout_item, parent))
+
+        override fun ViewHolder.onBind(item: String, position: Int) {
+            itemView.textView.text = item
+        }
+    }
+
+    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }

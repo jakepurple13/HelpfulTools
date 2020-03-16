@@ -87,4 +87,17 @@ class ExampleUnitTest {
         return listString
     }
 
+    @Test
+    fun other4() {
+        println("#ff0fa10e".color(0xff0fa10e))
+    }
+
+    @Test
+    fun other5() {
+        println(4 or 5 or 6 or 7 or 8 or 9)
+        val f = listOf(4, 5, 6, 7, 8, 9)
+        println(f.fold(0) { a, c -> a or c })
+
+    }
+
 }

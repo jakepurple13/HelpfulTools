@@ -3,6 +3,7 @@ package com.programmersbox.dragswipe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.programmersbox.dragswipe.Direction.NOTHING
+import com.programmersbox.dragswipe.DragSwipeUtils.setDragSwipeUp
 
 /**
  * these are the directions you can swipe/drag
@@ -270,6 +271,25 @@ object DragSwipeUtils {
 
     /**
      * @see setDragSwipeUp
+     */
+    fun <T, VH : RecyclerView.ViewHolder> setDragSwipeUp(
+        dragSwipeAdapter: DragSwipeAdapter<T, VH>,
+        recyclerView: RecyclerView,
+        dragDirs: Iterable<Direction> = listOf(Direction.NOTHING),
+        swipeDirs: Iterable<Direction> = listOf(Direction.NOTHING),
+        dragSwipeActions: DragSwipeActions<T, VH>? = null
+    ): DragSwipeHelper {
+        val drag = dragDirs.drop(1).fold(dragDirs.first().value) { acc, d -> acc + d }
+        val swipe = swipeDirs.drop(1).fold(swipeDirs.first().value) { acc, s -> acc + s }
+        val callback = DragSwipeManageAdapter(dragSwipeAdapter, drag, swipe)
+        callback.dragSwipeActions = dragSwipeActions ?: callback.dragSwipeActions
+        val helper = ItemTouchHelper(callback)
+        helper.attachToRecyclerView(recyclerView)
+        return DragSwipeHelper(helper)
+    }
+
+    /**
+     * @see setDragSwipeUp
      *
      * @param callback a custom callback if you want to add custom drawings and so on
      */
@@ -285,7 +305,7 @@ object DragSwipeUtils {
     }
 
     /**
-     * This will enable the drag/swipe abilit
+     * This will enable the drag/swipe ability
      */
     fun enableDragSwipe(helper: DragSwipeHelper, recyclerView: RecyclerView) = helper.itemTouchHelper.attachToRecyclerView(recyclerView)
 

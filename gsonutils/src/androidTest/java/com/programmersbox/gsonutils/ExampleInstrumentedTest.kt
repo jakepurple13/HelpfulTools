@@ -24,7 +24,7 @@ class ExampleInstrumentedTest {
 
     data class AnotherObject(val item: String)
 
-    data class GsonObject(val string: String, val int: Int, val anotherObject: AnotherObject)
+    data class GsonObject(var string: String, val int: Int, val anotherObject: AnotherObject)
 
     @Test
     fun gsonTest() {
@@ -41,5 +41,8 @@ class ExampleInstrumentedTest {
         appContext.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE).edit().putObject("gson", item).apply()
         val getting = appContext.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE).getObject<GsonObject>("gson")
         println(getting)
+        appContext.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE).updateObject<GsonObject>("gson") { string = "Hello" }
+        val getting1 = appContext.getSharedPreferences("SharedPreferences", Context.MODE_PRIVATE).getObject<GsonObject>("gson")
+        println(getting1)
     }
 }
