@@ -9,4 +9,5 @@ implementation 'com.github.jakepurple13.HelpfulTools:gsonutils:{version}'
 implementation 'com.github.jakepurple13.HelpfulTools:helpfulutils:{version}'
 implementation 'com.github.jakepurple13.HelpfulTools:loggingutils:{version}'
 implementation 'com.github.jakepurple13.HelpfulTools:rxutils:{version}'
+implementation 'com.github.jakepurple13.HelpfulTools:dragswipe:{version}'
 ```
