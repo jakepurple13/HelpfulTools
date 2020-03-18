@@ -22,5 +22,5 @@ fun View.drags(): Flow<DragEvent> = BroadcastChannel<DragEvent>(1).apply { setOn
 fun View.keyPress(): Flow<KeyEvent> = BroadcastChannel<KeyEvent>(1).apply { setOnKeyListener { _, _, event -> offer(event);true } }.asFlow()
 fun TextView.textChange() = BroadcastChannel<CharSequence?>(1).apply { doOnTextChanged { text, _, _, _ -> offer(text) } }.asFlow()
 fun TextView.beforeTextChange() = BroadcastChannel<CharSequence?>(1).apply { doBeforeTextChanged { text, _, _, _ -> offer(text) } }.asFlow()
-fun TextView.afterTextChange() = BroadcastChannel<CharSequence?>(1).apply { doAfterTextChanged(this::offer) }.asFlow()
+fun TextView.afterTextChange() = BroadcastChannel<CharSequence?>(1).apply { doAfterTextChanged { offer(it) } }.asFlow()
 fun CompoundButton.checked() = BroadcastChannel<Boolean>(1).apply { setOnCheckedChangeListener { _, isChecked -> offer(isChecked) } }.asFlow()
