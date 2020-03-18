@@ -97,7 +97,20 @@ class ExampleUnitTest {
         println(4 or 5 or 6 or 7 or 8 or 9)
         val f = listOf(4, 5, 6, 7, 8, 9)
         println(f.fold(0) { a, c -> a or c })
-
+        val f1 = FixedSizeList<Int>(50)
+        for (i in 0..100) {
+            f1.add(i)
+        }
+        println(f1)
+        println(f1.size)
     }
 
+}
+
+class FixedSizeList<T>(private val maxSize: Int = 1) : ArrayList<T>() {
+    override fun add(element: T): Boolean = super.add(element).also { addCheck() }
+    override fun add(index: Int, element: T) = super.add(index, element).also { addCheck() }
+    override fun addAll(elements: Collection<T>): Boolean = super.addAll(elements).also { addCheck() }
+    override fun addAll(index: Int, elements: Collection<T>): Boolean = super.addAll(index, elements).also { addCheck() }
+    private fun addCheck() = run { if (size > maxSize) removeAt(lastIndex) }
 }

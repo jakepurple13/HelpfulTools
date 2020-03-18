@@ -3,10 +3,12 @@ package com.programmersbox.flowutils
 import android.view.View
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.random.Random
 
 /**
  * Instrumented test, which will execute on an Android device.
@@ -16,6 +18,7 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
     private val flowItem = FlowItem(5)
+
     @Test
     fun useAppContext() {
         // Context of the app under test.
@@ -30,5 +33,10 @@ class ExampleInstrumentedTest {
         flowItem.bindToUI(view) { println(it) }
         flowItem.collectOnUI { println(it) }
         flowItem.flow.collectOnUi { println(it) }
+        view
+            .clicks()
+            .map { Random.nextBoolean() }
+            .collectOnUi { println("Clicked $it") }
+        view.performClick()
     }.let { Unit }
 }
