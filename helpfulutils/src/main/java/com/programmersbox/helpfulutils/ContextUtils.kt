@@ -3,6 +3,7 @@ package com.programmersbox.helpfulutils
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.media.AudioManager
 import android.os.Handler
 import android.os.Looper
 import java.io.Serializable
@@ -55,3 +56,8 @@ inline fun <reified T> Context.startActivity(vararg pairs: Pair<String, Any>) {
  * An easy way to put data into an intent
  */
 fun Intent.putExtras(vararg pairs: Pair<String, Any>) = apply { pairs.forEach { putExtra(it.first, it.second as Serializable) } }
+
+var Context.mediaVolume: Int
+    get() = (getSystemService(Context.AUDIO_SERVICE) as AudioManager).getStreamVolume(AudioManager.STREAM_MUSIC)
+    set(value) = (getSystemService(Context.AUDIO_SERVICE) as AudioManager).setStreamVolume(AudioManager.STREAM_MUSIC, value, 0)
+

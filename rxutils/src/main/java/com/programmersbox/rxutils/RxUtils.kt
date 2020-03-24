@@ -17,6 +17,11 @@ operator fun <T> Observer<T>.invoke(d: Disposable) = onSubscribe(d)
 operator fun <T> Observer<T>.invoke() = onComplete()
 
 /**
+ * Does a [map]ping function with [apply] to modify the new element
+ */
+fun <T> Observable<T>.modify(block: (T) -> Unit): Observable<T> = map { it.apply(block) }
+
+/**
  * An easy way to set up onNext, onError, and onComplete
  */
 fun <T> Observable<T>.build(builder: ObservableBuilder<T>.() -> Unit): Observable<T> = ObservableBuilder<T>().apply(builder).build(this)

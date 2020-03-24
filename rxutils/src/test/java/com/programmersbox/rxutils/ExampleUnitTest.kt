@@ -2,6 +2,7 @@ package com.programmersbox.rxutils
 
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
+import kotlin.random.Random
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -13,12 +14,9 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         val publish = PublishSubject.create<String>()
         publish
-            //.ioMain()
             .doOnError { println(it) }
             .subscribe { println(it) }
         publish("Hello")
-        //publish(Throwable("Hello There"))
-        //publish()
         publish.onNext("World")
         publish.build {
             onNext {
@@ -30,7 +28,30 @@ class ExampleUnitTest {
             onComplete {
                 System.err.println("Done")
             }
-        }.subscribe()
+        }.modify { }.subscribe()
         publish("!!!")
+    }
+
+    @Test
+    fun modifyTest() {
+        data class RxTest(var text: String)
+
+        val publish = PublishSubject.create<RxTest>()
+        publish
+            .doOnComplete { println("Done") }
+            .doOnError { println(it) }
+            .subscribe { println(it) }
+        publish(RxTest("Hello"))
+        publish.onNext(RxTest("World"))
+        publish
+            .modify { it.text = "Hello World" }
+            .doOnComplete { System.err.println("Done") }
+            .subscribe { System.err.println(it) }
+        publish(RxTest("!!!")) //calls onNext
+        if (Random.nextBoolean())
+            publish() //calls onComplete
+        else
+            publish(Throwable("Hello There")) //calls onError
+
     }
 }

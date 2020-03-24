@@ -24,6 +24,8 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.programmersbox.helpfulutils.test", appContext.packageName)
+        appContext.mediaVolume = 50
+        println(appContext.mediaVolume)
     }
 
     @Test

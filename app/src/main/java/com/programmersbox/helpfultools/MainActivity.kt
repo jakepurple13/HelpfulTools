@@ -11,6 +11,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.programmersbox.dragswipe.DragSwipeAdapter
 import com.programmersbox.flowutils.FlowItem
 import com.programmersbox.flowutils.bindToUI
+import com.programmersbox.flowutils.clicks
+import com.programmersbox.flowutils.collectOnUi
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.gsonutils.getJsonApi
 import com.programmersbox.gsonutils.toPrettyJson
@@ -25,12 +27,11 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_item.view.*
 import kotlinx.android.synthetic.main.layout_item_two.view.*
+import kotlinx.coroutines.flow.map
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    private val colorPublisher = PublishSubject.create<Int>()
-    private val colorApiPublishSubject = PublishSubject.create<ColorApi>()
     private val compositeDisposable = CompositeDisposable()
 
     @SuppressLint("SetTextI18n")
@@ -75,20 +76,32 @@ class MainActivity : AppCompatActivity() {
             Log.d("Gson", DeviceInfo.Info().toPrettyJson().fromJson<DeviceInfo.Info>().toString())
         }
         //----------------------------------------------
+        val colorPublisher = PublishSubject.create<Int>()
+        val colorApiPublishSubject = PublishSubject.create<String>()
         colorApiPublishSubject
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { colorInformation.text = it.toString() }
+            .map {
+                try {
+                    getJsonApi<ColorApi>("http://thecolorapi.com/id?hex=${it.drop(2)}")
+                } catch (e: Exception) {
+                    colorApiBlack.copy(hex = Hex(it, it))
+                }?.hex?.value
+            }
+            .subscribe { colorInformation.text = "#$it" }
             .addTo(compositeDisposable)
         colorPublisher
             .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(Schedulers.io())
             .subscribe {
                 runOnUIThread { colorInfo.setBackgroundColor(it) }
-                colorApiPublishSubject(getJsonApi<ColorApi>("http://thecolorapi.com/id?hex=${Integer.toHexString(it).drop(2)}"))
+                colorApiPublishSubject(Integer.toHexString(it))
             }
             .addTo(compositeDisposable)
-        colorInfo.setOnClickListener { colorPublisher.onNext(Random.nextColor().also { println(it.toHexString()) }) }
+        colorInfo
+            .clicks() //Flow Binding
+            .map { Random.nextColor().also { println(it.toHexString()) } }
+            .collectOnUi(colorPublisher::onNext)
         //----------------------------------------------
         var showOrNot = true
         viewInfo.setOnClickListener {

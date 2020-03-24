@@ -1,12 +1,8 @@
 package com.programmersbox.testingplayground
 
-import android.view.View
-import android.widget.Button
+import android.graphics.Color
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import kotlinx.coroutines.channels.BroadcastChannel
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,21 +19,42 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.programmersbox.testingplayground.test", appContext.packageName)
-        val b = Button(appContext)
-        b.clicks()
-        b.longClicks()
 
     }
 
-    fun View.clicks(): Flow<Unit> {
-        val channel = BroadcastChannel<Unit>(1)
-        setOnClickListener { channel.offer(Unit) }
-        return channel.asFlow()
-    }
+    @Test
+    fun other7() {
+        val list = listOf(
+            "#FAFAFA",
+            "#FAFAFA",
+            "#000000",
+            "#de605e",
+            "#F2ACAC",
+            "#C16363",
+            "#FAFAFA",
+            "#B61F1E",
+            "#951A18",
+            "#CC2523",
+            "#ffd5d5",
+            "#FFCECE",
+            "#FFE1E1",
+            "#FFD5D5",
+            "#D64542",
+            "#8E3230",
+            "#D6403D",
+            "#DB3D38",
+            "#FFC1BF",
+            "#D58582"
+        ).shuffled()
 
-    fun View.longClicks(): Flow<Unit> {
-        val channel = BroadcastChannel<Unit>(1)
-        setOnLongClickListener { channel.offer(Unit) }
-        return channel.asFlow()
+        list.forEach { println(it.color(Color.parseColor(it))) }
+
+        val f = list.sortedBy {
+            val array = floatArrayOf(0f, 0f, 0f)
+            Color.colorToHSV(Color.parseColor(it), array)
+            array[0]
+        }
+
+        f.forEach { println(it.color(Color.parseColor(it))) }
     }
 }

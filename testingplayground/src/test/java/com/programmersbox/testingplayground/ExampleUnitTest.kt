@@ -92,6 +92,54 @@ class ExampleUnitTest {
         println("#ff0fa10e".color(0xff0fa10e))
     }
 
+    private fun String.vowelsUpConsonantsDown() = map { if ("aeiou".contains(it, true)) it.toUpperCase() else it.toLowerCase() }.joinToString("")
+
+    @Test
+    fun other8() {
+        val h = "Hello World"
+        println(h.vowelsUpConsonantsDown())
+        println(0x80)
+    }
+
+    private val randomColor get() = (Math.random() * 16777215).toInt() or (0xFF shl 24)
+
+    @Test
+    fun other6() {
+        val list = mutableListOf<Int>().apply { repeat(100) { this += randomColor } }
+        list.sortedBy { rgbToHsl(it)[0] }.forEach { println("Hello World".color(it)) }
+    }
+
+    private fun rgbToHsl(color: Int): Array<Float> {
+        val (r, g, b) = color.valueOf()
+        val max = maxOf(r, g, b)
+        val min = minOf(r, g, b)
+        var h: Float
+        val s: Float
+        val l = (max + min) / 2f
+        if (max == min) {
+            s = 0f
+            h = s
+        } else {
+            val d = max - min
+            s = if (l > 0.5) d / (2 - max - min).toFloat() else d / (max + min).toFloat()
+            h = when (max) {
+                r -> (g - b) / d + (if (g < b) 6f else 0f)
+                g -> (b - r) / d + 2f
+                b -> (r - g) / d + 4f
+                else -> 0f
+            }
+            h /= 6f
+        }
+        return arrayOf(h * 360f, s * 100f, l * 100f)
+    }
+
+    private fun Int.valueOf(): Triple<Int, Int, Int> {
+        val r = (this shr 16 and 0xff)// / 255.0f
+        val g = (this shr 8 and 0xff)// / 255.0f
+        val b = (this and 0xff)// / 255.0f
+        return Triple(r, g, b)
+    }
+
     @Test
     fun other5() {
         println(4 or 5 or 6 or 7 or 8 or 9)
