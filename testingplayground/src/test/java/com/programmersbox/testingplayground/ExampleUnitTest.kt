@@ -6,6 +6,12 @@ import com.programmersbox.loggingutils.FrameType
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
 import com.programmersbox.loggingutils.frame
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
@@ -99,6 +105,74 @@ class ExampleUnitTest {
         val h = "Hello World"
         println(h.vowelsUpConsonantsDown())
         println(0x80)
+    }
+
+    @Test
+    fun other9() {
+        val deck = Deck.defaultDeck()
+        Loged.f(deck.deck)
+    }
+
+    @Test
+    fun other10() = runBlocking {
+        println("Interface---")
+        val deck = Deck.defaultDeck()
+        deck.addDeckListener {
+            onAdd { println(it.map(Card::toSymbolString)) }
+            onDraw { card, size -> println("$card and $size") }
+            onShuffle { println("Shuffled") }
+        }
+        deck.draw()
+        deck.add(Card.RandomCard)
+        deck.shuffle()
+        println("Rx---")
+        val rxDeck = RxDeck.defaultDeck()
+        rxDeck.onAddSubscribe()
+            .map { it.map { it.toSymbolString() } }
+            .subscribe { println(it) }
+        rxDeck.onDrawSubscribe()
+            .subscribe { println("${it.card} and ${it.size}") }
+        rxDeck.onShuffleSubscribe()
+            .subscribe { println("Shuffled") }
+        rxDeck.draw()
+        rxDeck.add(Card.RandomCard)
+        rxDeck.shuffle()
+        rxDeck(Deck.defaultDeck())
+        println("Flow---")
+        val flowDeck = FlowDeck.defaultDeck()
+        GlobalScope.launch {
+            flowDeck.onAddCollect()
+                .map { it.map { it.toSymbolString() } }
+                .collect { println(it) }
+        }
+        delay(50)
+        GlobalScope.launch {
+            flowDeck.onDrawCollect()
+                .collect { println("${it.card} and ${it.size}") }
+        }
+        delay(50)
+        GlobalScope.launch {
+            flowDeck.onShuffleCollect()
+                .collect { println("Shuffled") }
+        }
+        delay(50)
+        flowDeck.draw()
+        flowDeck.add(Card.RandomCard)
+        flowDeck.shuffle()
+        delay(500)
+        println("Equals Checking---")
+        val deck2 = Deck.defaultDeck()
+        val rxDeck2 = RxDeck.defaultDeck()
+        val flowDeck2 = FlowDeck.defaultDeck()
+        println(deck2 == rxDeck2)
+        println(deck2 == flowDeck2)
+        println(rxDeck2 == flowDeck2)
+    }
+
+    @Test
+    fun other11() {
+        val deck = RxDeck.defaultDeck()
+
     }
 
     private val randomColor get() = (Math.random() * 16777215).toInt() or (0xFF shl 24)

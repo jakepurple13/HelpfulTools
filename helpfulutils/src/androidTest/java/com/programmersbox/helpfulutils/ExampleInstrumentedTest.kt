@@ -4,6 +4,7 @@ import android.Manifest
 import android.view.View
 import android.widget.LinearLayout
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
@@ -26,6 +27,33 @@ class ExampleInstrumentedTest {
         assertEquals("com.programmersbox.helpfulutils.test", appContext.packageName)
         appContext.mediaVolume = 50
         println(appContext.mediaVolume)
+        BiometricBuilder.biometricBuilder(FragmentActivity(R.layout.device_credential_handler_activity)) {
+
+            authSuccess {
+                "Success"
+            }
+
+            authError { _, _ ->
+                "Error"
+            }
+
+            authFailed {
+                "Failed"
+            }
+
+            error {
+                "Error"
+            }
+
+            promptInfo {
+                title = "Testing"
+                subtitle = "Tester"
+                description = "Test"
+                negativeButton = null
+                confirmationRequired = true
+                deviceCredentialAllowed = true
+            }
+        }
     }
 
     @Test
