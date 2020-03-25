@@ -2,6 +2,7 @@ package com.programmersbox.helpfultools
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -152,6 +153,30 @@ class MainActivity : AppCompatActivity() {
         }
 
         //DragSwipeUtils.setDragSwipeUp(adapter, recyclerView, Direction.UP + Direction.DOWN, Direction.START + Direction.END)
+
+        biometricUse.setOnClickListener {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+                requestPermissions(Manifest.permission.USE_BIOMETRIC) {
+                    if (it.isGranted) {
+                        val buttonSet = fun(s: String) { biometricUse.text = s }
+                        BiometricBuilder.biometricBuilder(this) {
+                            authError { _, _ -> buttonSet("Auth Error") }
+                            authSuccess { buttonSet("Success") }
+                            authFailed { buttonSet("Auth Failed") }
+                            error { buttonSet("Something went wrong") }
+                            promptInfo {
+                                title = "Title"
+                                subtitle = "Subtitle"
+                                description = "Description"
+                                negativeButton = null
+                                confirmationRequired = true
+                                deviceCredentialAllowed = true
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     }
 

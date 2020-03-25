@@ -86,4 +86,12 @@
         tools:itemCount="5"
         tools:listitem="@layout/layout_item" />
 
+    <Button
+        android:id="@+id/biometricUse"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Use Biometric"
+        app:layout_constraintStart_toEndOf="@id/logedInfo"
+        app:layout_constraintTop_toTopOf="@id/logedInfo" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

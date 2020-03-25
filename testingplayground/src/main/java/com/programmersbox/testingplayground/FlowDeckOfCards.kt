@@ -1,6 +1,5 @@
 package com.programmersbox.testingplayground
 
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -17,13 +16,22 @@ class FlowDeck<T> : AbstractDeck<T> {
     private val onDrawChannel = BroadcastChannel<DrawInfo>(1)
     private val onShuffleChannel = BroadcastChannel<Unit>(1)
 
+    var channelMove = FlowDeckMoveType.SEND
+
+    enum class FlowDeckMoveType { SEND, OFFER }
+
     inner class DrawInfo(val card: T, val size: Int)
 
-    private fun launch(block: suspend CoroutineScope.() -> Unit) = GlobalScope.launch(block = block)
+    private fun <R> sendChannel(channel: BroadcastChannel<R>, item: R) = GlobalScope.launch {
+        when (channelMove) {
+            FlowDeckMoveType.SEND -> channel.send(item)
+            FlowDeckMoveType.OFFER -> channel.offer(item)
+        }
+    }.let { Unit }
 
-    override fun cardAdded(vararg card: T) = launch { onAddChannel.send(card.toList()) }.let { Unit }
-    override fun cardDrawn(card: T, size: Int) = launch { onDrawChannel.offer(DrawInfo(card, size)) }.let { Unit }
-    override fun deckShuffled() = launch { onShuffleChannel.offer(Unit) }.let { Unit }
+    override fun cardAdded(vararg card: T) = sendChannel(onAddChannel, card.toList())
+    override fun cardDrawn(card: T, size: Int) = sendChannel(onDrawChannel, DrawInfo(card, size))
+    override fun deckShuffled() = sendChannel(onShuffleChannel, Unit)
 
     fun onAddCollect() = onAddChannel.asFlow()
     fun onDrawCollect() = onDrawChannel.asFlow()

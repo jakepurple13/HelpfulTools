@@ -4,6 +4,8 @@ import kotlin.random.Random
 
 class DeckException(message: String?) : Exception(message)
 
+operator fun <T> Int.rangeTo(deck: AbstractDeck<T>) = deck.deck.subList(this, deck.size)
+
 abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
 
     constructor(vararg cards: T) : this(cards.toList())
@@ -171,7 +173,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     /**
      * Completely clears the deck
      */
-    fun clear() = deckOfCards.clear()
+    fun removeAllCards() = deckOfCards.clear()
 
     /**
      * Reverses the order of the deck
@@ -191,8 +193,6 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
      */
     @Throws(DeckException::class)
     fun randomDraw(predicate: (T) -> Boolean = { true }) = deck.filter(predicate).tryCatch("Card Not Found") { it.random().also { c -> remove(c) } }
-
-    override fun toString(): String = deck.toString()
 
     /**
      * Adds the cards from [deck] to this deck
@@ -221,14 +221,14 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
      * @throws DeckException if the [range] is outside the bounds of the deck
      */
     @Throws(DeckException::class)
-    open operator fun get(range: IntRange) = tryCatch("Index: ${range.first} to ${range.last}, Size: $size") { deck.slice(range) }
+    operator fun get(range: IntRange) = tryCatch("Index: ${range.first} to ${range.last}, Size: $size") { deck.slice(range) }
 
     /**
      * Gets a list from the deck between [from] and [to]
      * @throws DeckException if the range is outside the bounds of the deck
      */
     @Throws(DeckException::class)
-    open operator fun get(from: Int, to: Int) = tryCatch("Index: $from to $to, Size: $size") { deck.subList(from, to) }
+    operator fun get(from: Int, to: Int) = tryCatch("Index: $from to $to, Size: $size") { deck.subList(from, to) }
 
     /**
      * Gets cards from [cards]
@@ -289,8 +289,6 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
      */
     open operator fun divAssign(cuts: Int) = cutShuffle(cuts)
 
-    operator fun <T> Int.rangeTo(deck: AbstractDeck<T>) = deck.deck.subList(this, deck.size)
-
     override fun equals(other: Any?): Boolean {
         return if (other is AbstractDeck<*> && size == other.size) {
             for (thisCard in deckOfCards) {
@@ -308,6 +306,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
         val tempDeck = splitInto(cuts)
         deckOfCards.clear()
         deckOfCards.addAll(tempDeck.shuffled().flatMap(List<T>::shuffled))
+        deckShuffled()
     }
 
     /**
@@ -319,8 +318,8 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
         deckOfCards.addAll(listOf(bottom, top).flatten())
     }
 
-    private fun split() = deckOfCards.subList(0, size / 2).toList() to deckOfCards.subList(size / 2, size).toList()
-    private fun splitInto(cuts: Int) = deckOfCards.chunked(size / cuts)
+    protected fun split() = deckOfCards.subList(0, size / 2).toList() to deckOfCards.subList(size / 2, size).toList()
+    protected fun splitInto(cuts: Int) = deckOfCards.chunked(size / cuts)
 
     private fun <R, V> V.tryCatch(message: String?, block: (V) -> R) = try {
         block(this)

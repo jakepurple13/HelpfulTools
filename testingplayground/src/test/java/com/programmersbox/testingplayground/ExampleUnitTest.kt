@@ -172,7 +172,20 @@ class ExampleUnitTest {
     @Test
     fun other11() {
         val deck = RxDeck.defaultDeck()
-
+        deck.onAddSubscribe()
+            .map { it.map { it.toSymbolString() } }
+            .subscribe { println(it) }
+        deck.onDrawSubscribe()
+            .subscribe {
+                if (it.size <= 5) deck(Deck.defaultDeck())
+                println("${it.card} and ${it.size}")
+            }
+        deck.onShuffleSubscribe()
+            .subscribe { println("Shuffled") }
+        deck.trueRandomShuffle()
+        val hand = deck.draw(5)
+        println(hand.map(Card::toSymbolString))
+        deck.draw(50)
     }
 
     private val randomColor get() = (Math.random() * 16777215).toInt() or (0xFF shl 24)
