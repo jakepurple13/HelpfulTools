@@ -7,13 +7,11 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.programmersbox.dragswipe.DragSwipeAdapter
-import com.programmersbox.flowutils.FlowItem
-import com.programmersbox.flowutils.bindToUI
-import com.programmersbox.flowutils.clicks
-import com.programmersbox.flowutils.collectOnUi
+import com.programmersbox.flowutils.*
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.gsonutils.getJsonApi
 import com.programmersbox.gsonutils.toPrettyJson
@@ -80,8 +78,8 @@ class MainActivity : AppCompatActivity() {
         val colorPublisher = PublishSubject.create<Int>()
         val colorApiPublishSubject = PublishSubject.create<String>()
         colorApiPublishSubject
-            .subscribeOn(AndroidSchedulers.mainThread())
             .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
             .map {
                 try {
                     getJsonApi<ColorApi>("http://thecolorapi.com/id?hex=${it.drop(2)}")
@@ -92,10 +90,10 @@ class MainActivity : AppCompatActivity() {
             .subscribe { colorInformation.text = "#$it" }
             .addTo(compositeDisposable)
         colorPublisher
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .observeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribeOn(Schedulers.io())
             .subscribe {
-                runOnUIThread { colorInfo.setBackgroundColor(it) }
+                colorInfo.setBackgroundColor(it)
                 colorApiPublishSubject(Integer.toHexString(it))
             }
             .addTo(compositeDisposable)
@@ -103,6 +101,10 @@ class MainActivity : AppCompatActivity() {
             .clicks() //Flow Binding
             .map { Random.nextColor().also { println(it.toHexString()) } }
             .collectOnUi(colorPublisher::onNext)
+        colorInformation
+            .longClicks() //Flow Binding
+            .map { colorInformation.text }
+            .collectOnUi(::println)
         //----------------------------------------------
         var showOrNot = true
         viewInfo.setOnClickListener {
@@ -163,7 +165,7 @@ class MainActivity : AppCompatActivity() {
                             authError { _, _ -> buttonSet("Auth Error") }
                             authSuccess { buttonSet("Success") }
                             authFailed { buttonSet("Auth Failed") }
-                            error { buttonSet("Something went wrong") }
+                            error { result -> Toast.makeText(this@MainActivity, result.reason, Toast.LENGTH_LONG).show() }
                             promptInfo {
                                 title = "Title"
                                 subtitle = "Subtitle"

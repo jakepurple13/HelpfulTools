@@ -25,8 +25,8 @@ class ExampleInstrumentedTest {
         // Context of the app under test.
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.programmersbox.helpfulutils.test", appContext.packageName)
-        appContext.mediaVolume = 50
-        println(appContext.mediaVolume)
+        appContext.setVolume(50, AudioStreamTypes.STREAM_MUSIC)
+        println(appContext.getVolume(AudioStreamTypes.STREAM_MUSIC))
         BiometricBuilder.biometricBuilder(FragmentActivity(R.layout.device_credential_handler_activity)) {
 
             authSuccess {

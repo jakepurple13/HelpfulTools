@@ -78,35 +78,25 @@ class BiometricBuilder(private var fragmentActivity: FragmentActivity) {
     }
 
     private var biometricPromptInfo: BiometricPrompt.PromptInfo? = null
-    private var onAuthFailed: () -> Unit = { }
+    private var onAuthFailed: () -> Unit = {}
     private var onAuthError: (errorCode: Int, errorMessage: String) -> Unit = { _, _ -> }
     private var onAuthSuccess: (result: BiometricPrompt.AuthenticationResult) -> Unit = { _ -> }
     private var onError: (error: BiometricErrorType) -> Unit = { System.err.println("$it: ${it.reason}") }
 
     @BiometricMarker
-    fun authFailed(block: () -> Unit) {
-        onAuthFailed = block
-    }
+    fun authFailed(block: () -> Unit) = run { onAuthFailed = block }
 
     @BiometricMarker
-    fun authError(block: (Int, String) -> Unit) {
-        onAuthError = block
-    }
+    fun authError(block: (errorCode: Int, errorMessage: String) -> Unit) = run { onAuthError = block }
 
     @BiometricMarker
-    fun authSuccess(block: (BiometricPrompt.AuthenticationResult) -> Unit) {
-        onAuthSuccess = block
-    }
+    fun authSuccess(block: (result: BiometricPrompt.AuthenticationResult) -> Unit) = run { onAuthSuccess = block }
 
     @BiometricMarker
-    fun error(block: (BiometricErrorType) -> Unit) {
-        onError = block
-    }
+    fun error(block: (error: BiometricErrorType) -> Unit) = run { onError = block }
 
     @BiometricMarker
-    fun promptInfo(block: BiometricPromptBuilder.() -> Unit) {
-        biometricPromptInfo = BiometricPromptBuilder.biometricPromptBuilder(block)
-    }
+    fun promptInfo(block: BiometricPromptBuilder.() -> Unit) = run { biometricPromptInfo = BiometricPromptBuilder.biometricPromptBuilder(block) }
 
     private fun build() {
         when (BiometricManager.from(fragmentActivity).canAuthenticate()) {

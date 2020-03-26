@@ -4,8 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.media.AudioManager
+import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import androidx.annotation.RequiresApi
 import java.io.Serializable
 
 private var sharedPrefName: String = "HelpfulUtils"
@@ -48,16 +50,40 @@ fun runOnUIThread(runnable: () -> Unit) = Handler(Looper.getMainLooper()).post(r
 /**
  * An easy way to put data into an intent and start an activity
  */
-inline fun <reified T> Context.startActivity(vararg pairs: Pair<String, Any>) {
-    startActivity(Intent(this, T::class.java).putExtras(*pairs))
-}
+inline fun <reified T> Context.startActivity(vararg pairs: Pair<String, Any>) = startActivity(Intent(this, T::class.java).putExtras(*pairs))
 
 /**
  * An easy way to put data into an intent
  */
 fun Intent.putExtras(vararg pairs: Pair<String, Any>) = apply { pairs.forEach { putExtra(it.first, it.second as Serializable) } }
 
-var Context.mediaVolume: Int
-    get() = (getSystemService(Context.AUDIO_SERVICE) as AudioManager).getStreamVolume(AudioManager.STREAM_MUSIC)
-    set(value) = (getSystemService(Context.AUDIO_SERVICE) as AudioManager).setStreamVolume(AudioManager.STREAM_MUSIC, value, 0)
+val Context.audioManager get() = getSystemService(Context.AUDIO_SERVICE) as AudioManager
 
+enum class AudioStreamTypes(internal var type: Int) {
+    STREAM_VOICE_CALL(AudioManager.STREAM_VOICE_CALL),
+    STREAM_SYSTEM(AudioManager.STREAM_SYSTEM),
+    STREAM_RING(AudioManager.STREAM_RING),
+    STREAM_MUSIC(AudioManager.STREAM_MUSIC),
+    STREAM_ALARM(AudioManager.STREAM_ALARM),
+    STREAM_NOTIFICATION(AudioManager.STREAM_NOTIFICATION),
+    STREAM_DTMF(AudioManager.STREAM_DTMF),
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    STREAM_ACCESSIBILITY(AudioManager.STREAM_ACCESSIBILITY);
+
+    fun setVolume(context: Context, value: Int) = context.setStreamVolume(value, this)
+    fun getVolume(context: Context) = context.getStreamVolume(this)
+}
+
+/**
+ * Set the volume
+ * @param value - the volume level
+ * @param type - The category of the type of stream. Default is [AudioStreamTypes.STREAM_MUSIC]
+ */
+fun Context.setStreamVolume(value: Int, type: AudioStreamTypes = AudioStreamTypes.STREAM_MUSIC) = audioManager.setStreamVolume(type.type, value, 0)
+
+/**
+ * Get the volume
+ * @param type - The category of the type of stream. Default is [AudioStreamTypes.STREAM_MUSIC]
+ */
+fun Context.getStreamVolume(type: AudioStreamTypes = AudioStreamTypes.STREAM_MUSIC) = audioManager.getStreamVolume(type.type)
