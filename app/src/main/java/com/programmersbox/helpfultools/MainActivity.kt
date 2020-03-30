@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         //usually put these or any other Loged modifiers in the application class
         Loged.FILTER_BY_PACKAGE_NAME = "com.programmersbox.helpfultools"
         Loged.TAG = "HelpfulTools"
-
         logedInfo.setOnClickListener {
             //These will do normal logs
             Loged.w("Hello World")

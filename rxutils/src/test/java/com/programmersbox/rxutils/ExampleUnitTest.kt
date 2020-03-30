@@ -18,17 +18,7 @@ class ExampleUnitTest {
             .subscribe { println(it) }
         publish("Hello")
         publish.onNext("World")
-        publish.build {
-            onNext {
-                System.err.println(it)
-            }
-            onError {
-                System.err.println(it)
-            }
-            onComplete {
-                System.err.println("Done")
-            }
-        }.modify { }.subscribe()
+        publish.modify { }.subscribe()
         publish("!!!")
     }
 

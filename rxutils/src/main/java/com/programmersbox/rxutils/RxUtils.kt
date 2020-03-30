@@ -20,33 +20,3 @@ operator fun <T> Observer<T>.invoke() = onComplete()
  * Does a [map]ping function with [apply] to modify the new element
  */
 fun <T> Observable<T>.modify(block: (T) -> Unit): Observable<T> = map { it.apply(block) }
-
-/**
- * An easy way to set up onNext, onError, and onComplete
- */
-fun <T> Observable<T>.build(builder: ObservableBuilder<T>.() -> Unit): Observable<T> = ObservableBuilder<T>().apply(builder).build(this)
-
-@DslMarker
-annotation class ObservableBuildMarker
-
-@ObservableBuildMarker
-class ObservableBuilder<T> {
-
-    private var onNext: (T) -> Unit = {}
-
-    @ObservableBuildMarker
-    fun onNext(block: (T) -> Unit) = run { onNext = block }
-
-    private var onError: (Throwable) -> Unit = {}
-
-    @ObservableBuildMarker
-    fun onError(block: (Throwable) -> Unit) = run { onError = block }
-
-    private var onComplete: () -> Unit = {}
-
-    @ObservableBuildMarker
-    fun onComplete(block: () -> Unit) = run { onComplete = block }
-
-    internal fun build(observe: Observable<T>) = observe.doOnNext(onNext).doOnError(onError).doOnComplete(onComplete)
-
-}
