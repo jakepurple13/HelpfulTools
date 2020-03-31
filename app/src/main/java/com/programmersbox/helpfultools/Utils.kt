@@ -1,7 +1,14 @@
 package com.programmersbox.helpfultools
 
 import com.programmersbox.gsonutils.fromJson
+import com.programmersbox.helpfulutils.randomRemove
 import org.intellij.lang.annotations.Language
+
+fun getRandomName() = try {
+    Names.names.randomRemove()
+} catch (e: IndexOutOfBoundsException) {
+    "Hello"
+}
 
 @Language("JSON")
 val colorApiBlack = """

@@ -10,7 +10,9 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.programmersbox.dragswipe.Direction
 import com.programmersbox.dragswipe.DragSwipeAdapter
+import com.programmersbox.dragswipe.DragSwipeUtils
 import com.programmersbox.flowutils.*
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.gsonutils.getJsonApi
@@ -106,17 +108,21 @@ class MainActivity : AppCompatActivity() {
             .collectOnUi(::println)
         //----------------------------------------------
         var showOrNot = true
+        var location = 0
         viewInfo.setOnClickListener {
             if (showOrNot) {
                 getDrawable(R.drawable.ic_launcher_foreground)
             } else {
                 null
             }.let {
-                viewValue.startDrawable = it
-                viewValue.endDrawable = it
-                viewValue.topDrawable = it
-                viewValue.bottomDrawable = it
+                when (location) {
+                    0 -> viewValue.startDrawable = it
+                    1 -> viewValue.endDrawable = it
+                    2 -> viewValue.topDrawable = it
+                    3 -> viewValue.bottomDrawable = it
+                }
             }
+            if (!showOrNot) location = if (location >= 3) 0 else location + 1
             showOrNot = !showOrNot
         }
         //----------------------------------------------
@@ -134,17 +140,33 @@ class MainActivity : AppCompatActivity() {
         (recyclerView.adapter as? QuickAdapter<String>)?.add(R.layout.layout_item, Names.names.randomRemove(), Names.names.randomRemove()) {
             textView.text = it
             setOnClickListener { _ ->
-
                 println(it)
+                (recyclerView.adapter as QuickAdapter<String>)[0] = getRandomName()
+            }
+        }
+        val list = mutableListOf<String>().apply { repeat(10) { this += getRandomName() } }
 
-                (recyclerView.adapter as QuickAdapter<String>)[0] = try {
-                    Names.names.randomRemove()
-                } catch (e: IndexOutOfBoundsException) {
-                    "Hello"
+        val adapter = CustomAdapter(list)
+        recyclerView2.adapter = adapter
+
+        DragSwipeUtils.setDragSwipeUp(adapter, recyclerView2, Direction.UP + Direction.DOWN, Direction.START + Direction.END)
+
+        addToAdapters.setOnClickListener {
+            adapter.addItem(getRandomName())
+            if (Random.nextBoolean()) {
+                recyclerView.quickAdapter(R.layout.layout_item, getRandomName()) {
+                    textView.text = it
+                    setOnClickListener { _ -> println(it) }
+                }
+            } else {
+                recyclerView.quickAdapter(R.layout.layout_item_two, getRandomName()) {
+                    textView2.text = it
+                    setOnClickListener { _ -> println(it) }
                 }
             }
         }
 
+        //----------------------------------------------
         requestPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -152,8 +174,7 @@ class MainActivity : AppCompatActivity() {
         ) {
             println(it)
         }
-
-        //DragSwipeUtils.setDragSwipeUp(adapter, recyclerView, Direction.UP + Direction.DOWN, Direction.START + Direction.END)
+        //----------------------------------------------
 
         biometricUse.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
@@ -183,7 +204,7 @@ class MainActivity : AppCompatActivity() {
 
     inner class CustomAdapter(dataList: MutableList<String>) : DragSwipeAdapter<String, ViewHolder>(dataList) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-            ViewHolder(layoutInflater.inflate(R.layout.layout_item, parent))
+            ViewHolder(layoutInflater.inflate(R.layout.layout_item, parent, false))
 
         override fun ViewHolder.onBind(item: String, position: Int) {
             itemView.textView.text = item
