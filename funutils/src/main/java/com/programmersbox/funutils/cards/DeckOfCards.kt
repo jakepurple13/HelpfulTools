@@ -1,4 +1,6 @@
-package com.programmersbox.testingplayground
+package com.programmersbox.funutils.cards
+
+import kotlin.properties.Delegates
 
 @DslMarker
 annotation class DeckMarker
@@ -160,7 +162,7 @@ class Deck<T> : AbstractDeck<T> {
          */
         @Suppress("unused")
         @CardMarker
-        fun DeckBuilder<Card>.card(block: Card.CardBuilder.() -> Unit) = Card.CardBuilder(block).let { cardList.add(Card(it.value, it.suit)) }
+        fun DeckBuilder<Card>.card(block: CardBuilder.() -> Unit) = CardBuilder(block).let { cardList.add(Card(it.value, it.suit)) }
 
         /**
          * Add a [Card] to the deck
@@ -209,5 +211,20 @@ class Deck<T> : AbstractDeck<T> {
             @DeckMarker
             fun <T> buildDeck(block: DeckBuilder<T>.() -> Unit) = DeckBuilder<T>().apply(block).build()
         }
+    }
+}
+
+@DeckMarker
+class CardBuilder {
+    var value by Delegates.notNull<Int>()
+    var suit by Delegates.notNull<Suit>()
+    private fun build() = Card(value, suit)
+
+    companion object {
+        @CardMarker
+        operator fun invoke(block: CardBuilder.() -> Unit) = cardBuilder(block)
+
+        @CardMarker
+        fun cardBuilder(block: CardBuilder.() -> Unit) = CardBuilder().apply(block).build()
     }
 }
