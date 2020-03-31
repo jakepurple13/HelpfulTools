@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ExpandingSlider">
+        <attr name="slider_colorBase" format="color" />
+        <attr name="slider_colorMain" format="color" />
+        <attr name="slider_minValue" format="float" />
+        <attr name="slider_maxValue" format="float" />
+        <attr name="slider_initialValue" format="float" />
+        <attr name="slider_resultSize" format="dimension" />
+        <attr name="slider_resultColor" format="color" />
+        <attr name="slider_showValue" format="boolean" />
+        <attr name="slider_showLimits" format="boolean" />
+        <attr name="slider_showIndicator" format="boolean" />
+        <attr name="slider_title" format="string" />
+        <attr name="slider_titleSize" format="dimension" />
+        <attr name="slider_titleColor" format="color" />
+        <attr name="slider_unit" format="string" />
+        <attr name="slider_decimals" format="integer" />
+        <attr name="slider_stepSize" format="float" />
+        <attr name="slider_showAnimation" format="boolean" />
+        <attr name="slider_marginLeft" format="dimension" />
+        <attr name="slider_marginRight" format="dimension" />
+        <attr name="slider_preciseStepSize" format="float" />
+        <attr name="slider_sliderSize" format="dimension" />
+        <attr name="slider_indicatorSize" format="dimension" />
+        <attr name="slider_showBubble" format="boolean" />
+        <attr name="slider_bubbleColor" format="color" />
+        <attr name="slider_bubbleText" format="string" />
+        <attr name="slider_bubbleTextSize" format="dimension" />
+        <attr name="slider_bubbleRadius" format="dimension" />
+        <attr name="slider_bubbleTextColor" format="color" />
+        <eat-comment />
+    </declare-styleable>
+</resources>
