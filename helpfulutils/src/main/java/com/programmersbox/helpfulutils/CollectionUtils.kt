@@ -34,3 +34,9 @@ fun <T> MutableList<T>.randomRemove(predicate: (T) -> Boolean): T = removeAt(ind
  * @throws NoSuchElementException if no elements match the [predicate]
  */
 fun <T> Iterable<T>.random(predicate: (T) -> Boolean) = filter(predicate).random()
+
+/**
+ * Creates a list of [amount] size
+ * Useful for random information
+ */
+fun <T> sizedListOf(amount: Int = 1, item: (Int) -> T) = mutableListOf<T>().apply { repeat(amount) { this += item(it) } }

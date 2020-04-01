@@ -30,7 +30,7 @@ class ExampleUnitTest {
     @Test
     fun mutableTest() {
         val list = mutableListOf<Int>()
-        list.addAll(1, 3, 5, 6, 7)
+        list.addAll(1, 3, 5, 6, 7, 8)
         println(list)
         println(list.randomRemove())
         println(list)
@@ -42,6 +42,7 @@ class ExampleUnitTest {
         println(list3)
         val pair = list to list2
         println(pair.intersect { i, i2 -> i == i2 })
+        println(sizedListOf(5) { Random.nextString(5) })
     }
 
     @Test
