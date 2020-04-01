@@ -17,6 +17,7 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 
+
 /**
  * Example local unit test, which will execute on the development machine (host).
  *
@@ -188,6 +189,22 @@ class ExampleUnitTest {
         val hand = deck.draw(5)
         println(hand.map(Card::toSymbolString))
         deck.draw(50)
+    }
+
+    @Test
+    fun other12() {
+        println(3.noPlus(4))
+    }
+
+    fun Int.noPlus(other: Int): Int {
+        var x = this
+        var y = other
+        while (y != 0) {
+            val carry = x and y
+            x = x xor y
+            y = carry shl 1
+        }
+        return x
     }
 
     private val randomColor get() = (Math.random() * 16777215).toInt() or (0xFF shl 24)
