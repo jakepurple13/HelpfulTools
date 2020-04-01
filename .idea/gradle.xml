@@ -21,6 +21,7 @@
             <option value="$PROJECT_DIR$/loggingutils" />
             <option value="$PROJECT_DIR$/rxutils" />
             <option value="$PROJECT_DIR$/testingplayground" />
+            <option value="$PROJECT_DIR$/testingplaygroundapp" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

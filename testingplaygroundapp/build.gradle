@@ -5,8 +5,9 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
+
     defaultConfig {
-        applicationId "com.programmersbox.helpfultools"
+        applicationId "com.programmersbox.testingplaygroundapp"
         minSdkVersion 27
         targetSdkVersion 29
         versionCode 1
@@ -14,6 +15,7 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             minifyEnabled false
@@ -28,24 +30,20 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.2.0'
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
-    implementation 'androidx.recyclerview:recyclerview:1.1.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    def jakepurple13 = "4.0"
-    implementation "com.github.jakepurple13.HelpfulTools:flowutils:$jakepurple13"
-    implementation "com.github.jakepurple13.HelpfulTools:gsonutils:$jakepurple13"
-    implementation "com.github.jakepurple13.HelpfulTools:helpfulutils:$jakepurple13"
-    implementation "com.github.jakepurple13.HelpfulTools:loggingutils:$jakepurple13"
-    implementation "com.github.jakepurple13.HelpfulTools:rxutils:$jakepurple13"
-    implementation "com.github.jakepurple13.HelpfulTools:dragswipe:$jakepurple13"
-    implementation "com.github.jakepurple13.HelpfulTools:funutils:$jakepurple13"
-    implementation project(':testingplayground')
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3'
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
-    implementation "com.squareup.okhttp3:okhttp:4.4.0"
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation project(':flowutils')
+    implementation project(':gsonutils')
+    implementation project(':helpfulutils')
+    implementation project(':loggingutils')
+    implementation project(':rxutils')
+    implementation project(':funutils')
+    implementation project(':dragswipe')
     implementation "io.reactivex.rxjava2:rxkotlin:2.2.0"
     implementation "io.reactivex.rxjava2:rxandroid:2.1.0"
-    implementation 'com.jakewharton.rxbinding2:rxbinding:2.2.0'
-    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.2.0'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.3'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.3'
 }

@@ -37,7 +37,7 @@ val <T, VH : RecyclerView.ViewHolder> DragSwipeAdapter<T, VH>.last get(): T? = d
  * @see ItemTouchHelper.Callback.makeFlag
  */
 @Suppress("unused")
-fun <T, VH : RecyclerView.ViewHolder> DragSwipeActions<T, VH>.makeFlag(
+fun <T, VH : RecyclerView.ViewHolder> DragSwipeActions<T>.makeFlag(
     state: Int,
     direction: Int
 ): Int = ItemTouchHelper.Callback.makeFlag(state, direction)
@@ -169,7 +169,7 @@ fun <T, VH : RecyclerView.ViewHolder> RecyclerView.setDragSwipeUp(
     dragSwipeAdapter: DragSwipeAdapter<T, VH>,
     dragDirs: Int = Direction.NOTHING.value,
     swipeDirs: Int = Direction.NOTHING.value,
-    dragSwipeActions: DragSwipeActions<T, VH>? = null
+    dragSwipeActions: DragSwipeActions<T>? = null
 ): DragSwipeHelper {
     check(adapter is DragSwipeAdapter<*, *>) { throw IllegalStateException("Adapter is not a DragSwipeAdapter") }
     return DragSwipeUtils.setDragSwipeUp(dragSwipeAdapter, this, dragDirs, swipeDirs, dragSwipeActions)
@@ -181,7 +181,7 @@ fun <T, VH : RecyclerView.ViewHolder> RecyclerView.setDragSwipeUp(
 fun <T, VH : RecyclerView.ViewHolder> RecyclerView.setDragSwipeUp(
     dragDirs: Int = Direction.NOTHING.value,
     swipeDirs: Int = Direction.NOTHING.value,
-    dragSwipeActions: DragSwipeActions<T, VH>? = null
+    dragSwipeActions: DragSwipeActions<T>? = null
 ): DragSwipeHelper {
     check(adapter is DragSwipeAdapter<*, *> && adapter != null) { throw IllegalStateException("Adapter is not a DragSwipeAdapter") }
     return DragSwipeUtils.setDragSwipeUp(adapter as DragSwipeAdapter<T, VH>, this, dragDirs, swipeDirs, dragSwipeActions)
@@ -192,7 +192,7 @@ fun <T, VH : RecyclerView.ViewHolder> RecyclerView.setDragSwipeUp(
  */
 fun <T, VH : RecyclerView.ViewHolder> RecyclerView.setDragSwipeUp(
     callback: DragSwipeManageAdapter<T, VH>,
-    dragSwipeActions: DragSwipeActions<T, VH>? = null
+    dragSwipeActions: DragSwipeActions<T>? = null
 ): DragSwipeHelper {
     check(adapter is DragSwipeAdapter<*, *>) { throw IllegalStateException("Adapter is not a DragSwipeAdapter") }
     return DragSwipeUtils.setDragSwipeUp(this, callback, dragSwipeActions)

@@ -62,7 +62,7 @@ open class DragSwipeManageAdapter<T, VH : RecyclerView.ViewHolder>(
     /**
      * These are the actions for [DragSwipeActions.onMove] and [DragSwipeActions.onSwiped] and [DragSwipeActions.getMovementFlags]
      */
-    var dragSwipeActions: DragSwipeActions<T, VH> = object : DragSwipeActions<T, VH> {}
+    var dragSwipeActions: DragSwipeActions<T> = object : DragSwipeActions<T> {}
 
     override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
         dragSwipeActions.onMove(recyclerView, viewHolder, target, dragSwipeAdapter)
@@ -82,7 +82,7 @@ open class DragSwipeManageAdapter<T, VH : RecyclerView.ViewHolder>(
 /**
  * This is so you can create your actions for [onMove] and [onSwiped]
  */
-interface DragSwipeActions<T, VH : RecyclerView.ViewHolder> {
+interface DragSwipeActions<T> {
 
     /**
      * when the element is moved around
@@ -94,7 +94,7 @@ interface DragSwipeActions<T, VH : RecyclerView.ViewHolder> {
         recyclerView: RecyclerView,
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder,
-        dragSwipeAdapter: DragSwipeAdapter<T, VH>
+        dragSwipeAdapter: DragSwipeAdapter<T, *>
     ) = dragSwipeAdapter.swapItems(viewHolder.adapterPosition, target.adapterPosition)
 
     /**
@@ -102,7 +102,7 @@ interface DragSwipeActions<T, VH : RecyclerView.ViewHolder> {
      *
      * @param direction the direction swiped
      */
-    fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Direction, dragSwipeAdapter: DragSwipeAdapter<T, VH>) {
+    fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Direction, dragSwipeAdapter: DragSwipeAdapter<T, *>) {
         dragSwipeAdapter.removeItem(viewHolder.adapterPosition)
     }
 
@@ -143,7 +143,7 @@ interface DragSwipeActions<T, VH : RecyclerView.ViewHolder> {
  * @see ItemTouchHelper.Callback.makeMovementFlags
  */
 @Suppress("unused")
-fun <T, VH : RecyclerView.ViewHolder> DragSwipeActions<T, VH>.makeMovementFlags(
+fun <T, VH : RecyclerView.ViewHolder> DragSwipeActions<T>.makeMovementFlags(
     dragDirs: Int = Direction.NOTHING.value,
     swipeDirs: Int = Direction.NOTHING.value
 ): Int = ItemTouchHelper.Callback.makeMovementFlags(dragDirs, swipeDirs)
@@ -260,7 +260,7 @@ object DragSwipeUtils {
         recyclerView: RecyclerView,
         dragDirs: Int = Direction.NOTHING.value,
         swipeDirs: Int = Direction.NOTHING.value,
-        dragSwipeActions: DragSwipeActions<T, VH>? = null
+        dragSwipeActions: DragSwipeActions<T>? = null
     ): DragSwipeHelper {
         val callback = DragSwipeManageAdapter(dragSwipeAdapter, dragDirs, swipeDirs)
         callback.dragSwipeActions = dragSwipeActions ?: callback.dragSwipeActions
@@ -277,7 +277,7 @@ object DragSwipeUtils {
         recyclerView: RecyclerView,
         dragDirs: Iterable<Direction> = listOf(Direction.NOTHING),
         swipeDirs: Iterable<Direction> = listOf(Direction.NOTHING),
-        dragSwipeActions: DragSwipeActions<T, VH>? = null
+        dragSwipeActions: DragSwipeActions<T>? = null
     ): DragSwipeHelper {
         val drag = dragDirs.drop(1).fold(dragDirs.first().value) { acc, d -> acc + d }
         val swipe = swipeDirs.drop(1).fold(swipeDirs.first().value) { acc, s -> acc + s }
@@ -296,7 +296,7 @@ object DragSwipeUtils {
     fun <T, VH : RecyclerView.ViewHolder> setDragSwipeUp(
         recyclerView: RecyclerView,
         callback: DragSwipeManageAdapter<T, VH>,
-        dragSwipeActions: DragSwipeActions<T, VH>? = null
+        dragSwipeActions: DragSwipeActions<T>? = null
     ): DragSwipeHelper {
         callback.dragSwipeActions = dragSwipeActions ?: callback.dragSwipeActions
         val helper = ItemTouchHelper(callback)
