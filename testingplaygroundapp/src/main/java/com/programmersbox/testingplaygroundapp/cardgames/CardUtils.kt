@@ -4,6 +4,8 @@ import android.content.Context
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Suit
 
+val Card.valueTen: Int get() = if (value > 10) 10 else value
+
 fun Card.getImage(context: Context): Int = context.resources.getIdentifier(getCardName(), "drawable", context.packageName)
 
 private fun Card.getCardName() = if (cardName(value) == "clear" || cardName(value) == "b1fv")

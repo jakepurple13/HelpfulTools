@@ -4,10 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
 import com.programmersbox.flowutils.RecyclerViewScroll
 import com.programmersbox.flowutils.clicks
@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
         gotoGames
             .clicks()
             .collectOnUi {
-                AlertDialog.Builder(this)
+                MaterialAlertDialogBuilder(this)
                     .setItems(Games.values().map(Games::text).toTypedArray()) { _, index ->
                         val toActivity = when (Games.values()[index]) {
                             Games.BLACKJACK -> BlackjackActivity::class.java

@@ -6,6 +6,7 @@ import android.graphics.Rect
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.programmersbox.dragswipe.*
@@ -17,6 +18,7 @@ import com.programmersbox.funutils.cards.Deck
 import com.programmersbox.funutils.cards.Suit
 import com.programmersbox.testingplaygroundapp.R
 import com.programmersbox.testingplaygroundapp.cardgames.getImage
+import com.programmersbox.testingplaygroundapp.cardgames.valueTen
 import kotlinx.android.synthetic.main.activity_blackjack.*
 import kotlinx.android.synthetic.main.card_item.view.*
 import kotlinx.coroutines.Dispatchers
@@ -30,9 +32,9 @@ import kotlinx.coroutines.launch
 class BlackjackActivity : AppCompatActivity() {
 
     private val deck = Deck.defaultDeck()
-    private val dealerCardAdapter = CardAdapter(mutableListOf())
-    private val playerCardAdapter = CardAdapter(mutableListOf())
-    private val cardsWonAdapter = CardAdapter(mutableListOf())
+    private val dealerCardAdapter = CardAdapter()
+    private val playerCardAdapter = CardAdapter()
+    private val cardsWonAdapter = CardAdapter()
     private val backCard = Card(16, Suit.SPADES)
     private val winCount = FlowItem(0)
     private val loseCount = FlowItem(0)
@@ -49,12 +51,11 @@ class BlackjackActivity : AppCompatActivity() {
         deck.shuffle()
         deck.addDeckListener {
             onDraw { _, size ->
-                if (size <= 5) {
-                    deck(Deck.defaultDeck())
-                    deck.trueRandomShuffle()
-                }
+                if (size <= 5) deck(Deck.defaultDeck().apply { trueRandomShuffle() }).also { deck.shuffle() }
                 deckCount.text = "$size cards left"
             }
+
+            onShuffle { Toast.makeText(this@BlackjackActivity, "Shuffling...", Toast.LENGTH_SHORT).show() }
         }
 
         adapterRecyclerViewSetup(dealerCards, dealerCardAdapter)
@@ -122,16 +123,16 @@ class BlackjackActivity : AppCompatActivity() {
             when (item) {
                 Winner.WIN -> winCheck(winCount, "You Won").also { addCardsToWin() }
                 Winner.LOSE -> winCheck(loseCount, "You Lose")
-                Winner.TIE -> winCheck(tieCount, "You Tied")
+                Winner.TIE -> winCheck(tieCount, "You Tied").also { addCardsToWin(false) }
             }
             runOnUiThread { resetField() }
         }
     }
 
-    private fun addCardsToWin() = runOnUiThread {
+    private fun addCardsToWin(includeDealer: Boolean = true) = runOnUiThread {
         if (cardsWonAdapter[0] == backCard) cardsWonAdapter.removeItem(0)
         cardsWonAdapter.addItems(playerCardAdapter.dataList)
-        cardsWonAdapter.addItems(dealerCardAdapter.dataList)
+        if (includeDealer) cardsWonAdapter.addItems(dealerCardAdapter.dataList)
     }
 
     @SuppressLint("SetTextI18n")
@@ -189,12 +190,15 @@ class BlackjackActivity : AppCompatActivity() {
         DragSwipeUtils.setDragSwipeUp(adapter, recyclerView, listOf(Direction.START, Direction.END))
     }
 
-    inner class CardAdapter(dataList: MutableList<Card>) : DragSwipeAdapter<Card, ViewHolder>(dataList) {
+    inner class CardAdapter(dataList: MutableList<Card> = mutableListOf()) : DragSwipeAdapter<Card, ViewHolder>(dataList) {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(layoutInflater.inflate(R.layout.card_item, parent, false))
 
         override fun ViewHolder.onBind(item: Card, position: Int) {
             itemView.cardImage.setImageResource(item.getImage(this@BlackjackActivity))
+            itemView
+                .clicks()
+                .collectOnUi { Toast.makeText(this@BlackjackActivity, item.toSymbolString(), Toast.LENGTH_SHORT).show() }
         }
     }
 

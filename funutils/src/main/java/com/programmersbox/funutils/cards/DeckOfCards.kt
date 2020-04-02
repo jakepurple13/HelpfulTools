@@ -5,6 +5,9 @@ import kotlin.properties.Delegates
 @DslMarker
 annotation class DeckMarker
 
+@DslMarker
+annotation class CardMarker
+
 fun <T> Iterable<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this, listener)
 fun <T> Array<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this.toList(), listener)
 class Deck<T> : AbstractDeck<T> {
