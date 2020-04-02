@@ -39,7 +39,14 @@ class BiometricBuilder(private var fragmentActivity: FragmentActivity) {
         var negativeButton: String? = null
 
         /**
-         * Optional: A hint to the system to require user confirmation after a biometric has been authenticated. For example, implicit modalities like Face and Iris authentication are passive, meaning they don't require an explicit user action to complete. When set to 'false', the user action (e.g. pressing a button) will not be required. BiometricPrompt will require confirmation by default. A typical use case for not requiring confirmation would be for low-risk transactions, such as re-authenticating a recently authenticated application. A typical use case for requiring confirmation would be for authorizing a purchase. Note that this is a hint to the system. The system may choose to ignore the flag. For example, if the user disables implicit authentication in Settings, or if it does not apply to a modality (e.g. Fingerprint). When ignored, the system will default to requiring confirmation. This method only applies to Q and above.
+         * Optional: A hint to the system to require user confirmation after a biometric has been authenticated.
+         * For example, implicit modalities like Face and Iris authentication are passive, meaning they don't require an explicit user action to complete.
+         * When set to 'false', the user action (e.g. pressing a button) will not be required. BiometricPrompt will require confirmation by default.
+         * A typical use case for not requiring confirmation would be for low-risk transactions, such as re-authenticating a recently authenticated application.
+         * A typical use case for requiring confirmation would be for authorizing a purchase. Note that this is a hint to the system.
+         * The system may choose to ignore the flag.
+         * For example, if the user disables implicit authentication in Settings, or if it does not apply to a modality (e.g. Fingerprint).
+         * When ignored, the system will default to requiring confirmation. This method only applies to Q and above.
          */
         @BiometricPromptMark
         var confirmationRequired = false

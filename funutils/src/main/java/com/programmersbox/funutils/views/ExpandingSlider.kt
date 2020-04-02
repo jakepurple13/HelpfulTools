@@ -27,7 +27,6 @@ import kotlin.math.sqrt
  * Library
  */
 
-
 class ExpandingSlider : View {
     private var pSlider: Paint? = null
     private var pIndicator: Paint? = null
@@ -369,6 +368,7 @@ class ExpandingSlider : View {
             val total = absolute + min
             val remainder = total % step
             value = if (remainder <= step / 2f) total - remainder else total - remainder + step
+            value = if (value < min) min else if (value > max) max else value
             result = valueFormat!!.format(value.toDouble())
             if (listener != null) listener!!.onValueChanged(value, this)
             setProgressText("$result $unit")

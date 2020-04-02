@@ -1,6 +1,5 @@
 package com.programmersbox.funutils.cards
 
-
 import kotlin.random.Random
 
 class DeckException(message: String?) : Exception(message)

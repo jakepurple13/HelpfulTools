@@ -8,10 +8,46 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/testRV"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        android:orientation="vertical"
-        tools:listitem="@layout/test_item"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="0dp"
+        android:orientation="vertical"
+        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/addButton"
+        app:layout_constraintTop_toTopOf="parent"
+        app:spanCount="5"
+        tools:listitem="@layout/test_item" />
+
+    <Button
+        android:id="@+id/addButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add"
+        app:layout_constraintBottom_toTopOf="@id/expandingSlider"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/gotoGames"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Games"
+        app:layout_constraintBottom_toTopOf="@id/expandingSlider"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <com.programmersbox.funutils.views.ExpandingSlider
+        android:id="@+id/expandingSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:slider_initialValue="5"
+        app:slider_maxValue="10"
+        app:slider_minValue="1"
+        app:slider_preciseStepSize="1"
+        app:slider_resultColor="@android:color/primary_text_dark"
+        app:slider_resultSize="24sp"
+        app:slider_showBubble="true"
+        app:slider_showIndicator="true"
+        app:slider_showValue="true"
+        app:slider_stepSize="5"
+        app:slider_unit="cols" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

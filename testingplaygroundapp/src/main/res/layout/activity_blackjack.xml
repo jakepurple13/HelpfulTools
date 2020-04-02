@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    tools:context=".cardgames.blackjack.BlackjackActivity"
+    tools:ignore="HardcodedText">
+
+    <ImageView
+        android:id="@+id/deckImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/b1fv"
+        app:layout_constraintBottom_toTopOf="@id/playerCards"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dealerCards" />
+
+    <TextView
+        android:id="@+id/playInfo"
+        app:layout_constraintEnd_toEndOf="@id/deckImage"
+        app:layout_constraintStart_toStartOf="@id/deckImage"
+        app:layout_constraintBottom_toTopOf="@id/deckImage"
+        tools:text="W: 3 - L: 3 - T: 3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/deckCount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="@id/deckImage"
+        app:layout_constraintStart_toStartOf="@id/deckImage"
+        app:layout_constraintTop_toBottomOf="@id/deckImage"
+        tools:text="Card Count" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dealerCards"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/dealerInfo"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:listitem="@layout/card_item" />
+
+    <TextView
+        android:id="@+id/dealerInfo"
+        style="@style/ColorText.Digit"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:paddingStart="0dp"
+        android:paddingEnd="5dp"
+        app:layout_constraintBottom_toBottomOf="@id/dealerCards"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="15" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/playerCards"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toTopOf="@id/cardsWon"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/playerActions"
+        tools:listitem="@layout/card_item" />
+
+    <LinearLayout
+        android:id="@+id/playerActions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="0dp"
+        android:paddingEnd="5dp"
+        app:layout_constraintBottom_toTopOf="@id/cardsWon"
+        app:layout_constraintEnd_toStartOf="@id/playerCards"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <TextView
+            android:id="@+id/playerInfo"
+            style="@style/ColorText.Digit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="15" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/hitButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Hit" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/stayButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Stay" />
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cardsWon"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:listitem="@layout/card_item" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
