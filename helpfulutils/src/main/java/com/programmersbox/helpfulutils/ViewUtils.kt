@@ -1,6 +1,7 @@
 package com.programmersbox.helpfulutils
 
 import android.content.Context
+import android.content.DialogInterface
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.transition.AutoTransition
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.appcompat.app.AlertDialog
 
 var TextView.startDrawable: Drawable?
     get() = compoundDrawables[0]
@@ -44,3 +46,16 @@ fun Context.colorFromTheme(@AttrRes colorAttr: Int, @ColorInt defaultColor: Int 
  */
 fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition(), block: T.() -> Unit) =
     TransitionManager.beginDelayedTransition(this, transition).apply { block() }
+
+/**
+ * @see AlertDialog.Builder.setItems
+ * This method works only with enum values, making it easy to get the wanted enum.
+ * This will return the enum with the ordinal value of the selected index
+ */
+inline fun <reified T : Enum<T>> AlertDialog.Builder.setItems(
+    items: Array<out CharSequence>,
+    crossinline action: (item: T, dialog: DialogInterface) -> Unit
+): AlertDialog.Builder = setItems(items) { d, index ->
+    val clazz = T::class.java
+    if (clazz.isEnum) clazz.enumConstants?.get(index)?.let { action(it, d) }
+}

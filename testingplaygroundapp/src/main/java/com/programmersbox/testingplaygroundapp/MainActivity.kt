@@ -12,9 +12,9 @@ import com.programmersbox.dragswipe.*
 import com.programmersbox.flowutils.RecyclerViewScroll
 import com.programmersbox.flowutils.clicks
 import com.programmersbox.flowutils.scrollReached
+import com.programmersbox.helpfulutils.setItems
 import com.programmersbox.helpfulutils.sizedListOf
 import com.programmersbox.loggingutils.Loged
-import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
 import kotlinx.coroutines.Dispatchers
@@ -50,13 +50,8 @@ class MainActivity : AppCompatActivity() {
             .clicks()
             .collectOnUi {
                 MaterialAlertDialogBuilder(this)
-                    .setItems(Games.values().map(Games::text).toTypedArray()) { _, index ->
-                        val toActivity = when (Games.values()[index]) {
-                            Games.BLACKJACK -> BlackjackActivity::class.java
-                        }
-                        startActivity(Intent(this, toActivity))
-                    }
                     .setTitle("Games to Play")
+                    .setItems<Games>(Games.values().map(Games::text).toTypedArray()) { item, _ -> startActivity(Intent(this, item.clazz)) }
                     .show()
             }
 
