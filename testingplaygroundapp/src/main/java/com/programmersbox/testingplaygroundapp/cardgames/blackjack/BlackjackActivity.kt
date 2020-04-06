@@ -70,10 +70,7 @@ class BlackjackActivity : AppCompatActivity() {
 
         stayButton
             .clicks()
-            .collectOnUi {
-                enableControls(false)
-                startDealerPlay()
-            }
+            .collectOnUi { startDealerPlay() }
 
         resetField()
     }
@@ -89,6 +86,7 @@ class BlackjackActivity : AppCompatActivity() {
     }
 
     private fun startDealerPlay() {
+        enableControls(false)
         GlobalScope.launch {
             while (dealerCardAdapter.total() <= 16) {
                 runOnUiThread { dealerDraw() }
