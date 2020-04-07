@@ -43,7 +43,7 @@ private fun cardName(num: Int): String = when (num) {
 
 fun List<Card>.asciiCards(padding: String = "", colorRed: Int = 0xff0000, colorBlack: Int = 0xffffff, equalText: (List<Card>) -> String): String {
     val lines = asciiCards(padding, colorRed, colorBlack).lines().toMutableList()
-    lines[lines.size / 2 - 1] += " = ${equalText(this)}"
+    lines[lines.size / 2 - 1] += "${equalText(this)}"
     return lines.joinToString("\n")
 }
 
