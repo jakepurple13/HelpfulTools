@@ -52,7 +52,7 @@ fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition()
  * This method works only with enum values, making it easy to get the wanted enum.
  * This will return the enum with the ordinal value of the selected index
  */
-inline fun <reified T : Enum<T>> AlertDialog.Builder.setItems(
+inline fun <reified T : Enum<T>> AlertDialog.Builder.setEnumItems(
     items: Array<out CharSequence>,
     crossinline action: (item: T, dialog: DialogInterface) -> Unit
 ): AlertDialog.Builder = setItems(items) { d, index ->

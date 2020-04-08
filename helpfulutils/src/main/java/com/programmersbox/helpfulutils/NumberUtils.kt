@@ -10,6 +10,16 @@ import kotlin.random.Random
  */
 fun Int.toHexString() = "#${Integer.toHexString(this)}"
 
+/**
+ * Get's the rgb of an integer
+ */
+fun Int.valueOf(): Triple<Int, Int, Int> {
+    val r = (this shr 16 and 0xff)// / 255.0f
+    val g = (this shr 8 and 0xff)// / 255.0f
+    val b = (this and 0xff)// / 255.0f
+    return Triple(r, g, b)
+}
+
 internal const val RGB_MAX = 255
 
 sealed class Colors {

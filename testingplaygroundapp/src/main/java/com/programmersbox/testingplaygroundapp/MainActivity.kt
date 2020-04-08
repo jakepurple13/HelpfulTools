@@ -12,7 +12,7 @@ import com.programmersbox.dragswipe.*
 import com.programmersbox.flowutils.RecyclerViewScroll
 import com.programmersbox.flowutils.clicks
 import com.programmersbox.flowutils.scrollReached
-import com.programmersbox.helpfulutils.setItems
+import com.programmersbox.helpfulutils.setEnumItems
 import com.programmersbox.helpfulutils.sizedListOf
 import com.programmersbox.loggingutils.Loged
 import kotlinx.android.synthetic.main.activity_main.*
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
             .collectOnUi {
                 MaterialAlertDialogBuilder(this)
                     .setTitle("Games to Play")
-                    .setItems<Games>(Games.values().map(Games::text).toTypedArray()) { item, _ -> startActivity(Intent(this, item.clazz)) }
+                    .setEnumItems<Games>(Games.values().map(Games::text).toTypedArray()) { item, _ -> startActivity(Intent(this, item.clazz)) }
                     .show()
             }
 

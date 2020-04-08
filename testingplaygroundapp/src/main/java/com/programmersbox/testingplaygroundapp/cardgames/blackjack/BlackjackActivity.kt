@@ -212,4 +212,13 @@ class OverlapDecoration(private var horizontalOverlap: Int = -200) : RecyclerVie
     }
 }
 
+class VerticalOverlapDecoration(private var verticalOverlap: Int = -200) : RecyclerView.ItemDecoration() {
+
+    override fun getItemOffsets(outRect: Rect, view: View, parent: RecyclerView, state: RecyclerView.State) {
+        val itemPosition = parent.getChildAdapterPosition(view)
+        if (itemPosition == 0) return
+        outRect.set(0, verticalOverlap, 0, 0)
+    }
+}
+
 private fun <T> Flow<T>.collectOnUi(action: (T) -> Unit) = GlobalScope.launch { collect { GlobalScope.launch(Dispatchers.Main) { action(it) } } }
