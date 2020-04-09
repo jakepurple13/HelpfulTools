@@ -23,8 +23,8 @@ class ExampleUnitTestTwo {
             addCardsToDeck { println("Cards being added to deck".color(0x040404)) }
             cardPlayed { played, player, card ->
                 if (played) println("$count. ${player.name} played ${card.type.color(card.color.getColor)}")
-                    .also { println(unoGame.players.joinToString("\n") { "${it.name} = ${it.hand.joinToString { it.type.color(it.color.getColor) }}" }) }
                     .also { unoGame.topCard?.let { println("Top card: ${it.type}".color(it.color.getColor)) } }
+                    .also { println(unoGame.players.joinToString("\n") { "${it.name} = ${it.hand.joinToString { it.type.color(it.color.getColor) }}" }) }
                     .also { count++ }
             }
         }

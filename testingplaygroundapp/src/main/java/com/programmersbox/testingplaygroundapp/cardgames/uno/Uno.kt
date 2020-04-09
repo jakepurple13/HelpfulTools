@@ -50,7 +50,7 @@ data class UnoCard(val value: Int, val color: UnoColor) {
         }
 }
 
-open class UnoPlayer(val name: String) {
+data class UnoPlayer(val name: String) {
     val hand = mutableListOf<UnoCard>()
     fun playCard(index: Int) = hand.removeAt(index)
     fun playCard(card: UnoCard) = hand.remove(card)
@@ -91,9 +91,19 @@ class UnoGame(vararg player: UnoPlayer) {
     fun setListener(block: UnoInterface.UnoListener.() -> Unit) = run { listener = UnoInterface.build(block) }
         .also { listener?.orderChanged((if (order) players else players.reversed()).map(UnoPlayer::name).toTypedArray()) }
 
+    val previousPlayer get() = players[nextPlayerIndex(!order)]
     val currentPlayer get() = players[playerPlay]
+    val nextPlayer get() = players[nextPlayerIndex(order)]
 
     val topCard get() = playedCards.deck.lastOrNull()
+
+    private val nextPlayerIndex: (Boolean) -> Int = {
+        var p = playerPlay
+        p += if (it) 1 else -1
+        if (p > players.size - 1) p = 0
+        else if (p < 0) p = players.size - 1
+        p
+    }
 
     private fun sortHands() = players.forEach { it.hand.sortWith(compareBy(UnoCard::color).thenBy(UnoCard::value)) }
 
@@ -103,6 +113,9 @@ class UnoGame(vararg player: UnoPlayer) {
         else if (playerPlay < 0) playerPlay = players.size - 1
         addCardsToDeck()
         sortHands()
+        println("Previous: $previousPlayer")
+        println("Current: $currentPlayer")
+        println("Next: $nextPlayer")
     }
 
     private fun addCardsToDeck() {
@@ -117,12 +130,14 @@ class UnoGame(vararg player: UnoPlayer) {
 
     fun noCardDraw() {
         currentPlayer.hand += deck.draw(1)
+        listener?.cardDrawn()
         nextTurn()
     }
 
     fun draw(amount: Int = 2) {
+        nextPlayer.hand += deck.draw(amount)
+        listener?.cardDrawn()
         nextTurn()
-        currentPlayer.hand += deck.draw(amount)
     }
 
     fun reverse() {
@@ -154,17 +169,6 @@ class UnoGame(vararg player: UnoPlayer) {
             playedCards.lastCard.color == card.color || playedCards.lastCard.value == card.value ||
             card.value == 13 || card.value == 14
 
-    fun playCard(index: Int) {
-        val card = currentPlayer[index]
-        if (isPlayable(card)) {
-            currentPlayer.playCard(index)
-            playedCards.addCard(card)
-            card.action(this)
-            listener?.cardPlayed(true, currentPlayer, card)
-            nextTurn()
-        } else listener?.cardPlayed(false, currentPlayer, card)
-    }
-
     fun playCard(card: UnoCard) {
         if (playedCards.isEmpty || isPlayable(card)) {
             currentPlayer.playCard(card)
@@ -184,6 +188,7 @@ interface UnoInterface {
     fun cardPlayed(played: Boolean, player: UnoPlayer, card: UnoCard)
     fun orderChanged(order: Array<String>)
     fun addCardsToDeck(vararg card: UnoCard)
+    fun cardDrawn()
 
     companion object {
         fun build(block: UnoListener.() -> Unit) = UnoListener().apply(block).build()
@@ -211,11 +216,17 @@ interface UnoInterface {
         @UnoMarker
         fun addCardsToDeck(block: (Array<out UnoCard>) -> Unit) = run { addToDeck = block }
 
+        private var drawCard: () -> Unit = {}
+
+        @UnoMarker
+        fun cardDrawn(block: () -> Unit) = run { drawCard = block }
+
         fun build() = object : UnoInterface {
             override fun wildCard(player: UnoPlayer): UnoColor = wild(player)
             override fun cardPlayed(played: Boolean, player: UnoPlayer, card: UnoCard) = playedCard(played, player, card)
             override fun orderChanged(order: Array<String>) = changeOrder(order)
             override fun addCardsToDeck(vararg card: UnoCard) = addToDeck(card)
+            override fun cardDrawn() = drawCard()
         }
     }
 }

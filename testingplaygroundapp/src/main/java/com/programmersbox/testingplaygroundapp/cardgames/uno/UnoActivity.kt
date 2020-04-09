@@ -1,5 +1,6 @@
 package com.programmersbox.testingplaygroundapp.cardgames.uno
 
+import android.annotation.SuppressLint
 import android.content.DialogInterface
 import android.graphics.BitmapFactory
 import android.os.Bundle
@@ -13,6 +14,8 @@ import com.programmersbox.dragswipe.DragSwipeAdapter
 import com.programmersbox.dragswipe.DragSwipeUtils
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Suit
+import com.programmersbox.loggingutils.Loged
+import com.programmersbox.loggingutils.f
 import com.programmersbox.testingplaygroundapp.R
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.VerticalOverlapDecoration
 import com.programmersbox.testingplaygroundapp.cardgames.getImage
@@ -36,6 +39,7 @@ class UnoActivity : AppCompatActivity() {
     private val twoAdapter = CardAdapter()
     private val threeAdapter = CardAdapter()
 
+    @SuppressLint("SetTextI18n")
     @ExperimentalStdlibApi
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,23 +56,24 @@ class UnoActivity : AppCompatActivity() {
                         else -> null
                     }?.removeItem(card)
                     setUnoCard(card)
-                    GlobalScope.launch {
-                        delay(500)
-                        runOnUiThread {
-                            when (player) {
-                                this@UnoActivity.player -> Unit
-                                else -> game.currentPlayer.hand.find(game::isPlayable)?.let(game::playCard) ?: game.noCardDraw()
-                            }
-                        }
-                    }
+                    computerMove(player)
                 }
+                adapterModify { notifyDataSetChanged() }
+                playerPlaying.text = "${game.currentPlayer.name}'s\nturn"
             }
             wild {
                 if (it != player) it.hand.filter { it.color != UnoColor.BLACK }.randomOrNull()?.color ?: UnoColor.playableColors.random()
                 else wildCard()
             }
-            orderChanged { }
-            addCardsToDeck { }
+            orderChanged { Loged.f("Order Changed") }
+            addCardsToDeck { Loged.f("Cards added to deck") }
+            cardDrawn {
+                adapter.setListNotify(player.hand)
+                oneAdapter.setListNotify(aiOne.hand)
+                twoAdapter.setListNotify(aiTwo.hand)
+                threeAdapter.setListNotify(aiThree.hand)
+                adapterModify { notifyDataSetChanged() }
+            }
         }
 
         playerCards.adapter = adapter
@@ -83,6 +88,30 @@ class UnoActivity : AppCompatActivity() {
             if (game.currentPlayer == player) game.noCardDraw()
         }
 
+        playerPlaying.text = "${game.currentPlayer.name}'s\nturn"
+
+    }
+
+    private fun computerMove(currentPlayer: UnoPlayer) {
+
+        fun move() = currentPlayer.hand.find(game::isPlayable)?.let(game::playCard) ?: game.noCardDraw()
+
+        GlobalScope.launch {
+            runOnUiThread {
+                when (currentPlayer) {
+                    aiOne, aiTwo, aiThree -> move()
+                    else -> Unit
+                }
+            }
+            delay(500)
+        }
+    }
+
+    private fun adapterModify(block: CardAdapter.() -> Unit) {
+        adapter.block()
+        oneAdapter.block()
+        twoAdapter.block()
+        threeAdapter.block()
     }
 
     private fun setUpComAdapters() {
@@ -125,10 +154,12 @@ class UnoActivity : AppCompatActivity() {
                 itemView.cardText.text = item.type
                 itemView.cardText.isClickable = false
                 itemView.setOnClickListener { game.playCard(item) }
+            } else {
+                itemView.cardText.text = "$position"
             }
         }
 
-        fun removeItem(item: UnoCard) = dataList.indexOf(item).let { if (it != -1) removeItem(it) }.also { notifyDataSetChanged() }
+        fun removeItem(item: UnoCard) = dataList.indexOf(item).let { if (it != -1) removeItem(it) }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
