@@ -2,6 +2,7 @@ package com.programmersbox.helpfulutils
 
 import android.graphics.Color
 import android.os.Build
+import android.os.CountDownTimer
 import kotlin.random.Random
 
 /**
@@ -68,4 +69,20 @@ object DeviceInfo {
         val totalMemory: Long = Runtime.getRuntime().totalMemory(),
         val maxMemory: Long = Runtime.getRuntime().maxMemory()
     )
+}
+
+/**
+ * An easy way to create a [CountDownTimer]
+ *
+ * e.g.
+ *
+ *    EasyCountDownTimer(1000) { println("OnFinished") }
+ *    //or
+ *    EasyCountDownTimer(1000, { println(it) }) { println("OnFinished") }
+ */
+object EasyCountDownTimer {
+    operator fun invoke(millisInFuture: Long, onTick: (Long) -> Unit = {}, finished: () -> Unit) = object : CountDownTimer(millisInFuture, 1000) {
+        override fun onTick(millisUntilFinished: Long) = onTick(millisUntilFinished)
+        override fun onFinish(): Unit = finished()
+    }
 }
