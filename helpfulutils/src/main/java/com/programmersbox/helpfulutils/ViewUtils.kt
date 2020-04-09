@@ -8,11 +8,13 @@ import android.transition.AutoTransition
 import android.transition.Transition
 import android.transition.TransitionManager
 import android.util.TypedValue
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
+import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
 
 var TextView.startDrawable: Drawable?
@@ -48,6 +50,21 @@ fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition()
     TransitionManager.beginDelayedTransition(this, transition).apply { block() }
 
 /**
+ * Set the visibility to [View.GONE]
+ */
+fun View.gone() = run { visibility = View.GONE }
+
+/**
+ * Set the visibility to [View.INVISIBLE]
+ */
+fun View.invisible() = run { visibility = View.INVISIBLE }
+
+/**
+ * Set the visibility to [View.VISIBLE]
+ */
+fun View.visible() = run { visibility = View.VISIBLE }
+
+/**
  * @see AlertDialog.Builder.setItems
  * This method works only with enum values, making it easy to get the wanted enum.
  * This will return the enum with the ordinal value of the selected index
@@ -59,3 +76,47 @@ inline fun <reified T : Enum<T>> AlertDialog.Builder.setEnumItems(
     val clazz = T::class.java
     if (clazz.isEnum) clazz.enumConstants?.get(index)?.let { action(it, d) }
 }
+
+/**
+ * @see AlertDialog.Builder.setSingleChoiceItems
+ * This method works only with enum values, making it easy to get the wanted enum.
+ * This will return the enum with the ordinal value of the selected index
+ */
+inline fun <reified T : Enum<T>> AlertDialog.Builder.setEnumSingleChoiceItems(
+    items: Array<out CharSequence>,
+    checkedItem: T? = null,
+    crossinline action: (item: T, dialog: DialogInterface) -> Unit
+): AlertDialog.Builder = apply {
+    val clazz = T::class.java
+    if (clazz.isEnum) {
+        val enums = clazz.enumConstants
+        val itemIndex = checkedItem?.let { enums?.indexOf(it) } ?: -1
+        setSingleChoiceItems(items, itemIndex) { d, index -> enums?.get(index)?.let { action(it, d) } }
+    }
+}
+
+/**
+ * @see AlertDialog.Builder.setMultiChoiceItems
+ * This method works only with enum values, making it easy to get the wanted enum.
+ * This will return the enum with the ordinal value of the selected index
+ */
+inline fun <reified T : Enum<T>> AlertDialog.Builder.setEnumMultiChoiceItems(
+    items: Array<out CharSequence>,
+    vararg checkedItems: T,
+    crossinline action: (item: T, checked: Boolean, dialog: DialogInterface) -> Unit
+): AlertDialog.Builder = apply {
+    val clazz = T::class.java
+    if (clazz.isEnum) {
+        val enums = clazz.enumConstants
+        val boolArray = BooleanArray(enums?.size ?: 1) { false }
+        checkedItems.forEach { enums?.indexOf(it)?.let { if (it != -1) boolArray[it] = true } }
+        setMultiChoiceItems(items, boolArray) { d, index, bool -> enums?.get(index)?.let { action(it, bool, d) } }
+    }
+}
+
+/**
+ * @see AlertDialog.Builder.setView
+ * but allows setup for everything with the higher-order function
+ */
+fun AlertDialog.Builder.setView(@LayoutRes layoutRes: Int, viewSetup: View.() -> Unit) =
+    setView(LayoutInflater.from(context).inflate(layoutRes, null, false).apply(viewSetup))

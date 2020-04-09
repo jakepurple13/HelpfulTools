@@ -1,6 +1,5 @@
 package com.programmersbox.loggingutils
 
-
 data class Frame internal constructor(
     val top: String = "", val bottom: String = "",
     val left: String = "", val right: String = "",

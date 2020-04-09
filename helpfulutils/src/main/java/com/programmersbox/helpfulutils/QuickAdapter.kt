@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * A quick way to add items to the recyclerview.
- * If the current adapter is not a [QuickAdapter], it will overwrite it with a new [QuickAdapter]
+ * If the current adapter is not a [QuickAdapter], it will replace the current adapter with a new [QuickAdapter]
  */
 @Suppress("UNCHECKED_CAST")
 fun <T> RecyclerView.quickAdapter(@LayoutRes layout: Int? = null, vararg item: T, setup: (View.(T) -> Unit)? = null) {
@@ -30,8 +30,8 @@ class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<Quick
     private val data = mutableListOf<QuickAdapterItem<T>>()
     val dataList get() = data.map(QuickAdapterItem<T>::item)
 
-    fun add(@LayoutRes layout: Int, vararg item: T, setup: View.(T) -> Unit) = data.addAll(item.map { QuickAdapterItem(layout, it, setup) })
-        .also { notifyDataSetChanged() }
+    fun add(@LayoutRes layout: Int, vararg item: T, setup: View.(T) -> Unit) =
+        data.addAll(item.map { QuickAdapterItem(layout, it, setup) }).also { notifyDataSetChanged() }
 
     fun remove(index: Int = data.size - 1) = data.removeAt(index).also { notifyItemRemoved(index) }.item
     operator fun contains(item: T) = data.any { it.item == item }

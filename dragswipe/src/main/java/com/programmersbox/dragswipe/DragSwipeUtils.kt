@@ -3,7 +3,6 @@ package com.programmersbox.dragswipe
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.programmersbox.dragswipe.Direction.NOTHING
-import com.programmersbox.dragswipe.DragSwipeUtils.setDragSwipeUp
 
 /**
  * these are the directions you can swipe/drag

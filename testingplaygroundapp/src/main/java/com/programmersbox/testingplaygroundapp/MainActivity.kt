@@ -2,6 +2,7 @@ package com.programmersbox.testingplaygroundapp
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
@@ -63,6 +64,13 @@ class MainActivity : AppCompatActivity() {
                     RecyclerViewScroll.END -> adapter.addItem(getRandomName())
                 }
             }
+
+        Log.v("Hello", "World")
+        Log.i("Hello", "World")
+        Log.d("Hello", "World")
+        Log.wtf("Hello", "World")
+        Log.w("Hello", "World")
+        Log.e("Hello", "World")
     }
 
     /**

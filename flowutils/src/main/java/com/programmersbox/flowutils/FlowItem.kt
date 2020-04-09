@@ -1,5 +1,7 @@
 package com.programmersbox.flowutils
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
@@ -12,9 +14,12 @@ import kotlinx.coroutines.launch
 /**
  * Use this if you want to set an object up with flow easily
  */
+@FlowPreview
+@ExperimentalCoroutinesApi
 class FlowItem<T>(startingValue: T, capacity: Int = 1) {
     private val itemBroadcast = BroadcastChannel<T>(capacity)
     private val itemFlow = itemBroadcast.asFlow().onStart { emit(flowItem) }
+
     /**
      * the flow
      */
@@ -60,4 +65,6 @@ class FlowItem<T>(startingValue: T, capacity: Int = 1) {
     override fun toString(): String = "FlowItem(value=$flowItem)"
 }
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 fun <T> T.asFlowItem() = FlowItem(this)

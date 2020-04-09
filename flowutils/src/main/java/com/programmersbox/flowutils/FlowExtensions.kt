@@ -3,6 +3,7 @@ package com.programmersbox.flowutils
 import android.view.View
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.Flow
@@ -12,6 +13,7 @@ import kotlinx.coroutines.launch
 /**
  * Creates a timer via flow
  */
+@ObsoleteCoroutinesApi
 fun timerFlow(delayMillis: Long, startInMs: Long = delayMillis, action: suspend () -> Unit): ReceiveChannel<Unit> =
     ticker(delayMillis, startInMs).apply { GlobalScope.launch { for (event in this@apply) action() } }
 
