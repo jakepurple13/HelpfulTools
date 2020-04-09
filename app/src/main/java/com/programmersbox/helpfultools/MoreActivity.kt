@@ -1,0 +1,58 @@
+package com.programmersbox.helpfultools
+
+import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.programmersbox.flowutils.clicks
+import com.programmersbox.flowutils.collectOnUi
+import com.programmersbox.funutils.funutilities.SequenceMaker
+import com.programmersbox.funutils.funutilities.TimedSequenceMaker
+import kotlinx.android.synthetic.main.activity_more.*
+
+class MoreActivity : AppCompatActivity() {
+
+    private val sequenceList = listOf(Directions.UP, Directions.DOWN, Directions.LEFT, Directions.RIGHT)
+    private val achieved = { Toast.makeText(this, "You did it!", Toast.LENGTH_SHORT).show() }
+    private val sequenceRest = { Toast.makeText(this, "Sequenced Reset", Toast.LENGTH_SHORT).show() }
+
+    private val sequenceMaker = SequenceMaker(sequenceList, achieved).apply { sequenceReset(sequenceRest) }
+    private val timedSequenceMaker = TimedSequenceMaker(sequenceList, 2000, achieved).apply { sequenceReset(sequenceRest) }
+
+    private var sequence: SequenceMaker<Directions>? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_more)
+
+        useSequence
+            .clicks()
+            .collectOnUi {
+                sequence?.resetSequence()
+                sequence = sequenceMaker
+            }
+
+        useTimed
+            .clicks()
+            .collectOnUi {
+                sequence?.resetSequence()
+                sequence = timedSequenceMaker
+            }
+
+        arrowSetup(
+            upArrow to Directions.UP,
+            downArrow to Directions.DOWN,
+            leftArrow to Directions.LEFT,
+            rightArrow to Directions.RIGHT
+        )
+
+    }
+
+    private fun arrowSetup(vararg pairs: Pair<Button, Directions>) =
+        pairs.forEach { pair -> pair.first.clicks().collectOnUi { nextItem(pair.second) } }
+
+    private fun nextItem(directions: Directions) = sequence?.add(directions) ?: Unit
+
+    enum class Directions { UP, DOWN, LEFT, RIGHT }
+
+}

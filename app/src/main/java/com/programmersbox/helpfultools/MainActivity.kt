@@ -2,6 +2,7 @@ package com.programmersbox.helpfultools
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.Direction
 import com.programmersbox.dragswipe.DragSwipeAdapter
 import com.programmersbox.dragswipe.DragSwipeUtils
@@ -39,6 +41,16 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        moreActivity
+            .clicks()
+            .collectOnUi {
+                MaterialAlertDialogBuilder(this)
+                    .setTitle("Select what you want to play with")
+                    .setEnumItems<TypeToGo>(TypeToGo.values().map(TypeToGo::text).toTypedArray()) { item, _ ->
+                        startActivity(Intent(this, item.clazz))
+                    }
+                    .show()
+            }
         //----------------------------------------------
         val flowItem = FlowItem(10)
         flowItem.bindToUI(flowItemValue) { text = "FlowItem Value: $it" }

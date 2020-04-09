@@ -7,6 +7,14 @@
     tools:context=".MainActivity">
 
     <Button
+        android:id="@+id/moreActivity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="More"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
         android:id="@+id/flowItemChange"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -80,12 +88,12 @@
 
     <TextView
         android:id="@+id/quickAdapterInfo"
-        app:layout_constraintTop_toBottomOf="@id/viewInfo"
-        app:layout_constraintStart_toStartOf="@id/recyclerView"
-        app:layout_constraintEnd_toEndOf="@id/recyclerView"
-        android:text="QuickAdapter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="QuickAdapter"
+        app:layout_constraintEnd_toEndOf="@id/recyclerView"
+        app:layout_constraintStart_toStartOf="@id/recyclerView"
+        app:layout_constraintTop_toBottomOf="@id/viewInfo" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
@@ -101,12 +109,12 @@
 
     <TextView
         android:id="@+id/dragSwipeInfo"
-        app:layout_constraintTop_toBottomOf="@id/viewInfo"
-        app:layout_constraintStart_toStartOf="@id/recyclerView2"
-        app:layout_constraintEnd_toEndOf="@id/recyclerView2"
-        android:text="DragSwipeAdapter"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="DragSwipeAdapter"
+        app:layout_constraintEnd_toEndOf="@id/recyclerView2"
+        app:layout_constraintStart_toStartOf="@id/recyclerView2"
+        app:layout_constraintTop_toBottomOf="@id/viewInfo" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView2"
@@ -121,13 +129,14 @@
         tools:listitem="@layout/layout_item" />
 
     <Button
-        android:text="Add to Adapters"
-        app:layout_constraintBottom_toBottomOf="parent"
         android:id="@+id/addToAdapters"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Add to Adapters"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
+        android:layout_marginHorizontal="5dp"
         android:id="@+id/biometricUse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
