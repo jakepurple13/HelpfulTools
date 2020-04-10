@@ -184,6 +184,7 @@ fun <T, VH : RecyclerView.ViewHolder> RecyclerView.setDragSwipeUp(
     dragSwipeActions: DragSwipeActions<T>? = null
 ): DragSwipeHelper {
     check(adapter is DragSwipeAdapter<*, *> && adapter != null) { throw IllegalStateException("Adapter is not a DragSwipeAdapter") }
+    @Suppress("UNCHECKED_CAST")
     return DragSwipeUtils.setDragSwipeUp(adapter as DragSwipeAdapter<T, VH>, this, dragDirs, swipeDirs, dragSwipeActions)
 }
 
@@ -196,6 +197,7 @@ fun <T, VH : RecyclerView.ViewHolder> RecyclerView.setDragSwipeUp(
     dragSwipeActions: DragSwipeActions<T>? = null
 ): DragSwipeHelper {
     check(adapter is DragSwipeAdapter<*, *> && adapter != null) { throw IllegalStateException("Adapter is not a DragSwipeAdapter") }
+    @Suppress("UNCHECKED_CAST")
     return DragSwipeUtils.setDragSwipeUp(adapter as DragSwipeAdapter<T, VH>, this, dragDirs, swipeDirs, dragSwipeActions)
 }
 
