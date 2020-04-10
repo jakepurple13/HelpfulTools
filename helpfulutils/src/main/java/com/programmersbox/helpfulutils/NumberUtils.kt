@@ -6,6 +6,28 @@ import kotlin.math.roundToInt
 import kotlin.random.Random
 
 /**
+ * Use this if you want to have a number than must remain within a range that will
+ * loop around if [loop] is true
+ * remain at the range ends if [loop] is false
+ */
+class NumberRange(val range: IntRange, var loop: Boolean = true) {
+    var current = range.first
+        private set(value) {
+            field = when {
+                value > range.last -> if (loop) range.first else range.last
+                value < range.first -> if (loop) range.last else range.first
+                else -> value
+            }
+        }
+
+    operator fun plusAssign(n: Int) = run { current += n }
+    operator fun minusAssign(n: Int) = run { current -= n }
+    operator fun inc() = apply { current += range.step }
+    operator fun dec() = apply { current -= range.step }
+    operator fun invoke() = current
+}
+
+/**
  * Converts [this] to a hex string
  */
 fun Int.toHexString() = "#${Integer.toHexString(this)}"

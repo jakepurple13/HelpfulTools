@@ -9,6 +9,7 @@ import com.programmersbox.flowutils.collectOnUi
 import com.programmersbox.funutils.funutilities.SequenceMaker
 import com.programmersbox.funutils.funutilities.TimedSequenceMaker
 import kotlinx.android.synthetic.main.activity_more.*
+import kotlinx.coroutines.flow.map
 
 class MoreActivity : AppCompatActivity() {
 
@@ -27,17 +28,17 @@ class MoreActivity : AppCompatActivity() {
 
         useSequence
             .clicks()
-            .collectOnUi {
-                sequence?.resetSequence()
-                sequence = sequenceMaker
-            }
+            .map { sequence = sequenceMaker }
+            .collectOnUi { sequence?.resetSequence() }
 
         useTimed
             .clicks()
-            .collectOnUi {
-                sequence?.resetSequence()
-                sequence = timedSequenceMaker
-            }
+            .map { sequence = timedSequenceMaker }
+            .collectOnUi { sequence?.resetSequence() }
+
+        resetSequence
+            .clicks()
+            .collectOnUi { sequence?.resetSequence() }
 
         arrowSetup(
             upArrow to Directions.UP,

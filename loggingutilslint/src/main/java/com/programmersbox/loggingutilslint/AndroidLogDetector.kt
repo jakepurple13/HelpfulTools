@@ -27,22 +27,29 @@ class AndroidLogDetector : Detector(), UastScanner {
         val methodName = logCall.methodName
         val frameMethodName = methodName.let { if (it == "wtf") "a" else it }
         val tag = arguments[0].asSourceString()
-        val className = "Loged."
+        val isJava = isJava(arguments[1].lang)
+        val isKotlin = isKotlin(arguments[1].lang)
+        val className = "Loged.${if (isJava) "INSTANCE." else ""}"
         val msgOrThrowable = arguments[1].let {
             when (it) {
                 is UQualifiedReferenceExpression -> it.sourcePsi?.text ?: it.asSourceString()
                 else -> it.asSourceString()
             }.removeSuffix(".toString()")
         }
+
         val fixes = listOf(
-            "$className$methodName($msgOrThrowable, $tag)",
-            "$className$methodName($msgOrThrowable)",
-            "${className}r($msgOrThrowable, $tag)",
-            "${className}r($msgOrThrowable)",
-            "${className}f$frameMethodName($msgOrThrowable, $tag)",
-            "${className}f$frameMethodName($msgOrThrowable)",
-            "${className}f($msgOrThrowable, $tag)",
-            "${className}f($msgOrThrowable)"
+            "$className$methodName($msgOrThrowable, $tag${if (isJava) ", true, true" else ""})",
+            "${className}r($msgOrThrowable, $tag${if (isJava) ", true, true" else ""})",
+            *(if (isKotlin) listOf(
+                "$className$methodName($msgOrThrowable)",
+                "${className}r($msgOrThrowable)"
+            ) else emptyList()).toTypedArray(),
+            *(if (isKotlin) listOf(
+                "${className}f$frameMethodName($msgOrThrowable, $tag)",
+                "${className}f$frameMethodName($msgOrThrowable)",
+                "${className}f($msgOrThrowable, $tag)",
+                "${className}f($msgOrThrowable)"
+            ) else emptyList()).toTypedArray()
         )
         val fixGrouper = fix().group()
         fun addToGroup(s: String) = fixGrouper.add(fix().replace().all().reformat(true).with(s).build())

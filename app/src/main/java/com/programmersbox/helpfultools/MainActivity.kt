@@ -131,26 +131,31 @@ class MainActivity : AppCompatActivity() {
             .collectOnUi(::println)
         //----------------------------------------------
         var showOrNot = true
-        var location = 0
+        var location = NumberRange(0..3)
         viewInfo.setOnClickListener {
             if (showOrNot) {
                 getDrawable(R.drawable.ic_launcher_foreground)
             } else {
                 null
             }.let {
-                when (location) {
+                when (location()) {
                     0 -> viewValue.startDrawable = it
                     1 -> viewValue.endDrawable = it
                     2 -> viewValue.topDrawable = it
                     3 -> viewValue.bottomDrawable = it
                 }
             }
-            if (!showOrNot) location = if (location >= 3) 0 else location + 1
+            if (!showOrNot) location++
             showOrNot = !showOrNot
         }
         //----------------------------------------------
         recyclerView.quickAdapter(R.layout.layout_item, "Hello", "World") {
             textView.text = it
+            setOnClickListener { _ -> println(it) }
+        }
+
+        recyclerView.quickAdapter(R.layout.layout_item, DeviceInfo.Info()) {
+            textView.text = it.device
             setOnClickListener { _ -> println(it) }
         }
 
@@ -221,7 +226,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
 
     inner class CustomAdapter(dataList: MutableList<String>) : DragSwipeAdapter<String, ViewHolder>(dataList) {
@@ -234,4 +238,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+}
+
+class NumberRange(val range: IntRange) {
+    var current = range.first
+        private set(value) {
+            field = when {
+                value > range.last -> range.first
+                value < range.first -> range.last
+                else -> value
+            }
+        }
+
+    operator fun plusAssign(n: Int) = run { current += n }
+    operator fun minusAssign(n: Int) = run { current -= n }
+    operator fun inc() = apply { current += range.step }
+    operator fun dec() = apply { current -= range.step }
+    operator fun invoke() = current
 }
