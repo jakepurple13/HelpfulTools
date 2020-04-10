@@ -77,4 +77,52 @@ class ExampleUnitTest {
         println(0x0000FF.toCMYK().toARGB())
     }
 
+    @Test
+    fun rangeTest() {
+        println("Item Loop = true --------")
+        var f = ItemRange(1, 2, 3, 4, 5)
+        for (i in 0..10) {
+            println(f())
+            f++
+        }
+        println("-----")
+        for (i in 0..10) {
+            println(f())
+            f--
+        }
+        println("Number Loop = true --------")
+        var n = NumberRange(1..5)
+        for (i in 0..10) {
+            println(n())
+            n++
+        }
+        println("-----")
+        for (i in 0..10) {
+            println(n())
+            n--
+        }
+        println("Item Loop = false--------")
+        var f1 = ItemRange(1, 2, 3, 4, 5, loop = false)
+        for (i in 0..10) {
+            println(f1())
+            f1++
+        }
+        println("-----")
+        for (i in 0..10) {
+            println(f1())
+            f1--
+        }
+        println("Number Loop = false--------")
+        var n1 = NumberRange(1..5, false)
+        for (i in 0..10) {
+            println(n1())
+            n1++
+        }
+        println("-----")
+        for (i in 0..10) {
+            println(n1())
+            n1--
+        }
+    }
+
 }
