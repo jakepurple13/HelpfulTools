@@ -30,9 +30,13 @@ import io.reactivex.subjects.PublishSubject
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.layout_item.view.*
 import kotlinx.android.synthetic.main.layout_item_two.view.*
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.map
 import kotlin.random.Random
 
+@FlowPreview
+@ExperimentalCoroutinesApi
 class MainActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
@@ -65,12 +69,12 @@ class MainActivity : AppCompatActivity() {
         Loged.TAG = "HelpfulTools"
         logedInfo.setOnClickListener {
             //Default Android Logs
-            Log.v("Hello", "World")
-            Log.i("Hello", "World")
-            Log.d("Hello", "World")
-            Log.wtf("Hello", "World")
             Log.w("Hello", "World")
+            Log.wtf("Hello", "World")
+            Log.i("Hello", "World")
+            Log.v("Hello", "World")
             Log.e("Hello", "World")
+            Log.d("Hello", "World")
             //These will do normal logs
             Loged.w("Hello World")
             Loged.a("Hello World")
@@ -163,6 +167,7 @@ class MainActivity : AppCompatActivity() {
                 (recyclerView.adapter as QuickAdapter<String>)[0] = getRandomName()
             }
         }
+
         val list = mutableListOf<String>().apply { repeat(10) { this += getRandomName() } }
 
         val adapter = CustomAdapter(list)
@@ -190,9 +195,7 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.INTERNET
-        ) {
-            println(it)
-        }
+        ) { info: PermissionInfo -> println(info) }
         //----------------------------------------------
 
         biometricUse.setOnClickListener {
