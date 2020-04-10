@@ -68,6 +68,8 @@ class MainActivity : AppCompatActivity() {
         Loged.FILTER_BY_PACKAGE_NAME = "com.programmersbox.helpfultools"
         Loged.TAG = "HelpfulTools"
         logedInfo.setOnClickListener {
+            //Logs from Java
+            Linting().test()
             //Default Android Logs
             Log.w("Hello", "World")
             Log.wtf("Hello", "World")
@@ -238,21 +240,4 @@ class MainActivity : AppCompatActivity() {
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-}
-
-class NumberRange(val range: IntRange) {
-    var current = range.first
-        private set(value) {
-            field = when {
-                value > range.last -> range.first
-                value < range.first -> range.last
-                else -> value
-            }
-        }
-
-    operator fun plusAssign(n: Int) = run { current += n }
-    operator fun minusAssign(n: Int) = run { current -= n }
-    operator fun inc() = apply { current += range.step }
-    operator fun dec() = apply { current -= range.step }
-    operator fun invoke() = current
 }
