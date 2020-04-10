@@ -64,6 +64,13 @@ class MainActivity : AppCompatActivity() {
         Loged.FILTER_BY_PACKAGE_NAME = "com.programmersbox.helpfultools"
         Loged.TAG = "HelpfulTools"
         logedInfo.setOnClickListener {
+            //Default Android Logs
+            Log.v("Hello", "World")
+            Log.i("Hello", "World")
+            Log.d("Hello", "World")
+            Log.wtf("Hello", "World")
+            Log.w("Hello", "World")
+            Log.e("Hello", "World")
             //These will do normal logs
             Loged.w("Hello World")
             Loged.a("Hello World")

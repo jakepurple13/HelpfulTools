@@ -6,7 +6,7 @@ import com.intellij.psi.PsiMethod
 import org.jetbrains.uast.UCallExpression
 import org.jetbrains.uast.UElement
 import org.jetbrains.uast.ULiteralExpression
-
+import org.jetbrains.uast.UQualifiedReferenceExpression
 
 @Suppress("UnstableApiUsage")
 class AndroidLogDetector : Detector(), UastScanner {
@@ -15,7 +15,7 @@ class AndroidLogDetector : Detector(), UastScanner {
 
     override fun getApplicableUastTypes(): List<Class<out UElement?>> = listOf(ULiteralExpression::class.java)
 
-    override fun visitMethod(context: JavaContext, node: UCallExpression, method: PsiMethod) {
+    override fun visitMethodCall(context: JavaContext, node: UCallExpression, method: PsiMethod) {
         if (context.evaluator.isMemberInClass(method, "android.util.Log")) {
             context.report(ISSUE_LOG, node, context.getLocation(node), "Using 'Log' instead of 'Loged'", quickFixIssueLog(node))
             return
@@ -24,79 +24,38 @@ class AndroidLogDetector : Detector(), UastScanner {
 
     private fun quickFixIssueLog(logCall: UCallExpression): LintFix {
         val arguments = logCall.valueArguments
-        val methodName = logCall.methodName.let { if (it == "wtf") "a" else it }
+        val methodName = logCall.methodName
+        val frameMethodName = methodName.let { if (it == "wtf") "a" else it }
         val tag = arguments[0].asSourceString()
         val className = "Loged."
-        val msgOrThrowable = arguments[1]
+        val msgOrThrowable = arguments[1].let {
+            when (it) {
+                is UQualifiedReferenceExpression -> it.sourcePsi?.text ?: it.asSourceString()
+                else -> it.asSourceString()
+            }.removeSuffix(".toString()")
+        }
         val fixes = listOf(
-            "$className$methodName(${msgOrThrowable.asSourceString()}, $tag)",
-            "$className$methodName(${msgOrThrowable.asSourceString()})",
-            "${className}r(${msgOrThrowable.asSourceString()}, $tag)",
-            "${className}r(${msgOrThrowable.asSourceString()})",
-            "${className}f$methodName(${msgOrThrowable.asSourceString()}, $tag)",
-            "${className}f$methodName(${msgOrThrowable.asSourceString()})",
-            "${className}f(${msgOrThrowable.asSourceString()}, $tag)",
-            "${className}f(${msgOrThrowable.asSourceString()})"
+            "$className$methodName($msgOrThrowable, $tag)",
+            "$className$methodName($msgOrThrowable)",
+            "${className}r($msgOrThrowable, $tag)",
+            "${className}r($msgOrThrowable)",
+            "${className}f$frameMethodName($msgOrThrowable, $tag)",
+            "${className}f$frameMethodName($msgOrThrowable)",
+            "${className}f($msgOrThrowable, $tag)",
+            "${className}f($msgOrThrowable)"
         )
-        val logCallSource = logCall.asSourceString()
         val fixGrouper = fix().group()
         fun addToGroup(s: String) = fixGrouper.add(fix().replace().all().reformat(true).with(s).build())
         fixes.forEach { addToGroup(it) }
         return fixGrouper.build()
     }
 
-    /*override fun createUastHandler(context: JavaContext): UElementHandler? {
-        // Note: Visiting UAST nodes is a pretty general purpose mechanism;
-        // Lint has specialized support to do common things like "visit every class
-        // that extends a given super class or implements a given interface", and
-        // "visit every call site that calls a method by a given name" etc.
-        // Take a careful look at UastScanner and the various existing lint check
-        // implementations before doing things the "hard way".
-        // Also be aware of context.getJavaEvaluator() which provides a lot of
-        // utility functionality.
-        return object : UElementHandler() {
-            override fun visitLiteralExpression(node: ULiteralExpression) {
-                val string = node.evaluateString() ?: return
-                if (string.contains("lint") && string.matches(Regex(".*\\blint\\b.*"))) {
-                    context.report(
-                        ISSUE, node, context.getLocation(node),
-                        "This code mentions `lint`: **Congratulations**"
-                    )
-                }
-            }
-        }
-    }*/
-
     companion object {
 
         val issues
             get() = listOf(
-                ISSUE_LOG//, ISSUE
+                ISSUE_LOG
             )
-
-        /** Issue describing the problem and pointing to the detector implementation */
-        @JvmField
-        val ISSUE: Issue = Issue.create(
-            // ID: used in @SuppressLint warnings etc
-            id = "ShortUniqueId",
-            // Title -- shown in the IDE's preference dialog, as category headers in the
-            // Analysis results window, etc
-            briefDescription = "Lint Mentions",
-            // Full explanation of the issue; you can use some markdown markup such as
-            // `monospace`, *italic*, and **bold**.
-            explanation = """
-                    This check highlights string literals in code which mentions the word `lint`. \
-                    Blah blah blah.
-                    Another paragraph here.
-                    """, // no need to .trimIndent(), lint does that automatically
-            category = Category.CORRECTNESS,
-            priority = 6,
-            severity = Severity.WARNING,
-            implementation = Implementation(
-                AndroidLogDetector::class.java,
-                Scope.JAVA_FILE_SCOPE
-            )
-        )
 
         val ISSUE_LOG = Issue.create(
             "LogNotLoged",

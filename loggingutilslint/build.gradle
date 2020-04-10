@@ -29,3 +29,8 @@ jar {
         attributes("Lint-Registry-v2": "com.programmersbox.loggingutilslint.LogedIssueRegistry")
     }
 }
+
+task install(type: Copy) {
+    from configurations.lintChecks
+    into System.getProperty('user.home') + '/.android/lint/'
+}
