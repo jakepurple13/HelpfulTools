@@ -136,12 +136,22 @@
         app:layout_constraintBottom_toBottomOf="parent" />
 
     <Button
-        android:layout_marginHorizontal="5dp"
         android:id="@+id/biometricUse"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
         android:text="Use Biometric"
         app:layout_constraintStart_toEndOf="@id/logedInfo"
         app:layout_constraintTop_toTopOf="@id/logedInfo" />
+
+    <Button
+        android:id="@+id/sharedPrefInfo"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="5dp"
+        android:text="SHaredPref"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/biometricUse"
+        app:layout_constraintTop_toTopOf="@id/biometricUse" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

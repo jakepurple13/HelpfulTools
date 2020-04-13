@@ -16,9 +16,7 @@ import com.programmersbox.dragswipe.Direction
 import com.programmersbox.dragswipe.DragSwipeAdapter
 import com.programmersbox.dragswipe.DragSwipeUtils
 import com.programmersbox.flowutils.*
-import com.programmersbox.gsonutils.fromJson
-import com.programmersbox.gsonutils.getJsonApi
-import com.programmersbox.gsonutils.toPrettyJson
+import com.programmersbox.gsonutils.*
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
 import com.programmersbox.rxutils.invoke
@@ -64,9 +62,6 @@ class MainActivity : AppCompatActivity() {
             //flowItem.setValue(Random.nextInt(1, 100))
         }
         //----------------------------------------------
-        //usually put these or any other Loged modifiers in the application class
-        Loged.FILTER_BY_PACKAGE_NAME = "com.programmersbox.helpfultools"
-        Loged.TAG = "HelpfulTools"
         logedInfo.setOnClickListener {
             //Logs from Java
             Linting().test()
@@ -99,6 +94,13 @@ class MainActivity : AppCompatActivity() {
         gsonInfo.setOnClickListener {
             Log.d("Gson", DeviceInfo.Info().toPrettyJson())
             Log.d("Gson", DeviceInfo.Info().toPrettyJson().fromJson<DeviceInfo.Info>().toString())
+        }
+        //----------------------------------------------
+        sharedPrefInfo.setOnClickListener {
+            defaultSharedPref.edit().putObject("gsonTest", DeviceInfo.Info()).apply()
+            val deviceInfo = defaultSharedPref.getObject<DeviceInfo.Info>("gsonTest")
+            Log.d("DefaultSharedPref", deviceInfo.toString())
+            Log.d("DefaultSharedPrefEntries", defaultSharedPref.all.entries.toString())
         }
         //----------------------------------------------
         val colorPublisher = PublishSubject.create<Int>()
