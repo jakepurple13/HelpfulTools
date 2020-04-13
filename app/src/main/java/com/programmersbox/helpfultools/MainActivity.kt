@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        //----------------------------------------------
         moreActivity
             .clicks()
             .collectOnUi {
@@ -198,7 +199,6 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
-
         //----------------------------------------------
         requestPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -206,7 +206,6 @@ class MainActivity : AppCompatActivity() {
             Manifest.permission.INTERNET
         ) { info: PermissionInfo -> println(info) }
         //----------------------------------------------
-
         biometricUse.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 requestPermissions(Manifest.permission.USE_BIOMETRIC) {
@@ -230,6 +229,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         }
+        //----------------------------------------------
     }
 
     inner class CustomAdapter(dataList: MutableList<String>) : DragSwipeAdapter<String, ViewHolder>(dataList) {

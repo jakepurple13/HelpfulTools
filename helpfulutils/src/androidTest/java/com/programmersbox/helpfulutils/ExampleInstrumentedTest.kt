@@ -133,4 +133,45 @@ class ExampleInstrumentedTest {
     }
 
     class TestActivity : AppCompatActivity()
+
+    @Test
+    fun newThings() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        appContext.accessibilityManager
+        appContext.packageManager
+        appContext.audioManager
+        appContext.accountManager
+        appContext.activityManager
+        appContext.alarmManager
+        appContext.bluetoothManager
+        appContext.clipboardManager
+        appContext.devicePolicyManager
+        appContext.downloadManager
+        appContext.inputManager
+        appContext.connectivityManager
+        appContext.keyguardManager
+        appContext.layoutInflater
+        appContext.notificationManager
+        appContext.locationManager
+        appContext.powerManager
+        appContext.searchManager
+        appContext.sensorManager
+        appContext.telephonyManager
+        appContext.vibrator
+        appContext.wifiManager
+        appContext.windowManager
+        appContext.inputMethodManager
+        appContext.dropBoxManager
+        appContext.uiModeManager
+        appContext.storageManager
+        appContext.nfcManager
+        appContext.usbManager
+        appContext.textServicesManager
+        appContext.wifiP2pManager
+        appContext.mediaRouter
+        appContext.nsdManager
+        appContext.displayManager
+        appContext.userManager
+    }
+
 }

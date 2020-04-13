@@ -43,6 +43,8 @@ class ExampleUnitTest {
         val pair = list to list2
         println(pair.intersect { i, i2 -> i == i2 })
         println(sizedListOf(5) { Random.nextString(5) })
+        println(list)
+        println(list.lastWithIndex)
     }
 
     @Test

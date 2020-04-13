@@ -5,7 +5,7 @@ open class SequenceMaker<T>(private val sequence: List<T>, private val sequenceA
 
     protected var sequenceFailed: () -> Unit = {}
     private val currentSequence = mutableListOf<T>()
-    fun sequenceReset(block: () -> Unit) = run { sequenceFailed = block }
+    fun sequenceReset(block: () -> Unit) = apply { sequenceFailed = block }
     fun resetSequence() = currentSequence.clear()
     private fun validateSequence() = currentSequence.lastIndex.let { currentSequence[it] == sequence[it] }
     private fun isAchieved() = currentSequence == sequence

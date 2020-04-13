@@ -40,3 +40,8 @@ fun <T> Iterable<T>.random(predicate: (T) -> Boolean) = filter(predicate).random
  * Useful for random information
  */
 fun <T> sizedListOf(amount: Int = 1, item: (Int) -> T) = mutableListOf<T>().apply { repeat(amount) { this += item(it) } }
+
+/**
+ * pairs [List.lastIndex] with [List.last]
+ */
+val <T> List<T>.lastWithIndex: Pair<Int, T> get() = lastIndex to last()
