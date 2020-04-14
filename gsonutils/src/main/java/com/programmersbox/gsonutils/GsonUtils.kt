@@ -16,7 +16,7 @@ fun <T> Intent.putExtra(key: String, value: T): Intent = putExtra(key, Gson().to
 /**
  * get the object
  */
-inline fun <reified T> Intent.getObjectExtra(key: String, defaultValue: T): T = try {
+inline fun <reified T> Intent.getObjectExtra(key: String, defaultValue: T? = null): T? = try {
     Gson().fromJson(getStringExtra(key), T::class.java) ?: defaultValue
 } catch (e: Exception) {
     defaultValue

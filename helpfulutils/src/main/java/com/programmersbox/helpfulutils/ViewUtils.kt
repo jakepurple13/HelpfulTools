@@ -120,3 +120,10 @@ inline fun <reified T : Enum<T>> AlertDialog.Builder.setEnumMultiChoiceItems(
  */
 fun AlertDialog.Builder.setView(@LayoutRes layoutRes: Int, viewSetup: View.() -> Unit) =
     setView(LayoutInflater.from(context).inflate(layoutRes, null, false).apply(viewSetup))
+
+/**
+ * @see AlertDialog.Builder.setCustomTitle
+ * but allows setup for everything with the higher-order function
+ */
+fun AlertDialog.Builder.setCustomTitle(@LayoutRes layoutRes: Int, viewSetup: View.() -> Unit) =
+    setCustomTitle(LayoutInflater.from(context).inflate(layoutRes, null, false).apply(viewSetup))

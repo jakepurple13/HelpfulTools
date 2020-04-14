@@ -17,7 +17,7 @@ class MoreActivity : AppCompatActivity() {
     private val achieved = { Toast.makeText(this, "You did it!", Toast.LENGTH_SHORT).show() }
     private val sequenceRest = { Toast.makeText(this, "Sequenced Reset", Toast.LENGTH_SHORT).show() }
 
-    private val sequenceMaker = SequenceMaker(sequenceList, achieved).apply { sequenceReset(sequenceRest) }
+    private val sequenceMaker = SequenceMaker(sequenceList, achieved).sequenceReset(sequenceRest)
     private val timedSequenceMaker = TimedSequenceMaker(sequenceList, 2000, achieved).apply { sequenceReset(sequenceRest) }
 
     private var sequence: SequenceMaker<Directions>? = null
