@@ -1,5 +1,8 @@
 package com.programmersbox.flowutils
 
+inline fun <reified T, R> combine(vararg flowItems: FlowItem<T>, crossinline transform: suspend (Array<T>) -> R) =
+    kotlinx.coroutines.flow.combine(flowItems.map(FlowItem<T>::flow), transform)
+
 val <T : Collection<*>> FlowItem<T>.size get() = getValue().size
 
 fun <T, R : MutableCollection<T>> FlowItem<R>.add(item: T) = getValue().add(item).also { now() }

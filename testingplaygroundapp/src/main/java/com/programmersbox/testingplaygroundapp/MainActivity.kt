@@ -1,6 +1,8 @@
 package com.programmersbox.testingplaygroundapp
 
 import android.content.Intent
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -8,8 +10,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.RequestBuilder
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
+import com.programmersbox.dslprocessor.DslClass
+import com.programmersbox.dslprocessor.DslField
 import com.programmersbox.flowutils.RecyclerViewScroll
 import com.programmersbox.flowutils.clicks
 import com.programmersbox.flowutils.scrollReached
@@ -23,6 +31,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
@@ -56,11 +65,35 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
 
+        val person = PersonBuilder.builder {
+            personName(getRandomName())
+            personAge(Random.nextInt(1, 50))
+            birthdayParty { it + 1 }
+        }
+
+        val newAge: (Unit) -> Unit = {
+            println(person)
+            person.birthday()
+            println(person)
+        }
+
+        val person2 = PersonBuilder2.builder {
+            name(getRandomName())
+            age(Random.nextInt(1, 50))
+            birthdayParty { it + 1 }
+        }
+
+        val newAge2: (Unit) -> Unit = {
+            println(person2)
+            person2.birthday()
+            println(person2)
+        }
+
         testRV
             .scrollReached()
             .collectOnUi {
                 when (it) {
-                    RecyclerViewScroll.START -> Loged.r("Start")
+                    RecyclerViewScroll.START -> Loged.r("Start").also(newAge).also(newAge2)
                     RecyclerViewScroll.END -> adapter.addItem(getRandomName())
                 }
             }
@@ -87,8 +120,86 @@ class MainActivity : AppCompatActivity() {
             itemView
                 .clicks()
                 .collectOnUi { this@CustomAdapter[position] = getRandomName() }
+
+            Glide.with(itemView)
+                .asBitmap()
+                .load("")
+                .into<Bitmap> {
+                    loadCleared { }
+                    resourceReady { image, _ -> }
+                }
         }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+}
+
+@DslMarker
+annotation class PersonMarker
+
+@DslMarker
+annotation class PersonMarker2
+
+data class Person(val name: String, var age: Int, private val birthday: (Int) -> Int) {
+    fun birthday() {
+        age = birthday(age)
+    }
+}
+
+class PersonBuilder {
+
+    @DslField("personName", PersonMarker::class)
+    var name: String = ""
+
+    @DslField("personAge", PersonMarker::class)
+    var age = 0
+
+    @DslField("birthdayParty", PersonMarker::class)
+    var birthday: (Int) -> Int = { it }
+
+    private fun build() = Person(name, age, birthday)
+
+    companion object {
+        fun builder(block: PersonBuilder.() -> Unit) = PersonBuilder().apply(block).build()
+    }
+
+}
+
+@DslClass(PersonMarker2::class)
+class PersonBuilder2 {
+    @DslField("birthdayParty")
+    var birthday: (Int) -> Int = { it }
+    var name: String = ""
+    var age = 0
+
+    private fun build() = Person(name, age, birthday)
+
+    companion object {
+        fun builder(block: PersonBuilder2.() -> Unit) = PersonBuilder2().apply(block).build()
+    }
+
+}
+
+@DslMarker
+annotation class GlideMarker
+
+fun <T> RequestBuilder<T>.into(target: CustomTargetBuilder<T>.() -> Unit) = into(CustomTargetBuilder<T>().apply(target).build())
+
+class CustomTargetBuilder<T> {
+
+    private var resourceReady: (T, Transition<in T>?) -> Unit = { _, _ -> }
+
+    @GlideMarker
+    fun resourceReady(block: (image: T, transition: Transition<in T>?) -> Unit) = run { resourceReady = block }
+
+    private var loadCleared: (Drawable?) -> Unit = {}
+
+    @GlideMarker
+    fun loadCleared(block: (placeHolder: Drawable?) -> Unit) = run { loadCleared = block }
+
+    fun build() = object : CustomTarget<T>() {
+        override fun onLoadCleared(placeholder: Drawable?) = loadCleared(placeholder)
+        override fun onResourceReady(resource: T, transition: Transition<in T>?) = resourceReady(resource, transition)
+    }
+
 }
