@@ -1,7 +1,7 @@
 package com.programmersbox.testingplaygroundapp
 
-import com.programmersbox.dslprocessor.DslClass
-import com.programmersbox.dslprocessor.DslField
+import com.programmersbox.dslannotations.DslClass
+import com.programmersbox.dslannotations.DslField
 
 
 @DslMarker

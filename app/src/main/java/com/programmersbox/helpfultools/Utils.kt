@@ -1,5 +1,7 @@
 package com.programmersbox.helpfultools
 
+import com.programmersbox.dslprocessor.DslClass
+import com.programmersbox.dslprocessor.DslField
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.helpfulutils.randomRemove
 import org.intellij.lang.annotations.Language
@@ -8,6 +10,40 @@ fun getRandomName() = try {
     Names.names.randomRemove()
 } catch (e: IndexOutOfBoundsException) {
     "Hello"
+}
+
+@DslMarker
+annotation class DslTestMarker
+
+@DslClass(dslMarker = DslTestMarker::class)
+class NewDsl<T, R> {
+    @DslField("itemNumber")
+    var numberItem = 4
+    var testThing: () -> Unit = {}
+    var runAction: () -> Unit = {}
+    var paramOne: (Int, String) -> Unit = { _, _ -> }
+    var paramTwo: (Int) -> Unit = {}
+    var paramThree: (Int) -> String = { "$it" }
+    var paramFour = fun(_: Int) = Unit
+    var paramFive = fun(_: T, _: R) = Unit
+    var paramSix = fun(_: T) = Unit
+    var tItem: T? = null
+    var rItem: R? = null
+
+    fun build() {
+        testThing()
+        runAction()
+        paramOne(numberItem, paramThree(numberItem))
+        paramTwo(numberItem)
+        paramFour(numberItem)
+        rItem?.let { tItem?.let { it1 -> paramFive(it1, it) } }
+        tItem?.let { paramSix(it) }
+
+    }
+
+    companion object {
+        fun <T, R> buildDsl(block: NewDsl<T, R>.() -> Unit) = NewDsl<T, R>().apply(block).build()
+    }
 }
 
 @Language("JSON")

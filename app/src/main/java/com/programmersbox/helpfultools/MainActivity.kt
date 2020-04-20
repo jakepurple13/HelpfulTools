@@ -200,6 +200,20 @@ class MainActivity : AppCompatActivity() {
             }
         }
         //----------------------------------------------
+        NewDsl.buildDsl<Int, String> {
+            itemNumber(Random.nextInt(1, 100))
+            runAction { println("Hello") }
+            testThing { println("Hello") }
+            paramOne { i, s -> println("$i$s") }
+            paramTwo { println(it) }
+            paramThree { "$it" }
+            paramFour { println(it) }
+            paramFive { i, s -> println("$i$s") }
+            paramSix { println(it) }
+            tItem(Random.nextInt(1, 10))
+            rItem("Hello World")
+        }
+        //----------------------------------------------
         requestPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,

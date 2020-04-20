@@ -24,4 +24,5 @@ dependencies {
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc6'
     kapt 'com.google.auto.service:auto-service:1.0-rc6'
     implementation "me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0"
+    implementation project(':dslannotations')
 }

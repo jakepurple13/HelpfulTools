@@ -1,4 +1,4 @@
-package com.programmersbox.dslprocessor
+package com.programmersbox.dslannotations
 
 import kotlin.reflect.KClass
 
