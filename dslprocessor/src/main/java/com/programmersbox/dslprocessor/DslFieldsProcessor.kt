@@ -78,21 +78,31 @@ class DslFieldsProcessor : AbstractProcessor() {
     }
 
     private fun generateNewMethod(variable: VariableElement): FunSpec {
-        val builder = FunSpec
+        return FunSpec
             .builder(variable.getAnnotation(DslField::class.java).name)
             .addModifiers(KModifier.PUBLIC)
             .receiver(variable.enclosingElement.asType().asTypeName())
-        try {
-            val a: DslField = variable.getAnnotation(DslField::class.java)
-            getTypeMirrorFromAnnotationValue(object : APUtils.GetClassValue {
-                override fun execute() {
-                    a.dslMarker
+            .also { builder ->
+                try {
+                    (variable.enclosingElement as? TypeElement)
+                        ?.typeParameters
+                        ?.map { TypeVariableName(it.simpleName.toString()) }
+                        ?.let { builder.addTypeVariables(it) }
+                } catch (e: Exception) {
                 }
-            })?.forEach { it?.let { (it.asTypeName().javaToKotlinType() as? ClassName)?.let { builder.addAnnotation(it) } } }
-        } catch (e: Exception) {
-            builder.addAnnotation(DslFieldMarker::class)
-        }
-        return builder
+            }
+            .also { builder ->
+                try {
+                    val a: DslField = variable.getAnnotation(DslField::class.java)
+                    getTypeMirrorFromAnnotationValue(object : APUtils.GetClassValue {
+                        override fun execute() {
+                            a.dslMarker
+                        }
+                    })?.forEach { it?.let { (it.asTypeName().javaToKotlinType() as? ClassName)?.let { builder.addAnnotation(it) } } }
+                } catch (e: Exception) {
+                    builder.addAnnotation(DslFieldMarker::class)
+                }
+            }
             .addParameter("block", variable.asType().asTypeName().javaToKotlinType2())
             .addStatement("${variable.simpleName} = block")
             .build()

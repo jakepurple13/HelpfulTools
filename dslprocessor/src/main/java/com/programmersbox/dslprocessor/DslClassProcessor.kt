@@ -12,7 +12,7 @@ import javax.lang.model.element.VariableElement
 
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
-@SupportedOptions(DslFieldsProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
+@SupportedOptions(DslClassProcessor.KAPT_KOTLIN_GENERATED_OPTION_NAME)
 class DslClassProcessor : AbstractProcessor() {
 
     companion object {
@@ -87,11 +87,20 @@ class DslClassProcessor : AbstractProcessor() {
             .builder(variable.simpleName.toString())
             .addModifiers(KModifier.PUBLIC)
             .receiver(variable.enclosingElement.asType().asTypeName())
+            .also { builder ->
+                try {
+                    (variable.enclosingElement as? TypeElement)
+                        ?.typeParameters
+                        ?.map { TypeVariableName(it.simpleName.toString()) }
+                        ?.let { builder.addTypeVariables(it) }
+                } catch (e: Exception) {
+                }
+            }
             .apply { annotation?.forEach { it?.let { it1 -> addAnnotation(it1) } } }
             .addParameter("block", variable.asType().asTypeName().javaToKotlinType2())
             .addStatement("${variable.simpleName} = block")
             .build()
     }
 
-    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(DslField::class.java.canonicalName)
+    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(DslClass::class.java.canonicalName)
 }

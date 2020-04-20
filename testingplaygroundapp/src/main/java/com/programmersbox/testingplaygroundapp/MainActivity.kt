@@ -16,8 +16,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
-import com.programmersbox.dslprocessor.DslClass
-import com.programmersbox.dslprocessor.DslField
 import com.programmersbox.flowutils.RecyclerViewScroll
 import com.programmersbox.flowutils.clicks
 import com.programmersbox.flowutils.scrollReached
@@ -69,6 +67,7 @@ class MainActivity : AppCompatActivity() {
             personName(getRandomName())
             personAge(Random.nextInt(1, 50))
             birthdayParty { it + 1 }
+
         }
 
         val newAge: (Unit) -> Unit = {
@@ -89,11 +88,23 @@ class MainActivity : AppCompatActivity() {
             println(person2)
         }
 
+        val person3 = PersonBuilder3.builder {
+            name(getRandomName())
+            age(Random.nextInt(1, 50))
+            birthdayParty { it + 1 }
+        }
+
+        val newAge3: (Unit) -> Unit = {
+            println(person3)
+            person3.birthday()
+            println(person3)
+        }
+
         testRV
             .scrollReached()
             .collectOnUi {
                 when (it) {
-                    RecyclerViewScroll.START -> Loged.r("Start").also(newAge).also(newAge2)
+                    RecyclerViewScroll.START -> Loged.r("Start").also(newAge).also(newAge2).also(newAge3)
                     RecyclerViewScroll.END -> adapter.addItem(getRandomName())
                 }
             }
@@ -132,52 +143,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-}
-
-@DslMarker
-annotation class PersonMarker
-
-@DslMarker
-annotation class PersonMarker2
-
-data class Person(val name: String, var age: Int, private val birthday: (Int) -> Int) {
-    fun birthday() {
-        age = birthday(age)
-    }
-}
-
-class PersonBuilder {
-
-    @DslField("personName", PersonMarker::class)
-    var name: String = ""
-
-    @DslField("personAge", PersonMarker::class)
-    var age = 0
-
-    @DslField("birthdayParty", PersonMarker::class)
-    var birthday: (Int) -> Int = { it }
-
-    private fun build() = Person(name, age, birthday)
-
-    companion object {
-        fun builder(block: PersonBuilder.() -> Unit) = PersonBuilder().apply(block).build()
-    }
-
-}
-
-@DslClass(PersonMarker2::class)
-class PersonBuilder2 {
-    @DslField("birthdayParty")
-    var birthday: (Int) -> Int = { it }
-    var name: String = ""
-    var age = 0
-
-    private fun build() = Person(name, age, birthday)
-
-    companion object {
-        fun builder(block: PersonBuilder2.() -> Unit) = PersonBuilder2().apply(block).build()
-    }
-
 }
 
 @DslMarker
