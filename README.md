@@ -18,7 +18,7 @@ For the dslprocessor module, also include:
 //To allow kapt
 apply plugin: 'kotlin-kapt'
 //For the Annotations
-implementation 'com.github.jakepurple13.HelpfulTools:dslprocessor:{version}'
+implementation 'com.github.jakepurple13.HelpfulTools:dslannotations:{version}'
 //For the actual generation
 kapt "com.github.jakepurple13.HelpfulTools:dslprocessor:$jakepurple13"
 ```

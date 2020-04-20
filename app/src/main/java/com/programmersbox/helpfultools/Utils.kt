@@ -1,7 +1,7 @@
 package com.programmersbox.helpfultools
 
-import com.programmersbox.dslprocessor.DslClass
-import com.programmersbox.dslprocessor.DslField
+import com.programmersbox.dslannotations.DslClass
+import com.programmersbox.dslannotations.DslField
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.helpfulutils.randomRemove
 import org.intellij.lang.annotations.Language
