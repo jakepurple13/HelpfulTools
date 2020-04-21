@@ -37,7 +37,7 @@ class PersonBuilder {
 
 @DslClass(PersonMarker2::class)
 class PersonBuilder2 {
-    @DslField("birthdayParty")
+    @DslField("birthdayParty", comment = "Set what happens on his birthday party")
     var birthday: (Int) -> Int = { it }
     var name: String = ""
     var age = 0

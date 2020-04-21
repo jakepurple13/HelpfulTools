@@ -60,28 +60,21 @@ class DslClassProcessor : AbstractProcessor() {
         }
 
         if (functions.isNotEmpty()) {
-
             val packageGroup = functions.groupBy { it.first }
-
             for (g in packageGroup.entries.withIndex()) {
-
                 val file = File(generatedSourcesRoot)
                 if (!file.exists()) file.mkdir()
                 val fileBuilder = FileSpec.builder(
                     g.value.key,
                     "DslClassGenerated${g.index}"
                 )
-
                 g.value.value.forEach { it.second.forEach { fileBuilder.addFunction(it) } }
                 fileBuilder
                     .build()
                     //.also { println(it.toString()) }
                     .writeTo(file)
-
             }
-
         }
-
         return false
     }
 
