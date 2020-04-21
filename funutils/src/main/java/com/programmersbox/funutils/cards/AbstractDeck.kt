@@ -20,7 +20,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     /**
      * A non immutable version of the deck
      */
-    val deck: List<T> get() = deckOfCards
+    val deck: List<T> get() = deckOfCards.toList()
 
     /**
      * Checks if the deck is empty

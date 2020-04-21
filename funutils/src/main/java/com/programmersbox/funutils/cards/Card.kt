@@ -13,6 +13,8 @@ data class Card(val value: Int, val suit: Suit) {
         }
 
     fun toSymbolString() = "$symbol${suit.unicodeSymbol}"
+    fun toLetterString() = "$symbol${suit.symbol}"
+    fun toNameString() = "$symbol of ${suit.printableName}"
 
     companion object {
         val RandomCard: Card get() = Card((1..13).random(), Suit.values().random())

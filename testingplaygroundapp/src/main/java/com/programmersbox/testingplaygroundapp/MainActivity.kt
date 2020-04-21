@@ -1,7 +1,6 @@
 package com.programmersbox.testingplaygroundapp
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -30,6 +29,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import kotlin.properties.Delegates
 import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
@@ -137,11 +137,10 @@ class MainActivity : AppCompatActivity() {
                 }
 
             Glide.with(itemView)
-                .asBitmap()
-                .load("")
-                .into<Bitmap> {
+                .load(R.mipmap.ic_launcher)
+                .into<Drawable> {
                     loadCleared { }
-                    resourceReady { image, _ -> }
+                    resourceReady { image, _ -> itemView.testImage.setImageDrawable(image) }
                 }
         }
     }
@@ -156,7 +155,7 @@ fun <T> RequestBuilder<T>.into(target: CustomTargetBuilder<T>.() -> Unit) = into
 
 class CustomTargetBuilder<T> {
 
-    private var resourceReady: (T, Transition<in T>?) -> Unit = { _, _ -> }
+    private var resourceReady: (T, Transition<in T>?) -> Unit by Delegates.notNull()
 
     @GlideMarker
     fun resourceReady(block: (image: T, transition: Transition<in T>?) -> Unit) = run { resourceReady = block }
