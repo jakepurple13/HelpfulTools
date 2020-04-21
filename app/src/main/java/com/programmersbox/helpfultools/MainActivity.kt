@@ -213,6 +213,14 @@ class MainActivity : AppCompatActivity() {
             tItem(Random.nextInt(1, 10))
             rItem("Hello World")
         }
+        JavaDslBuilder.javaDslBuild {
+            with(it) {
+                function { println("Hello") }
+                functionOne { println("World") }
+                javaName("Java!")
+                num(5)
+            }
+        }
         //----------------------------------------------
         requestPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
