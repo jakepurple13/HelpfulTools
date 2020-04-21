@@ -19,6 +19,7 @@ import com.programmersbox.dragswipe.*
 import com.programmersbox.flowutils.RecyclerViewScroll
 import com.programmersbox.flowutils.clicks
 import com.programmersbox.flowutils.scrollReached
+import com.programmersbox.funutils.views.flash
 import com.programmersbox.helpfulutils.setEnumItems
 import com.programmersbox.helpfulutils.sizedListOf
 import com.programmersbox.loggingutils.Loged
@@ -130,7 +131,10 @@ class MainActivity : AppCompatActivity() {
             itemView.testText.text = item
             itemView
                 .clicks()
-                .collectOnUi { this@CustomAdapter[position] = getRandomName() }
+                .collectOnUi {
+                    itemView.flash { i, view -> view.setBackgroundColor(i) }
+                    this@CustomAdapter[position] = getRandomName()
+                }
 
             Glide.with(itemView)
                 .asBitmap()
