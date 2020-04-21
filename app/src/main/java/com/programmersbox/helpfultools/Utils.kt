@@ -15,10 +15,15 @@ fun getRandomName() = try {
 @DslMarker
 annotation class DslTestMarker
 
+@DslMarker
+annotation class DslTest2Marker
+
 @DslClass(dslMarker = DslTestMarker::class)
 class NewDsl<T, R> {
     @DslField("itemNumber")
     var numberItem = 4
+
+    @DslField(name = "thingToTest", dslMarker = DslTest2Marker::class, comment = "This is a comment")
     var testThing: () -> Unit = {}
     var runAction: () -> Unit = {}
     var paramOne: (Int, String) -> Unit = { _, _ -> }

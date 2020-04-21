@@ -203,7 +203,7 @@ class MainActivity : AppCompatActivity() {
         NewDsl.buildDsl<Int, String> {
             itemNumber(Random.nextInt(1, 100))
             runAction { println("Hello") }
-            testThing { println("Hello") }
+            thingToTest { println("Hello") }
             paramOne { i, s -> println("$i$s") }
             paramTwo { println(it) }
             paramThree { "$it" }
