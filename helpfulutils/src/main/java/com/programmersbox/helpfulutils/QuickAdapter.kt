@@ -23,7 +23,7 @@ fun <T> RecyclerView.quickAdapter(@LayoutRes layout: Int? = null, vararg item: T
  */
 class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<QuickAdapter.ViewHolder>() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
-    private class QuickAdapterItem<T>(@LayoutRes val layout: Int, val item: T, val setup: View.(T) -> Unit) {
+    private data class QuickAdapterItem<T>(@LayoutRes val layout: Int, val item: T, val setup: View.(T) -> Unit) {
         fun renderItem(view: View) = view.setup(item)
     }
 
@@ -37,7 +37,7 @@ class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<Quick
     operator fun contains(item: T) = data.any { it.item == item }
     operator fun get(index: Int) = data[index].item
     operator fun set(index: Int, item: T) {
-        data[index] = data[index].let { QuickAdapterItem(it.layout, item, it.setup) }
+        data[index] = data[index].copy(item = item)
         notifyItemChanged(index)
     }
 

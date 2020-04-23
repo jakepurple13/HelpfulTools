@@ -180,6 +180,7 @@ class MainActivity : AppCompatActivity() {
 
         val list = mutableListOf<String>().apply { repeat(10) { this += getRandomName() } }
 
+        //-----------------
         val adapter = CustomAdapter(list)
         recyclerView2.adapter = adapter
 
