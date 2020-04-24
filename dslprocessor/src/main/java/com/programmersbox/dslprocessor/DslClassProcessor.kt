@@ -31,22 +31,25 @@ class DslClassProcessor : AbstractProcessor() {
                 return false
             }
 
-            val spec = methodElement.enclosedElements.filterIsInstance<VariableElement>()
+            val spec = methodElement.enclosedElements
+                .asSequence()
+                .filterIsInstance<VariableElement>()
                 .filter { !it.annotationMirrors.any { it.annotationType.asTypeName() == DslField::class.asTypeName() } }
                 .filter { !it.simpleName.contains("Companion") }
                 .map {
-                    generateNewMethod(it, try {
-                        val a: DslClass = methodElement.getAnnotation(DslClass::class.java)
-                        getTypeMirrorFromAnnotationValue(object : APUtils.GetClassValue {
-                            override fun execute() {
-                                a.dslMarker
-                            }
-                        })?.map { it?.let { (it.asTypeName().javaToKotlinType() as? ClassName) } }
-                    } catch (e: Exception) {
-                        listOf(DslFieldMarker::class.asClassName())
-                    }
+                    generateNewMethod(it,
+                        try {
+                            val a: DslClass = methodElement.getAnnotation(DslClass::class.java)
+                            getTypeMirrorFromAnnotationValue(object : APUtils.GetClassValue {
+                                override fun execute() {
+                                    a.dslMarker
+                                }
+                            })?.map { it?.let { (it.asTypeName().javaToKotlinType() as? ClassName) } }
+                        } catch (e: Exception) {
+                            listOf(DslFieldMarker::class.asClassName())
+                        }
                     )
-                }
+                }.toList()
 
             if (spec.isNotEmpty()) {
                 processingEnv.elementUtils.getPackageOf(methodElement).toString() to spec

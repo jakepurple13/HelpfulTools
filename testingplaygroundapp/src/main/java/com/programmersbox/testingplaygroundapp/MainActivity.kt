@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity() {
             personName(getRandomName())
             personAge(Random.nextInt(1, 50))
             birthdayParty { it + 1 }
-
         }
 
         val newAge: (Unit) -> Unit = {
