@@ -151,6 +151,15 @@ class MainActivity : AppCompatActivity() {
             NewDsl.buildDsl<Int, String> {
 
             }
+
+            JavaDslBuilder.javaDslBuild {
+                with(it) {
+                    function { println("Hello") }
+                    functionOne { println("World") }
+                    javaName("Java!")
+                    num(5)
+                }
+            }
         }
     }
 

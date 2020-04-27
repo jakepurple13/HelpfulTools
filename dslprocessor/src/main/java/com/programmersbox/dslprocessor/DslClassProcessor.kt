@@ -51,7 +51,11 @@ class DslClassProcessor : AbstractProcessor() {
                 .sortedBy { (methodElement.kotlinMetadata as? KotlinClassMetadata)?.data?.nameResolver?.getString(it.name) }
 
             val props = elements
-                .intersect(properties) { r, t -> (methodElement.kotlinMetadata as? KotlinClassMetadata)?.data?.nameResolver?.getString(t.name) == r.simpleName.toString() }
+                .let {
+                    if (methodElement.kotlinMetadata != null)
+                        it.intersect(properties) { r, t -> (methodElement.kotlinMetadata as? KotlinClassMetadata)?.data?.nameResolver?.getString(t.name) == r.simpleName.toString() }
+                    else elements
+                }
                 .sortedBy { it.simpleName.toString() }
 
             val annotationList = try {
