@@ -6,6 +6,10 @@ import com.programmersbox.dslannotations.DslField
 import com.programmersbox.dslannotations.DslFieldMarker
 import com.programmersbox.dslprocessor.APUtils.getTypeMirrorFromAnnotationValue
 import com.squareup.kotlinpoet.*
+import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
+import me.eugeniomarletti.kotlin.metadata.kotlinMetadata
+import me.eugeniomarletti.kotlin.metadata.proto
+import me.eugeniomarletti.kotlin.metadata.shadow.metadata.ProtoBuf
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
@@ -31,25 +35,43 @@ class DslClassProcessor : AbstractProcessor() {
                 return false
             }
 
-            val spec = methodElement.enclosedElements
-                .asSequence()
+            val properties = (methodElement.kotlinMetadata as? KotlinClassMetadata)
+                ?.data
+                ?.proto
+                ?.propertyList
+                .orEmpty()
+
+            val elements = methodElement.enclosedElements
                 .filterIsInstance<VariableElement>()
                 .filter { !it.annotationMirrors.any { it.annotationType.asTypeName() == DslField::class.asTypeName() } }
                 .filter { !it.simpleName.contains("Companion") }
-                .map {
-                    generateNewMethod(it,
-                        try {
-                            val a: DslClass = methodElement.getAnnotation(DslClass::class.java)
-                            getTypeMirrorFromAnnotationValue(object : APUtils.GetClassValue {
-                                override fun execute() {
-                                    a.dslMarker
-                                }
-                            })?.map { it?.let { (it.asTypeName().javaToKotlinType() as? ClassName) } }
-                        } catch (e: Exception) {
-                            listOf(DslFieldMarker::class.asClassName())
-                        }
-                    )
-                }.toList()
+
+            val otherWay = properties
+                .intersect(elements) { t, r -> (methodElement.kotlinMetadata as? KotlinClassMetadata)?.data?.nameResolver?.getString(t.name) == r.simpleName.toString() }
+                .sortedBy { (methodElement.kotlinMetadata as? KotlinClassMetadata)?.data?.nameResolver?.getString(it.name) }
+
+            val props = elements
+                .intersect(properties) { r, t -> (methodElement.kotlinMetadata as? KotlinClassMetadata)?.data?.nameResolver?.getString(t.name) == r.simpleName.toString() }
+                .sortedBy { it.simpleName.toString() }
+
+            val annotationList = try {
+                val a: DslClass = methodElement.getAnnotation(DslClass::class.java)
+                getTypeMirrorFromAnnotationValue(object : APUtils.GetClassValue {
+                    override fun execute() {
+                        a.dslMarker
+                    }
+                })?.map { it?.let { (it.asTypeName().javaToKotlinType() as? ClassName) } }
+            } catch (e: Exception) {
+                listOf(DslFieldMarker::class.asClassName())
+            }
+            val spec = props.mapIndexed { index, t ->
+                generateNewMethod(
+                    t,
+                    annotationList,
+                    methodElement.kotlinMetadata as? KotlinClassMetadata,
+                    otherWay.getOrNull(index)
+                )
+            }
 
             if (spec.isNotEmpty()) {
                 processingEnv.elementUtils.getPackageOf(methodElement).toString() to spec
@@ -81,13 +103,18 @@ class DslClassProcessor : AbstractProcessor() {
         return false
     }
 
-    private fun generateNewMethod(variable: VariableElement, annotation: List<ClassName?>?): FunSpec {
+    private fun generateNewMethod(
+        variable: VariableElement,
+        annotation: List<ClassName?>?,
+        kotlinClass: KotlinClassMetadata? = null,
+        property: ProtoBuf.Property?
+    ): FunSpec {
         return FunSpec
             .builder(variable.simpleName.toString())
             .addModifiers(KModifier.PUBLIC)
             .receiver(variable.enclosingElement.asType().asTypeName())
             .also { builder ->
-                try {
+                kotlinClass?.let { builder.addTypeVariables(genericTypeNames(it.data.classProto, it.data.nameResolver)) } ?: try {
                     (variable.enclosingElement as? TypeElement)
                         ?.typeParameters
                         ?.map { TypeVariableName(it.simpleName.toString()) }
@@ -96,10 +123,20 @@ class DslClassProcessor : AbstractProcessor() {
                 }
             }
             .apply { annotation?.forEach { it?.let { it1 -> addAnnotation(it1) } } }
-            .addParameter("block", variable.asType().asTypeName().javaToKotlinType2())
+            .addParameter(
+                "block",
+                property?.returnType?.asTypeName(kotlinClass!!.data.nameResolver, kotlinClass.data.classProto::getTypeParameter)
+                    ?: variable.asType().asTypeName().javaToKotlinType2().copy(nullable = isNullableProperty(variable))
+            )
             .addStatement("${variable.simpleName} = block")
             .build()
     }
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(DslClass::class.java.canonicalName)
 }
+
+/**
+ * Finds similarities between two lists based on a predicate
+ */
+internal fun <T, R> Iterable<T>.intersect(uList: Iterable<R>, filterPredicate: (T, R) -> Boolean) =
+    filter { m -> uList.any { filterPredicate(m, it) } }

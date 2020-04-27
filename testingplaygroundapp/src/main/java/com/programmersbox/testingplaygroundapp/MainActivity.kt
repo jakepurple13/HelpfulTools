@@ -15,6 +15,8 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
+import com.programmersbox.dslannotations.DslClass
+import com.programmersbox.dslannotations.DslField
 import com.programmersbox.flowutils.RecyclerViewScroll
 import com.programmersbox.flowutils.clicks
 import com.programmersbox.flowutils.scrollReached
@@ -141,10 +143,90 @@ class MainActivity : AppCompatActivity() {
                     loadCleared { }
                     resourceReady { image, _ -> itemView.testImage.setImageDrawable(image) }
                 }
+
+            PersonBuilder4.builder {
+
+            }
+
+            NewDsl.buildDsl<Int, String> {
+
+            }
         }
     }
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+}
+
+@DslClass
+class PersonBuilder4 {
+    @DslField("birthdayParty", comment = "Set what happens on his birthday party")
+    var birthday: (Int) -> Int = { it }
+
+    @DslField("setName")
+    var name: String? = ""
+
+    @DslField("setDayOfBirth")
+    var dayOfBirth: (String?) -> Unit = {}
+
+    var age = 0
+
+    var birthOfDay: String? = ""
+
+    var nextDay: (String?) -> Unit = {}
+
+    private fun build() = Unit//Person(name, age, birthday)
+
+    companion object {
+        fun builder(block: PersonBuilder4.() -> Unit) = PersonBuilder4().apply(block).build()
+    }
+
+}
+
+@DslMarker
+annotation class DslTestMarker
+
+@DslMarker
+annotation class DslTest2Marker
+
+@DslClass(dslMarker = DslTestMarker::class)
+class NewDsl<T, R> {
+    @DslField("itemNumber")
+    var numberItem = 4
+
+    @DslField(name = "thingToTest", dslMarker = DslTest2Marker::class, comment = "This is a comment")
+    var testThing: () -> Unit = {}
+    var runAction: () -> Unit = {}
+    var paramOne: (Int, String) -> Unit = { _, _ -> }
+    var paramTwo: (Int) -> Unit = {}
+    var paramThree: (Int) -> String = { "$it" }
+    var paramFour = fun(_: Int) = Unit
+    var paramFive = fun(_: T, _: R) = Unit
+    var paramSix = fun(_: T) = Unit
+    var tItem: T? = null
+    var rItem: R? = null
+    var checkingItem: (T?) -> Unit = {}
+    var itemChecking: (R?) -> T? = { null }
+
+    @DslField(name = "checkItemIntoFlight", dslMarker = DslTest2Marker::class, comment = "This is a comment")
+    var checkedItemIn: (R?) -> T? = { null }
+
+    @DslField("setName")
+    var name: String? = ""
+
+    private fun build() {
+        testThing()
+        runAction()
+        paramOne(numberItem, paramThree(numberItem))
+        paramTwo(numberItem)
+        paramFour(numberItem)
+        rItem?.let { tItem?.let { it1 -> paramFive(it1, it) } }
+        tItem?.let { paramSix(it) }
+
+    }
+
+    companion object {
+        fun <T, R> buildDsl(block: NewDsl<T, R>.() -> Unit) = NewDsl<T, R>().apply(block).build()
+    }
 }
 
 @DslMarker

@@ -5,13 +5,15 @@ import com.programmersbox.dslannotations.DslField
 import com.programmersbox.dslannotations.DslFieldMarker
 import com.programmersbox.dslprocessor.APUtils.getTypeMirrorFromAnnotationValue
 import com.squareup.kotlinpoet.*
+import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
+import me.eugeniomarletti.kotlin.metadata.kotlinMetadata
+import me.eugeniomarletti.kotlin.metadata.proto
 import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
-
 
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -22,8 +24,10 @@ class DslFieldsProcessor : AbstractProcessor() {
         const val KAPT_KOTLIN_GENERATED_OPTION_NAME = "kapt.kotlin.generated"
     }
 
+    private val annotation = DslField::class.java
+
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        val functions = roundEnv.getElementsAnnotatedWith(DslField::class.java).mapNotNull { methodElement ->
+        val functions = roundEnv.getElementsAnnotatedWith(annotation).mapNotNull { methodElement ->
             //println("--------------------------------------------")
 
             if (methodElement.kind != ElementKind.FIELD) {
@@ -66,13 +70,15 @@ class DslFieldsProcessor : AbstractProcessor() {
     }
 
     private fun generateNewMethod(variable: VariableElement): FunSpec {
+        val annotationInfo = variable.getAnnotation(annotation)
         return FunSpec
-            .builder(variable.getAnnotation(DslField::class.java).name)
+            .builder(annotationInfo.name)
             .addModifiers(KModifier.PUBLIC)
             .receiver(variable.enclosingElement.asType().asTypeName())
-            .addKdoc(variable.getAnnotation(DslField::class.java).comment)
+            .addKdoc(annotationInfo.comment)
             .also { builder ->
-                try {
+                val classData = (variable.enclosingElement.kotlinMetadata as? KotlinClassMetadata)?.data
+                classData?.let { builder.addTypeVariables(genericTypeNames(it.classProto, it.nameResolver)) } ?: try {
                     (variable.enclosingElement as? TypeElement)
                         ?.typeParameters
                         ?.map { TypeVariableName(it.simpleName.toString()) }
@@ -82,7 +88,7 @@ class DslFieldsProcessor : AbstractProcessor() {
             }
             .also { builder ->
                 try {
-                    val a: DslField = variable.getAnnotation(DslField::class.java)
+                    val a: DslField = annotationInfo
                     getTypeMirrorFromAnnotationValue(object : APUtils.GetClassValue {
                         override fun execute() {
                             a.dslMarker
@@ -92,10 +98,18 @@ class DslFieldsProcessor : AbstractProcessor() {
                     builder.addAnnotation(DslFieldMarker::class)
                 }
             }
-            .addParameter("block", variable.asType().asTypeName().javaToKotlinType2())
+            .also { builder ->
+                val classData = (variable.enclosingElement.kotlinMetadata as? KotlinClassMetadata)?.data
+                val property = classData?.proto?.propertyList?.find { classData.nameResolver.getString(it.name) == variable.simpleName.toString() }
+                builder.addParameter(
+                    "block",
+                    property?.returnType?.asTypeName(classData.nameResolver, classData.classProto::getTypeParameter)
+                        ?: variable.asType().asTypeName().javaToKotlinType2().copy(nullable = isNullableProperty(variable))
+                )
+            }
             .addStatement("${variable.simpleName} = block")
             .build()
     }
 
-    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(DslField::class.java.canonicalName)
+    override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(annotation.canonicalName)
 }
