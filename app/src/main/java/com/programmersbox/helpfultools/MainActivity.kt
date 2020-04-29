@@ -216,9 +216,10 @@ class MainActivity : AppCompatActivity() {
         }
         JavaDslBuilder.javaDslBuild {
             with(it) {
+                function { println("Hello") }
                 functionOne { println("World") }
                 javaName("Java!")
-                num = 5
+                num(5)
             }
         }
         //----------------------------------------------

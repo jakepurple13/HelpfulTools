@@ -34,6 +34,15 @@
         app:layout_constraintBottom_toTopOf="@id/expandingSlider"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <Button
+        android:id="@+id/notificationButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Notification"
+        app:layout_constraintEnd_toStartOf="@id/gotoGames"
+        app:layout_constraintStart_toEndOf="@id/addButton"
+        app:layout_constraintBottom_toTopOf="@id/expandingSlider" />
+
     <com.programmersbox.funutils.views.ExpandingSlider
         android:id="@+id/expandingSlider"
         android:layout_width="match_parent"

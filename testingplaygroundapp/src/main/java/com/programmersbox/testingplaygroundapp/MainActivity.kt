@@ -17,13 +17,11 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
 import com.programmersbox.dslannotations.DslClass
 import com.programmersbox.dslannotations.DslField
-import com.programmersbox.flowutils.RecyclerViewScroll
-import com.programmersbox.flowutils.clicks
-import com.programmersbox.flowutils.scrollReached
+import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
-import com.programmersbox.helpfulutils.setEnumItems
-import com.programmersbox.helpfulutils.sizedListOf
+import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.Loged
+import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
 import kotlinx.coroutines.Dispatchers
@@ -64,6 +62,27 @@ class MainActivity : AppCompatActivity() {
                     .setTitle("Games to Play")
                     .setEnumItems<Games>(Games.values().map(Games::text).toTypedArray()) { item, _ -> startActivity(Intent(this, item.clazz)) }
                     .show()
+            }
+
+        notificationButton
+            .clicks()
+            .collectOnUi {
+                createNotificationChannel("id_channel")
+                createNotificationGroup("id_group")
+                sendNotification(
+                    R.mipmap.ic_launcher,
+                    "Title",
+                    "Message",
+                    42,
+                    "id_channel"
+                )
+                sendNotification(43) {
+                    smallIconId = R.mipmap.ic_launcher
+                    title = "Hello"
+                    message = "World"
+                    channelId = "id_channel"
+                    pendingActivity(BlackjackActivity::class.java)
+                }
             }
 
         val person = PersonBuilder.builder {
@@ -117,6 +136,29 @@ class MainActivity : AppCompatActivity() {
         Log.wtf("Hello", "World")
         Log.w("Hello", "World")
         Log.e("Hello", "World")
+
+        PersonBuilder4.builder {
+
+        }
+
+        NewDsl.buildDsl<Int, String> {
+
+        }
+
+        JavaDslBuilder.javaDslBuild {
+            with(it) {
+                function { println("Hello") }
+                functionOne { println("World") }
+                javaName("Java!")
+                num(5)
+            }
+        }
+
+        val flow = FlowItemBuilder.buildFlow<Int> {
+            this.item = 5
+            collectOnUi { println(it) }
+        }
+        flow(70)
     }
 
     /**
@@ -143,23 +185,6 @@ class MainActivity : AppCompatActivity() {
                     loadCleared { }
                     resourceReady { image, _ -> itemView.testImage.setImageDrawable(image) }
                 }
-
-            PersonBuilder4.builder {
-
-            }
-
-            NewDsl.buildDsl<Int, String> {
-
-            }
-
-            JavaDslBuilder.javaDslBuild {
-                with(it) {
-                    function { println("Hello") }
-                    functionOne { println("World") }
-                    javaName("Java!")
-                    num(5)
-                }
-            }
         }
     }
 
@@ -258,6 +283,28 @@ class CustomTargetBuilder<T> {
     fun build() = object : CustomTarget<T>() {
         override fun onLoadCleared(placeholder: Drawable?) = loadCleared(placeholder)
         override fun onResourceReady(resource: T, transition: Transition<in T>?) = resourceReady(resource, transition)
+    }
+
+}
+
+class FlowItemBuilder<T> {
+
+    private var _item: FlowItem<T> by Delegates.notNull()
+
+    var item: T
+        get() = _item()
+        set(value) {
+            _item = FlowItem(value)
+        }
+
+    @DslField("collectOnUi")
+    var collection: (T) -> Unit = {}
+        set(value) = _item.collectOnUI(value).let { Unit }
+
+    private fun build() = _item
+
+    companion object {
+        fun <T> buildFlow(block: FlowItemBuilder<T>.() -> Unit) = FlowItemBuilder<T>().apply(block).build()
     }
 
 }
