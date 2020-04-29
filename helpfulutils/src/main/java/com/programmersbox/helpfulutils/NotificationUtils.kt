@@ -16,7 +16,6 @@ import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
 import kotlin.properties.Delegates
 
-
 enum class NotificationChannelImportance(internal val importance: Int) {
     /**
      * A notification with no importance: does not show in the shade.
@@ -185,9 +184,7 @@ class NotificationDslBuilder(private val context: Context) {
     }
 
     @NotificationUtilsMarker
-    fun pendingActivity(pendingIntent: PendingIntent?) {
-        privatePendingIntent = pendingIntent
-    }
+    fun pendingActivity(pendingIntent: PendingIntent?) = run { privatePendingIntent = pendingIntent }
 
     private val actions = mutableListOf<NotificationAction>()
 
@@ -361,14 +358,21 @@ enum class SemanticActions(internal val id: Int) {
 //Style Builder
 abstract class NotificationStyle {
 
+    /**
+     * Used on versions below O
+     */
     abstract fun build(): NotificationCompat.Style
+
+    /**
+     * Used on versions O and up
+     */
     abstract fun buildSdk(): Notification.Style
 
     class Inbox : NotificationStyle() {
         private val lines = mutableListOf<CharSequence>()
 
         @NotificationStyleMarker
-        fun addLine(cs: CharSequence) = lines.add(cs).let { Unit }
+        fun addLine(vararg cs: CharSequence) = lines.addAll(cs).let { Unit }
 
         @NotificationStyleMarker
         var contentTitle: CharSequence = ""
@@ -544,8 +548,6 @@ sealed class NotificationAction(private val context: Context) {
     }
 
     @NotificationActionMarker
-    fun pendingActivity(pendingIntent: PendingIntent?) {
-        pendingIntentAction = pendingIntent
-    }
+    fun pendingActivity(pendingIntent: PendingIntent?) = run { pendingIntentAction = pendingIntent }
 
 }

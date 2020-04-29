@@ -47,9 +47,9 @@ fun runOnUIThread(runnable: () -> Unit) = Handler(Looper.getMainLooper()).post(r
 /**
  * An easy way to put data into an intent and start an activity
  */
-inline fun <reified T> Context.startActivity(vararg pairs: Pair<String, Any>) = startActivity(Intent(this, T::class.java).putExtras(*pairs))
+inline fun <reified T> Context.startActivity(vararg pairs: Pair<String, Serializable>) = startActivity(Intent(this, T::class.java).putExtras(*pairs))
 
 /**
  * An easy way to put data into an intent
  */
-fun Intent.putExtras(vararg pairs: Pair<String, Any>) = apply { pairs.forEach { putExtra(it.first, it.second as Serializable) } }
+fun Intent.putExtras(vararg pairs: Pair<String, Serializable>) = apply { pairs.forEach { putExtra(it.first, it.second) } }

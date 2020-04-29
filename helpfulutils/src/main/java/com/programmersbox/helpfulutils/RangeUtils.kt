@@ -19,6 +19,7 @@ class NumberRange(val range: IntRange, var loop: Boolean = true) {
     operator fun minusAssign(n: Int) = run { current -= n }
     operator fun inc() = apply { current += range.step }
     operator fun dec() = apply { current -= range.step }
+    operator fun iterator() = range.iterator()
     operator fun invoke() = current
 }
 
@@ -42,5 +43,6 @@ class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
 
     operator fun inc() = apply { current += 1 }
     operator fun dec() = apply { current -= 1 }
+    operator fun iterator() = itemList.iterator()
     operator fun invoke() = item
 }
