@@ -1,5 +1,7 @@
 package com.programmersbox.testingplaygroundapp
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -7,6 +9,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.RemoteInput
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,6 +24,7 @@ import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.Loged
+import com.programmersbox.loggingutils.f
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
@@ -82,6 +86,25 @@ class MainActivity : AppCompatActivity() {
                     message = "World"
                     channelId = "id_channel"
                     pendingActivity(BlackjackActivity::class.java)
+                    addAction {
+                        actionTitle = "Action!"
+                        actionIcon = R.mipmap.ic_launcher
+                        pendingActivity(ActionService::class.java)
+                    }
+
+                    addReplyAction {
+                        actionTitle = "Reply!"
+                        actionIcon = R.mipmap.ic_launcher
+                        resultKey = KEY_TEXT_REPLY
+                        label = "Reply here"
+                        pendingActivity(ReplyService::class.java)
+                    }
+
+                    bigTextStyle {
+                        bigText = "This is a big text"
+                        contentTitle = "Title!"
+                        summaryText = "Summary"
+                    }
                 }
             }
 
@@ -307,4 +330,20 @@ class FlowItemBuilder<T> {
         fun <T> buildFlow(block: FlowItemBuilder<T>.() -> Unit) = FlowItemBuilder<T>().apply(block).build()
     }
 
+}
+
+const val KEY_TEXT_REPLY = "key_text_reply"
+
+class ReplyService : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        Loged.f("Hello World")
+        RemoteInput.getResultsFromIntent(intent)?.getCharSequence(KEY_TEXT_REPLY)?.let { Loged.f("$it is here") }
+        context?.notificationManager?.cancelAll()
+    }
+}
+
+class ActionService : BroadcastReceiver() {
+    override fun onReceive(context: Context?, intent: Intent?) {
+        Loged.f("Hello World")
+    }
 }
