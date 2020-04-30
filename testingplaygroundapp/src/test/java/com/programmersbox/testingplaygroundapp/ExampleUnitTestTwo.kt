@@ -8,6 +8,7 @@ import com.programmersbox.testingplaygroundapp.cardgames.uno.UnoPlayer
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import kotlin.random.Random
+import kotlin.reflect.KProperty
 
 class ExampleUnitTestTwo {
 
@@ -35,6 +36,32 @@ class ExampleUnitTestTwo {
             unoGame.currentPlayer.hand.find(unoGame::isPlayable)?.let(unoGame::playCard) ?: unoGame.noCardDraw()
 
         println("${unoGame.players.find { it.hand.isEmpty() }?.name} won".color(0x00ff00))
+    }
+
+    @Test
+    fun other() {
+        var b: String by Delegate("Stuff")
+
+        println(b)
+        b = "Hello"
+        println(b)
+        b = "World"
+        println(b)
+
+    }
+
+    class Delegate<T>(defaultValue: T) {
+
+        private var s: T = defaultValue
+
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            return s//"$thisRef, thank you for delegating '${property.name}' to me!"
+        }
+
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+            println("$value has been assigned to '${property.name}' in $thisRef.")
+            s = value
+        }
     }
 
 }

@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import java.io.Serializable
+import kotlin.reflect.KProperty
 
 private var sharedPrefName: String = "HelpfulUtils"
 
@@ -24,7 +25,7 @@ val Context.defaultSharedPref: SharedPreferences get() = getSharedPreferences(sh
 /**
  * An easy [Pair] version to put data into [SharedPreferences]
  */
-fun SharedPreferences.Editor.put(vararg pairs: Pair<String, Any>) = apply {
+fun SharedPreferences.Editor.put(vararg pairs: Pair<String, Any?>) = apply {
     pairs.forEach {
         val key = it.first
         @Suppress("UNCHECKED_CAST")
@@ -34,10 +35,41 @@ fun SharedPreferences.Editor.put(vararg pairs: Pair<String, Any>) = apply {
             is Int -> putInt(key, s)
             is Long -> putLong(key, s)
             is String -> putString(key, s)
-            is Set<*> -> putStringSet(key, s as Set<String>)
+            is Set<*> -> putStringSet(key, s as? Set<String>)
         }
     }
 }
+
+operator fun SharedPreferences.set(key: String, value: Any?) = edit().put(key to value).apply()
+
+inline operator fun <reified T> SharedPreferences.get(key: String) = get<T>(key, null)
+
+@Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
+inline fun <reified T> SharedPreferences.get(key: String, defaultValue: T? = null): T? = when (defaultValue) {
+    is Boolean? -> getBoolean(key, defaultValue as Boolean)
+    is Float? -> getFloat(key, defaultValue as Float)
+    is Int? -> getInt(key, defaultValue as Int)
+    is Long? -> getLong(key, defaultValue as Long)
+    is String? -> getString(key, defaultValue)
+    is Set<*>? -> getStringSet(key, defaultValue as? Set<String>)
+    else -> defaultValue
+} as? T
+
+@Suppress("UNCHECKED_CAST")
+class SharedPrefDelegate<T : Serializable> internal constructor(
+    context: Context,
+    private val key: String? = null,
+    private var defaultValue: T? = null
+) {
+    private val prefs = context.defaultSharedPref
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T? = prefs.all[key ?: property.name] as? T ?: defaultValue
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Any?) = prefs.edit().put((key ?: property.name) to value).apply()
+}
+
+/**
+ * Use this when you want to store and retrieve values that will be placed in the [defaultSharedPref]
+ */
+fun <T : Serializable> Context.sharedPrefDelegate(defaultValue: T? = null, key: String? = null) = SharedPrefDelegate(this, key, defaultValue)
 
 /**
  * A fun little method to always be able to run on the ui thread

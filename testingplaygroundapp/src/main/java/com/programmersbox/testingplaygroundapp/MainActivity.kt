@@ -40,6 +40,8 @@ class MainActivity : AppCompatActivity() {
 
     private val adapter = CustomAdapter(sizedListOf(50) { getRandomName() })
 
+    private var keys: String? by sharedPrefDelegate()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
