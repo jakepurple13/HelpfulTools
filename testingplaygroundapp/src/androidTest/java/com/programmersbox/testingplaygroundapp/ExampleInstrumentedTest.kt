@@ -5,6 +5,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.programmersbox.helpfulutils.defaultSharedPref
 import com.programmersbox.helpfulutils.get
+import com.programmersbox.helpfulutils.set
 import com.programmersbox.helpfulutils.sharedPrefDelegate
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -41,6 +42,10 @@ class ExampleInstrumentedTest {
             var x: Int? = 5
             x = 9
             println(x)
+
+            val z: String? = defaultSharedPref["f"]
+
+            defaultSharedPref["f"] = "Hello World"
 
         }
 

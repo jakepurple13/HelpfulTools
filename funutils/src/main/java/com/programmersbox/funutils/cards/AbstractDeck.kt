@@ -285,6 +285,11 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     operator fun contains(card: T) = card in deck
 
     /**
+     * get the range from 0..[index]
+     */
+    operator fun rangeTo(index: Int) = deck.subList(0, index)
+
+    /**
      * @see cutShuffle
      */
     open operator fun divAssign(cuts: Int) = cutShuffle(cuts)

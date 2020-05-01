@@ -40,8 +40,14 @@ fun SharedPreferences.Editor.put(vararg pairs: Pair<String, Any?>) = apply {
     }
 }
 
+/**
+ * An easy way to put a [value] into [SharedPreferences]
+ */
 operator fun SharedPreferences.set(key: String, value: Any?) = edit().put(key to value).apply()
 
+/**
+ * An easy way to get a value from [SharedPreferences]
+ */
 inline operator fun <reified T> SharedPreferences.get(key: String) = get<T>(key, null)
 
 @Suppress("IMPLICIT_CAST_TO_ANY", "UNCHECKED_CAST")
@@ -57,11 +63,10 @@ inline fun <reified T> SharedPreferences.get(key: String, defaultValue: T? = nul
 
 @Suppress("UNCHECKED_CAST")
 class SharedPrefDelegate<T : Serializable> internal constructor(
-    context: Context,
-    private val key: String? = null,
-    private var defaultValue: T? = null
+    private val prefs: SharedPreferences,
+    private val key: String?,
+    private var defaultValue: T?
 ) {
-    private val prefs = context.defaultSharedPref
     operator fun getValue(thisRef: Any?, property: KProperty<*>): T? = prefs.all[key ?: property.name] as? T ?: defaultValue
     operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Any?) = prefs.edit().put((key ?: property.name) to value).apply()
 }
@@ -69,7 +74,8 @@ class SharedPrefDelegate<T : Serializable> internal constructor(
 /**
  * Use this when you want to store and retrieve values that will be placed in the [defaultSharedPref]
  */
-fun <T : Serializable> Context.sharedPrefDelegate(defaultValue: T? = null, key: String? = null) = SharedPrefDelegate(this, key, defaultValue)
+fun <T : Serializable> Context.sharedPrefDelegate(defaultValue: T? = null, key: String? = null, prefs: SharedPreferences = defaultSharedPref) =
+    SharedPrefDelegate(prefs, key, defaultValue)
 
 /**
  * A fun little method to always be able to run on the ui thread

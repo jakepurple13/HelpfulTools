@@ -78,11 +78,15 @@ object DeviceInfo {
  *
  *    EasyCountDownTimer(1000) { println("OnFinished") }
  *    //or
- *    EasyCountDownTimer(1000, { println(it) }) { println("OnFinished") }
+ *    EasyCountDownTimer(1000, 1000, { println(it) }) { println("OnFinished") }
  */
 object EasyCountDownTimer {
-    operator fun invoke(millisInFuture: Long, onTick: (Long) -> Unit = {}, finished: () -> Unit) = object : CountDownTimer(millisInFuture, 1000) {
-        override fun onTick(millisUntilFinished: Long) = onTick(millisUntilFinished)
-        override fun onFinish(): Unit = finished()
-    }
+    operator fun invoke(
+        millisInFuture: Long, countdownInterval: Long = 1000,
+        onTick: (millisUntilFinished: Long) -> Unit = {}, finished: () -> Unit
+    ) =
+        object : CountDownTimer(millisInFuture, countdownInterval) {
+            override fun onTick(millisUntilFinished: Long) = onTick(millisUntilFinished)
+            override fun onFinish(): Unit = finished()
+        }
 }

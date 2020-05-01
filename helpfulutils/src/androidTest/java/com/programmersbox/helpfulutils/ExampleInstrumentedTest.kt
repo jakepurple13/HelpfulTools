@@ -20,6 +20,11 @@ import kotlin.random.Random
  */
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
+
+    val timer = EasyCountDownTimer(1000) {
+        println("Done")
+    }
+
     @Test
     fun useAppContext() {
         // Context of the app under test.

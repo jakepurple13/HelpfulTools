@@ -87,6 +87,8 @@ class ExampleUnitTest {
             println(f())
             f++
         }
+        println(f.previousItem)
+        println(f.nextItem)
         println("-----")
         for (i in 0..10) {
             println(f())
