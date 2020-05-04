@@ -46,7 +46,7 @@ enum class Direction(val value: Int) {
     }
 }
 
-operator fun Int.plus(direction: Direction): Int = if (direction == Direction.NOTHING) Direction.NOTHING.value else this.or(direction.value)
+operator fun Int.plus(direction: Direction): Int = if (direction == NOTHING) NOTHING.value else this.or(direction.value)
 
 infix fun Int.or(direction: Direction) = this + direction
 
@@ -145,8 +145,8 @@ interface DragSwipeActions<T> {
  */
 @Suppress("unused")
 fun <T, VH : RecyclerView.ViewHolder> DragSwipeActions<T>.makeMovementFlags(
-    dragDirs: Int = Direction.NOTHING.value,
-    swipeDirs: Int = Direction.NOTHING.value
+    dragDirs: Int = NOTHING.value,
+    swipeDirs: Int = NOTHING.value
 ): Int = ItemTouchHelper.Callback.makeMovementFlags(dragDirs, swipeDirs)
 
 /**
@@ -259,8 +259,8 @@ object DragSwipeUtils {
     fun <T, VH : RecyclerView.ViewHolder> setDragSwipeUp(
         dragSwipeAdapter: DragSwipeAdapter<T, VH>,
         recyclerView: RecyclerView,
-        dragDirs: Int = Direction.NOTHING.value,
-        swipeDirs: Int = Direction.NOTHING.value,
+        dragDirs: Int = NOTHING.value,
+        swipeDirs: Int = NOTHING.value,
         dragSwipeActions: DragSwipeActions<T>? = null
     ): DragSwipeHelper {
         val callback = DragSwipeManageAdapter(dragSwipeAdapter, dragDirs, swipeDirs)
@@ -276,8 +276,8 @@ object DragSwipeUtils {
     fun <T, VH : RecyclerView.ViewHolder> setDragSwipeUp(
         dragSwipeAdapter: DragSwipeAdapter<T, VH>,
         recyclerView: RecyclerView,
-        dragDirs: Iterable<Direction> = listOf(Direction.NOTHING),
-        swipeDirs: Iterable<Direction> = listOf(Direction.NOTHING),
+        dragDirs: Iterable<Direction> = listOf(NOTHING),
+        swipeDirs: Iterable<Direction> = listOf(NOTHING),
         dragSwipeActions: DragSwipeActions<T>? = null
     ): DragSwipeHelper {
         val drag = dragDirs.drop(1).fold(dragDirs.first().value) { acc, d -> acc + d }

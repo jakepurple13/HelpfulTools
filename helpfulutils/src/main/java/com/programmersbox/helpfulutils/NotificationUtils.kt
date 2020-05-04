@@ -7,8 +7,10 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.drawable.Icon
 import android.media.session.MediaSession
 import android.os.Build
+import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
@@ -154,21 +156,47 @@ annotation class NotificationStyleMarker
 
 class NotificationDslBuilder(private val context: Context) {
 
+    /**
+     * @see Notification.Builder.setChannelId
+     */
     @NotificationUtilsMarker
     var channelId: String by Delegates.notNull()
 
+    /**
+     * @see Notification.Builder.setGroup
+     */
     @NotificationUtilsMarker
     var groupId: String = ""
 
+    /**
+     * @see Notification.Builder.setContentTitle
+     */
     @NotificationUtilsMarker
     var title: CharSequence? = null
 
+    /**
+     * @see Notification.Builder.setContentText
+     */
     @NotificationUtilsMarker
     var message: CharSequence? = null
 
-    @DrawableRes
+    /**
+     * @see Notification.Builder.setSmallIcon
+     */
     @NotificationUtilsMarker
-    var smallIconId: Int? = null
+    var smallIconId: Int by Delegates.notNull()
+
+    /**
+     * @see Notification.Builder.setLargeIcon
+     */
+    @NotificationUtilsMarker
+    var largeIconBitmap: Bitmap? = null
+
+    /**
+     * @see Notification.Builder.setLargeIcon
+     */
+    @NotificationUtilsMarker
+    var largeIconIcon: Icon? = null
 
     private var privatePendingIntent: PendingIntent? = null
 
@@ -183,104 +211,180 @@ class NotificationDslBuilder(private val context: Context) {
         }
     }
 
+    /**
+     * @see Notification.Builder.setContentIntent
+     */
     @NotificationUtilsMarker
     fun pendingActivity(pendingIntent: PendingIntent?) = run { privatePendingIntent = pendingIntent }
 
+    private var privateDeleteIntent: PendingIntent? = null
+
+    /**
+     * @see Notification.Builder.setDeleteIntent
+     */
+    @NotificationUtilsMarker
+    fun deleteIntent(pendingIntent: PendingIntent?) = run { privateDeleteIntent = pendingIntent }
+
     private val actions = mutableListOf<NotificationAction>()
 
+    /**
+     * @see Notification.Builder.setActions
+     */
     @NotificationUtilsMarker
     fun addReplyAction(block: NotificationAction.Reply.() -> Unit) {
         actions.add(NotificationAction.Reply(context).apply(block))
     }
 
+    /**
+     * @see Notification.Builder.setActions
+     */
     @NotificationUtilsMarker
     fun addAction(block: NotificationAction.Action.() -> Unit) {
         actions.add(NotificationAction.Action(context).apply(block))
     }
 
+    /**
+     * Creates a Reply Action
+     */
     @NotificationActionMarker
     fun replyAction(block: NotificationAction.Reply.() -> Unit) = NotificationAction.Reply(context).apply(block)
 
+    /**
+     * Creates a Normal Action
+     */
     @NotificationActionMarker
     fun actionAction(block: NotificationAction.Action.() -> Unit) = NotificationAction.Action(context).apply(block)
 
     operator fun NotificationAction.unaryPlus() = actions.add(this).let { Unit }
 
+    /**
+     * @see Notification.Builder.setAutoCancel
+     */
     @NotificationUtilsMarker
     var autoCancel: Boolean = false
 
+    /**
+     * @see Notification.Builder.setContentIntent
+     */
     @NotificationUtilsMarker
     var colorized: Boolean = false
 
+    /**
+     * @see Notification.Builder.setTimeoutAfter
+     */
     @NotificationUtilsMarker
     var timeoutAfter: Long? = null
 
+    /**
+     * @see Notification.Builder.setLocalOnly
+     */
     @NotificationUtilsMarker
     var localOnly: Boolean = false
 
+    /**
+     * @see Notification.Builder.setOngoing
+     */
     @NotificationUtilsMarker
     var ongoing: Boolean = false
 
+    /**
+     * @see Notification.Builder.setNumber
+     */
     @NotificationUtilsMarker
     var number: Int = 0
 
+    /**
+     * @see Notification.Builder.setSubText
+     */
     @NotificationUtilsMarker
     var subText: CharSequence = ""
 
+    /**
+     * @see Notification.Builder.setOnlyAlertOnce
+     */
     @NotificationUtilsMarker
     var onlyAlertOnce: Boolean = false
 
+    private var extrasSet: Bundle.() -> Unit = {}
+
+    /**
+     * Add some extras to the notification
+     */
+    @NotificationUtilsMarker
+    fun extras(block: Bundle.() -> Unit) = run { extrasSet = block }
+
     private var notificationNotificationStyle: NotificationStyle? = null
 
+    /**
+     * @see Notification.InboxStyle
+     */
     @NotificationStyleMarker
     fun inboxStyle(block: NotificationStyle.Inbox.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.Inbox().apply(block) }
 
+    /**
+     * @see Notification.BigPictureStyle
+     */
     @NotificationStyleMarker
     fun pictureStyle(block: NotificationStyle.Picture.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.Picture().apply(block) }
 
+    /**
+     * @see Notification.BigTextStyle
+     */
     @NotificationStyleMarker
     fun bigTextStyle(block: NotificationStyle.BigText.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.BigText().apply(block) }
 
+    /**
+     * @see Notification.MediaStyle
+     */
     @RequiresApi(Build.VERSION_CODES.O)
     @NotificationStyleMarker
     fun mediaStyle(block: NotificationStyle.Media.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.Media().apply(block) }
 
+    /**
+     * Add a custom style
+     */
     @NotificationStyleMarker
     fun customStyle(block: NotificationStyle?) = run { notificationNotificationStyle = block }
 
     private fun build() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Notification.Builder(context, channelId)
-            .whatIfNotNull(smallIconId) { setSmallIcon(it) }
+            .setSmallIcon(smallIconId)
+            .also { builder -> largeIconBitmap?.let { builder.setLargeIcon(it) } ?: largeIconIcon?.let { builder.setLargeIcon(it) } }
             .setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(autoCancel)
             .setColorized(colorized)
-            .also { if (timeoutAfter != null) it.setTimeoutAfter(timeoutAfter!!) }
+            .also { builder -> timeoutAfter?.let { builder.setTimeoutAfter(it) } }
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
             .setNumber(number)
+            .also { it.extras.extrasSet() }
             .setSubText(subText)
             .setStyle(notificationNotificationStyle?.buildSdk())
             .setOnlyAlertOnce(onlyAlertOnce)
             .setGroup(groupId.let { if (it.isEmpty()) channelId else it })
+            .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
             .also { builder -> actions.forEach { builder.addAction(it.buildSdk()) } }
             .build()
     } else {
         NotificationCompat.Builder(context, channelId)
-            .whatIfNotNull(smallIconId) { setSmallIcon(it) }
+            .setSmallIcon(smallIconId)
+            .also { builder -> largeIconBitmap?.let { builder.setLargeIcon(it) } }
             .setContentTitle(title)
             .setContentText(message)
             .setAutoCancel(autoCancel)
             .setColorized(colorized)
-            .also { if (timeoutAfter != null) it.setTimeoutAfter(timeoutAfter!!) }
+            .also { builder -> timeoutAfter?.let { builder.setTimeoutAfter(it) } }
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
             .setNumber(number)
+            .also { it.extras.extrasSet() }
             .setSubText(subText)
             .setStyle(notificationNotificationStyle?.build())
             .setOnlyAlertOnce(onlyAlertOnce)
             .setGroup(groupId.let { if (it.isEmpty()) channelId else it })
+            .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
             .also { builder -> actions.forEach { builder.addAction(it.build()) } }
             .build()
@@ -371,12 +475,21 @@ abstract class NotificationStyle {
     class Inbox : NotificationStyle() {
         private val lines = mutableListOf<CharSequence>()
 
+        /**
+         * @see Notification.InboxStyle.addLine
+         */
         @NotificationStyleMarker
         fun addLine(vararg cs: CharSequence) = lines.addAll(cs).let { Unit }
 
+        /**
+         * @see Notification.InboxStyle.setBigContentTitle
+         */
         @NotificationStyleMarker
         var contentTitle: CharSequence = ""
 
+        /**
+         * @see Notification.InboxStyle.setSummaryText
+         */
         @NotificationStyleMarker
         var summaryText: CharSequence = ""
 
@@ -393,15 +506,27 @@ abstract class NotificationStyle {
     }
 
     class Picture : NotificationStyle() {
+        /**
+         * @see Notification.BigPictureStyle.setBigContentTitle
+         */
         @NotificationStyleMarker
         var contentTitle: CharSequence = ""
 
+        /**
+         * @see Notification.BigPictureStyle.setSummaryText
+         */
         @NotificationStyleMarker
         var summaryText: CharSequence = ""
 
+        /**
+         * @see Notification.BigPictureStyle.bigPicture
+         */
         @NotificationStyleMarker
         var bigPicture: Bitmap? = null
 
+        /**
+         * @see Notification.BigPictureStyle.bigLargeIcon
+         */
         @NotificationStyleMarker
         var largeIcon: Bitmap? = null
 
@@ -420,12 +545,21 @@ abstract class NotificationStyle {
 
     class BigText : NotificationStyle() {
 
+        /**
+         * @see Notification.BigTextStyle.setBigContentTitle
+         */
         @NotificationStyleMarker
         var contentTitle: CharSequence = ""
 
+        /**
+         * @see Notification.BigTextStyle.setSummaryText
+         */
         @NotificationStyleMarker
         var summaryText: CharSequence = ""
 
+        /**
+         * @see Notification.BigTextStyle.bigText
+         */
         @NotificationStyleMarker
         var bigText: CharSequence = ""
 
@@ -444,11 +578,17 @@ abstract class NotificationStyle {
     @RequiresApi(Build.VERSION_CODES.O)
     class Media : NotificationStyle() {
 
+        /**
+         * @see Notification.MediaStyle.setMediaSession
+         */
         @NotificationStyleMarker
         var mediaSessionToken: MediaSession.Token by Delegates.notNull()
 
         private var actions: IntArray? = null
 
+        /**
+         * @see Notification.MediaStyle.setShowActionsInCompactView
+         */
         @NotificationStyleMarker
         fun actions(vararg action: Int) = run { actions = action }
 
@@ -463,20 +603,36 @@ abstract class NotificationStyle {
 
 //Action Builder
 sealed class NotificationAction(private val context: Context) {
+
+    /**
+     * @see Notification.Action.title
+     */
     @NotificationActionMarker
     var actionTitle: CharSequence by Delegates.notNull()
 
+    /**
+     * @see Notification.Action.icon
+     */
     @NotificationActionMarker
     var actionIcon: Int by Delegates.notNull()
 
     class Reply(context: Context) : NotificationAction(context) {
 
+        /**
+         * @see RemoteInput.Builder.mResultKey
+         */
         @NotificationActionMarker
         var resultKey: String by Delegates.notNull()
 
+        /**
+         * @see RemoteInput.Builder.setLabel
+         */
         @NotificationActionMarker
         var label: String by Delegates.notNull()
 
+        /**
+         * @see RemoteInput.Builder.setAllowFreeFormInput
+         */
         @NotificationActionMarker
         var allowFreeFormInput: Boolean = true
 
@@ -484,6 +640,9 @@ sealed class NotificationAction(private val context: Context) {
 
         operator fun CharSequence.unaryPlus() = choices.add(this).let { Unit }
 
+        /**
+         * @see RemoteInput.Builder.setChoices
+         */
         @NotificationActionMarker
         fun addChoice(s: CharSequence) = +s
 
