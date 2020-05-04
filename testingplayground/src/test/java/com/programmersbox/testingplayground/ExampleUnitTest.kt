@@ -189,6 +189,7 @@ class ExampleUnitTest {
         val hand = deck.draw(5)
         println(hand.map(Card::toSymbolString))
         deck.draw(50)
+        println(deck)
     }
 
     @Test

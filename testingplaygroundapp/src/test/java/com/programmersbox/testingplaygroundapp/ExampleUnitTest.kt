@@ -17,6 +17,12 @@ import java.util.*
  */
 class ExampleUnitTest {
 
+    @Test
+    fun other() {
+        val d = Deck.defaultDeck()
+        println(d)
+    }
+
     @Suppress("UNUSED_VARIABLE")
     @Test
     fun addition_isCorrect() {
@@ -33,6 +39,7 @@ class ExampleUnitTest {
                 }
             )
         })*/
+        println(d)
         while (d.size >= 5) d.draw(5).printCards()
         println("-".repeat(50))
         val royalFlush = listOf(1, 10, 11, 12, 13).map { Card(it, Suit.SPADES) }.printCards()

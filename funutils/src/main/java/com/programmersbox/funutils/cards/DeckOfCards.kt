@@ -47,8 +47,6 @@ class Deck<T> : AbstractDeck<T> {
         this.listener = DeckListenerBuilder.buildListener(listener)
     }
 
-    override fun toString(): String = deck.toString()
-
     /**
      * Adds a [DeckListener] to the deck
      */

@@ -96,6 +96,12 @@ class ExampleUnitTest {
         floatItem %= 5F
         shortItem %= 5.toShort()
         delay(1000)
+        println(booleanItem)
+        println(intItem)
+        println(longItem)
+        println(doubleItem)
+        println(floatItem)
+        println(shortItem)
     }
 
     private val mutableListItem = FlowItem(mutableListOf(1, 2, 3, 4, 5))

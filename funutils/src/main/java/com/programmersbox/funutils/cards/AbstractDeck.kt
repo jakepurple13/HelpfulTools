@@ -333,4 +333,6 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     }
 
     override fun hashCode(): Int = deckOfCards.hashCode()
+
+    override fun toString(): String = "${this::class.simpleName}(size=$size, cards=$deck)"
 }
