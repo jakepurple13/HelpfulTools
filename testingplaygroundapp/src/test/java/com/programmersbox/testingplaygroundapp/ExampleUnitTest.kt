@@ -9,6 +9,7 @@ import com.programmersbox.testingplaygroundapp.cardgames.poker.Hand
 import com.programmersbox.testingplaygroundapp.cardgames.poker.PokerHand
 import org.junit.Test
 import java.util.*
+import kotlin.system.measureTimeMillis
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -16,6 +17,30 @@ import java.util.*
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
+    @Test
+    fun other123() {
+        val builder = measureTimeMillis {
+            val sb = StringBuilder("hello")
+            for (i in 0..9999) {
+                sb.append(" world")
+            }
+            val string = sb.toString()
+            println(string.length)
+        }
+
+        val noBuilder = measureTimeMillis {
+            var sb = "hello"
+            for (i in 0..9999) {
+                sb += " world"
+            }
+            val string = sb.toString()
+            println(string.length)
+        }
+
+        println("builder: $builder")
+        println("noBuilder: $noBuilder")
+    }
 
     @Test
     fun other() {
@@ -28,17 +53,6 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         val d = Deck.defaultDeck()
         d.trueRandomShuffle()
-        //println(d.draw(5).asciiCards(colorRed = 0xD01426, colorBlack = 0x039b3f0))
-        //while (d.size > 5) println(d.draw(5).asciiCards(colorRed = 0xD01426, colorBlack = 0x039b3f0) { it.joinToString { it.toSymbolString() } })
-        /*while (d.size > 5) println(d.draw(5).asciiCards(colorRed = 0xD01426, colorBlack = 0x039b3f0) {
-            " = ${it.joinToString { it.toSymbolString() }}".color(
-                when {
-                    it.all { it.color == CardColor.BLACK } -> 0x039b3f0
-                    it.all { it.color == CardColor.RED } -> 0xD01426
-                    else -> 0xffffff
-                }
-            )
-        })*/
         println(d)
         while (d.size >= 5) d.draw(5).printCards()
         println("-".repeat(50))

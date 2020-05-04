@@ -21,8 +21,8 @@ fun <T> RecyclerView.quickAdapter(@LayoutRes layout: Int? = null, vararg item: T
  * A quick way to make an adapter and add data of a type to it
  * This is a super basic adapter.
  */
-class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<QuickAdapter.ViewHolder>() {
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
+class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<QuickAdapter.QuickHolder>() {
+    class QuickHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
     private data class QuickAdapterItem<T>(@LayoutRes val layout: Int, val item: T, val setup: View.(T) -> Unit) {
         fun renderItem(view: View) = view.setup(item)
     }
@@ -43,7 +43,7 @@ class QuickAdapter<T>(private val context: Context) : RecyclerView.Adapter<Quick
 
     override fun getItemViewType(position: Int): Int = data[position].layout
     override fun getItemCount(): Int = data.size
-    override fun onBindViewHolder(holder: ViewHolder, position: Int) = data[position].renderItem(holder.itemView)
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
-        ViewHolder(LayoutInflater.from(context).inflate(viewType, parent, false))
+    override fun onBindViewHolder(holder: QuickHolder, position: Int) = data[position].renderItem(holder.itemView)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): QuickHolder =
+        QuickHolder(LayoutInflater.from(context).inflate(viewType, parent, false))
 }

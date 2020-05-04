@@ -19,10 +19,29 @@ class NumberRange(range: IntProgression, loop: Boolean = true) : ItemRange<Int>(
  * remain at the range ends if [loop] is false
  */
 open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
+    /**
+     * The list of items
+     */
     val itemList = items.toMutableList()
+
+    /**
+     * Previous item
+     */
     val previousItem get() = itemList[previous]
+
+    /**
+     * Current item
+     */
     val item get() = itemList[current]
+
+    /**
+     * Next item
+     */
     val nextItem get() = itemList[next]
+
+    /**
+     * Current index
+     */
     var current = 0
         protected set(value) {
             field = when {
@@ -32,6 +51,10 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
                 else -> value
             }
         }
+
+    /**
+     * Next index
+     */
     val next
         get() = when {
             itemList.isEmpty() -> throw IndexOutOfBoundsException("The list is empty")
@@ -39,6 +62,10 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
             current + 1 < 0 -> if (loop) itemList.lastIndex else 0
             else -> current + 1
         }
+
+    /**
+     * Previous index
+     */
     val previous
         get() = when {
             itemList.isEmpty() -> throw IndexOutOfBoundsException("The list is empty")
@@ -52,3 +79,13 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
     operator fun iterator() = itemList.iterator()
     operator fun invoke() = item
 }
+
+/**
+ * Changes this [Iterable] to an [ItemRange]
+ */
+inline fun <reified T> Iterable<T>.toItemRange(loop: Boolean = true) = ItemRange(*toList().toTypedArray(), loop = loop)
+
+/**
+ * Changes this [String] to an [ItemRange]
+ */
+fun String.toItemRange(loop: Boolean = true) = toList().toItemRange(loop)

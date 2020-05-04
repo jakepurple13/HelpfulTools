@@ -45,6 +45,10 @@ class ExampleUnitTest {
         println(sizedListOf(5) { Random.nextString(5) })
         println(list)
         println(list.lastWithIndex)
+        val s = "Hello World".toItemRange()
+        val items = list.toItemRange()
+        s.itemList
+        s.previous
     }
 
     @Test

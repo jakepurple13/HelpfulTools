@@ -43,20 +43,20 @@ private fun cardName(num: Int): String = when (num) {
 
 fun List<Card>.asciiCards(padding: String = "", colorRed: Int = 0xff0000, colorBlack: Int = 0xffffff, equalText: (List<Card>) -> String): String {
     val lines = asciiCards(padding, colorRed, colorBlack).lines().toMutableList()
-    lines[lines.size / 2 - 1] += "${equalText(this)}"
+    lines[lines.size / 2 - 1] += equalText(this)
     return lines.joinToString("\n")
 }
 
 fun List<Card>.asciiCards(padding: String = "", colorRed: Int = 0xff0000, colorBlack: Int = 0xffffff): String {
     val m = map { it.color to it.asciiCard().lines() }
     val size = m.random().second.size - 1
-    var s = ""
+    val s = StringBuilder()
     fun CardColor.asciiColor() = when (this) {
         CardColor.RED -> colorRed
         CardColor.BLACK -> colorBlack
     }
-    for (i in 0..size) s += "${m.joinToString(padding) { it.second[i].color(it.first.asciiColor()) }}\n"
-    return s
+    for (i in 0..size) s.append(m.joinToString(padding) { it.second[i].color(it.first.asciiColor()) }).append("\n")
+    return s.toString()
 }
 
 fun Card.asciiCard(): String {

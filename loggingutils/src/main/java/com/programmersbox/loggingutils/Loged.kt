@@ -10,31 +10,38 @@ object Loged {
      * If there are any other classes that you do not want to show up
      */
     var OTHER_CLASS_FILTER: (String) -> Boolean = { true }
+
     /**
      * Will pretty print all log messages if true
      */
     var SHOW_PRETTY: Boolean = true
+
     /**
      * Will include the thread name in with the tag for all logs if true
      */
     var WITH_THREAD_NAME: Boolean = true
+
     /**
      * Makes this the name of your package to prevent unwanted logs
      */
     var FILTER_BY_PACKAGE_NAME = ""
+
     /**
      * A log tag for all log messages using the [Loged] class
      * Default is "Loged"
      */
     var TAG = "Loged"
+
     /**
      * Enable this if you are unit testing. This will do a normal [println] instead of a [Log.println] if true
      */
     var UNIT_TESTING = false
+
     /**
      * Converting the StackTraceElement into a string that will let us click straight to it
      */
     private val stackToString: StackTraceElement.() -> String = { "${className}.${methodName}(${fileName}:${lineNumber})" }
+
     /**
      * Filtering out the classes we do not want to see
      */
