@@ -48,6 +48,8 @@ enum class Direction(val value: Int) {
 
 operator fun Int.plus(direction: Direction): Int = if (direction == Direction.NOTHING) Direction.NOTHING.value else this.or(direction.value)
 
+infix fun Int.or(direction: Direction) = this + direction
+
 /**
  * this class is to set up onMove(for dragging) and onSwiped(for swiping) methods
  * extend this if you want to add actions to your swiping
