@@ -2,6 +2,16 @@
 
 Just some small simple tools that I have found myself copying+pasting to almost all projects I do.
 
+First, add JitPack:
+```groovy
+	allprojects {
+		repositories {
+			//...
+			maven { url 'https://jitpack.io' }
+		}
+	}
+```
+
 [![](https://jitpack.io/v/jakepurple13/HelpfulTools.svg)](https://jitpack.io/#jakepurple13/HelpfulTools)
 ```groovy
 implementation 'com.github.jakepurple13.HelpfulTools:flowutils:{version}'
