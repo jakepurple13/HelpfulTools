@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".broadcast.BroadcastActivity">
+
+    <LinearLayout
+        android:id="@+id/timeLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <Button
+            android:id="@+id/timeReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Time Broadcast Receiver" />
+
+        <TextView
+            android:id="@+id/timeTickText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/untimeReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UnRegister Time Broadcast Receiver" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/batteryLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/timeLayout">
+
+        <Button
+            android:id="@+id/batteryReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Battery Broadcast Receiver" />
+
+        <TextView
+            android:id="@+id/batteryText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/unbatteryReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UnRegister Time Broadcast Receiver" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/screenLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintTop_toBottomOf="@id/batteryLayout">
+
+        <Button
+            android:id="@+id/screenReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Register Screen On/Off Broadcast Receiver" />
+
+        <TextView
+            android:id="@+id/screenText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center" />
+
+        <Button
+            android:id="@+id/unscreenReceiver"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="UnRegister Screen Broadcast Receiver" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
