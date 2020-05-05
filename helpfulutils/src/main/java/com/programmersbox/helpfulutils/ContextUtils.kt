@@ -83,7 +83,7 @@ class SharedPrefDelegate<T> internal constructor(
  * Use this when you want to store and retrieve values that will be placed in [SharedPreferences]
  * default preference is [defaultSharedPref]
  *
- * **Thank you:** [Medium](https://medium.com/@krzychukosobudzki/sharedpreferences-and-delegated-properties-in-kotlin-5437feeb254d)
+ * **Thanks to [Medium](https://medium.com/@krzychukosobudzki/sharedpreferences-and-delegated-properties-in-kotlin-5437feeb254d) for a being a helpful article**
  *
  * @param defaultValue a default value. null is default
  * @param key if you want to use a different key. Default is the property name

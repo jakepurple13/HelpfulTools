@@ -11,6 +11,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.Executors
 import kotlin.random.Random
 
 /**
@@ -33,6 +34,8 @@ class ExampleInstrumentedTest {
         appContext.setStreamVolume(50, AudioStreamTypes.STREAM_MUSIC)
         println(appContext.getStreamVolume(AudioStreamTypes.STREAM_MUSIC))
         BiometricBuilder.biometricBuilder(FragmentActivity(R.layout.device_credential_handler_activity)) {
+
+            setExecutor(Executors.newSingleThreadExecutor())
 
             authSuccess {
                 "Success"
