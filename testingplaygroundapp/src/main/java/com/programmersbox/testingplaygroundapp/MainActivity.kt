@@ -22,11 +22,10 @@ import com.programmersbox.dslannotations.DslClass
 import com.programmersbox.dslannotations.DslField
 import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
+import com.programmersbox.gsonutils.getObject
+import com.programmersbox.gsonutils.putObject
 import com.programmersbox.helpfulutils.*
-import com.programmersbox.loggingutils.Loged
-import com.programmersbox.loggingutils.f
-import com.programmersbox.loggingutils.fd
-import com.programmersbox.loggingutils.fe
+import com.programmersbox.loggingutils.*
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
@@ -45,6 +44,11 @@ class MainActivity : AppCompatActivity() {
     private val adapter = CustomAdapter(sizedListOf(50) { getRandomName() })
 
     private var keys: String? by sharedPrefDelegate()
+
+    private var batteryInformation: Battery? by sharedPrefDelegate(
+        getter = { key, defaultValue -> getObject(key, defaultValue) },
+        setter = { key: String, value: Battery? -> putObject(key, value) }
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -205,6 +209,10 @@ class MainActivity : AppCompatActivity() {
         screenOn { context, intent -> println("screen on") }
 
         Loged.f(batteryInfo)
+
+        Loged.fi(batteryInformation)
+        batteryInformation = batteryInfo
+        Loged.fi(batteryInformation)
     }
 
     /**

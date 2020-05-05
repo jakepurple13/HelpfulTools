@@ -62,27 +62,43 @@ inline fun <reified T> SharedPreferences.get(key: String, defaultValue: T? = nul
     else -> defaultValue
 } as? T
 
+/**
+ * **Thank you:** [Medium](https://medium.com/@krzychukosobudzki/sharedpreferences-and-delegated-properties-in-kotlin-5437feeb254d)
+ */
 @Suppress("UNCHECKED_CAST")
-class SharedPrefDelegate<T : Serializable> internal constructor(
+class SharedPrefDelegate<T> internal constructor(
     private val prefs: Context.() -> SharedPreferences,
     private val key: String?,
+    private val getter: SharedPreferences.(String, T?) -> T?,
+    private val setter: SharedPreferences.Editor.(String, T?) -> SharedPreferences.Editor,
     private val defaultValue: T?
 ) : ReadWriteProperty<Context, T?> {
     private val keys: KProperty<*>.() -> String get() = { key ?: name }
-    override operator fun getValue(thisRef: Context, property: KProperty<*>): T? = thisRef.prefs().all[property.keys()] as? T ?: defaultValue
+    override operator fun getValue(thisRef: Context, property: KProperty<*>): T? = thisRef.prefs().getter(property.keys(), defaultValue)
     override operator fun setValue(thisRef: Context, property: KProperty<*>, value: T?) =
-        thisRef.prefs().edit().also { pref -> if (value == null) pref.remove(property.keys()) else pref.put(property.keys() to value) }.apply()
+        thisRef.prefs().edit().setter(property.keys(), value).apply()
 }
 
 /**
  * Use this when you want to store and retrieve values that will be placed in [SharedPreferences]
- * default [SharedPreferences] is [defaultSharedPref]
+ * default preference is [defaultSharedPref]
+ *
+ * **Thank you:** [Medium](https://medium.com/@krzychukosobudzki/sharedpreferences-and-delegated-properties-in-kotlin-5437feeb254d)
+ *
+ * @param defaultValue a default value. null is default
+ * @param key if you want to use a different key. Default is the property name
+ * @param getter if you want to customize the getter in any way
+ * @param setter if you want to put the value into SharedPreferences differently
+ * @param prefs if you want to use a different [SharedPreferences]. Default iis [defaultSharedPref]
  */
-fun <T : Serializable> sharedPrefDelegate(
+@Suppress("UNCHECKED_CAST")
+fun <T> sharedPrefDelegate(
     defaultValue: T? = null,
     key: String? = null,
+    getter: SharedPreferences.(key: String, defaultValue: T?) -> T? = { k, d -> all[k] as? T ?: d },
+    setter: SharedPreferences.Editor.(key: String, value: T?) -> SharedPreferences.Editor = { k, v -> if (v == null) remove(k) else put(k to v) },
     prefs: Context.() -> SharedPreferences = { defaultSharedPref }
-) = SharedPrefDelegate(prefs, key, defaultValue)
+) = SharedPrefDelegate(prefs, key, getter, setter, defaultValue)
 
 /**
  * A fun little method to always be able to run on the ui thread
