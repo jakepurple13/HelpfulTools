@@ -665,18 +665,21 @@ sealed class NotificationAction(private val context: Context) {
     /**
      * @see Notification.Action.Builder.setContextual
      */
+    @RequiresApi(Build.VERSION_CODES.Q)
     @NotificationActionMarker
     var contextual: Boolean = false
 
     /**
      * @see Notification.Action.Builder.setAllowGeneratedReplies
      */
+    @RequiresApi(Build.VERSION_CODES.N)
     @NotificationActionMarker
     var allowGeneratedReplies: Boolean = true
 
     /**
      * @see Notification.Action.Builder.setSemanticAction
      */
+    @RequiresApi(Build.VERSION_CODES.P)
     @NotificationActionMarker
     var semanticAction: SemanticActions = SemanticActions.NONE
 
