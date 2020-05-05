@@ -22,7 +22,9 @@ class Linting {
         Loged.INSTANCE.d("World", "Hello", true, true);
         Loged.INSTANCE.wtf("World", "Hello", true, true);
         Loged.INSTANCE.r("World", "Hello", true, true, 2, 3, 4, 5, 6, 7);
+    }
 
+    void test2() {
         Log.d("Gson", new DeviceInfo.Info().toString());
         Loged.INSTANCE.d(new DeviceInfo.Info(), "Gson", true, true);
     }

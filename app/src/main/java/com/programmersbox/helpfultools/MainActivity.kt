@@ -95,6 +95,7 @@ class MainActivity : AppCompatActivity() {
         gsonInfo.setOnClickListener {
             Log.d("Gson", DeviceInfo.Info().toPrettyJson())
             Log.d("Gson", DeviceInfo.Info().toPrettyJson().fromJson<DeviceInfo.Info>().toString())
+            Linting().test2()
         }
         //----------------------------------------------
         sharedPrefInfo.setOnClickListener {
