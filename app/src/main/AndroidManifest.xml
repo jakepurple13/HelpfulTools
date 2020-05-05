@@ -16,6 +16,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
+        <activity android:name=".contextutility.ContextActivity" />
         <activity android:name=".broadcast.BroadcastActivity" />
         <activity android:name=".MoreActivity" />
         <activity android:name=".MainActivity">
@@ -25,6 +26,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver android:name=".contextutility.ReplyService" />
     </application>
 
 </manifest>

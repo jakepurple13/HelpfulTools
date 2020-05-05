@@ -14,12 +14,7 @@ public class JavaDslBuilder {
     @DslField(name = "javaName", comment = "This is a java one")
     String name = "";
 
-    Function0<Unit> function = new Function0<Unit>() {
-        @Override
-        public Unit invoke() {
-            return null;
-        }
-    };
+    Function0<Unit> function = () -> null;
 
     @DslField(name = "functionOne", comment = "This is a java one")
     Function0<Unit> function1 = new Function0<Unit>() {
