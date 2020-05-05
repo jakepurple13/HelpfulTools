@@ -145,6 +145,7 @@ class ExampleInstrumentedTest {
         appContext.accessibilityManager
         appContext.packageManager
         appContext.audioManager
+        appContext.batteryManager
         appContext.accountManager
         appContext.activityManager
         appContext.alarmManager

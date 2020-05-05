@@ -79,6 +79,12 @@ val Context.activityManager get() = getSystemService(Context.ACTIVITY_SERVICE) a
 val Context.alarmManager get() = getSystemService(Context.ALARM_SERVICE) as AlarmManager
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 /**
+ * get BatteryManager
+ * @see BatteryManager
+ */
+val Context.batteryManager get() = getSystemService(Context.BATTERY_SERVICE) as BatteryManager
+//----------------------------------------------------------------------------------------------------------------------------------------------------
+/**
  * Easy copy method for the clipboard manager
  * @see ClipboardManager.setPrimaryClip
  */

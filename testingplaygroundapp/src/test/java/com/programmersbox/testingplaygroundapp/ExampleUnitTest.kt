@@ -8,7 +8,6 @@ import com.programmersbox.testingplaygroundapp.cardgames.asciiCards
 import com.programmersbox.testingplaygroundapp.cardgames.poker.Hand
 import com.programmersbox.testingplaygroundapp.cardgames.poker.PokerHand
 import org.junit.Test
-import java.util.*
 import kotlin.system.measureTimeMillis
 
 /**
@@ -34,7 +33,7 @@ class ExampleUnitTest {
             for (i in 0..9999) {
                 sb += " world"
             }
-            val string = sb.toString()
+            val string = sb
             println(string.length)
         }
 
@@ -66,15 +65,14 @@ class ExampleUnitTest {
         val twoPair = listOf(2, 2, 4, 4, 5).map { Card(it, Suit.values().random()) }.printCards()
         val pair = listOf(1, 1, 2, 3, 4).map { Card(it, Suit.values().random()) }.printCards()
         val nothing = listOf(1, 3, 5, 7, 9).map { Card(it, Suit.values().random()) }.printCards()
-
     }
 
-    fun List<Card>.printCards() = asciiCards(colorRed = 0xD01426, colorBlack = 0x039b3f0) {
+    private fun List<Card>.printCards() = asciiCards(colorRed = 0xD01426, colorBlack = 0x039b3f0) {
         PokerHand.getWinningHand(it)
             .let { hand -> " = ${it.joinToString { it.toSymbolString() }} = ${hand.stringName}".color(hand.getColorLevel) }
     }.let(::println)
 
-    val Hand.getColorLevel
+    private val Hand.getColorLevel
         get() = when (this) {
             Hand.ROYAL_FLUSH -> 0xd4af37
             Hand.STRAIGHT_FLUSH -> 0xc0c0c0
@@ -90,6 +88,7 @@ class ExampleUnitTest {
 
 }
 
+/*
 fun main() {
     val scan = Scanner(System.`in`)
     val d = Deck.defaultDeck()
@@ -100,3 +99,4 @@ fun main() {
     val s = scan.nextLine()
     println("Here is your info: $s")
 }
+*/

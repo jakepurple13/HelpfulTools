@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() {
 
     private val adapter = CustomAdapter(sizedListOf(50) { getRandomName() })
 
-    private var keys: String? by sharedPrefDelegate()
+    //private var keys: String? by sharedPrefDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -184,6 +184,14 @@ class MainActivity : AppCompatActivity() {
             collectOnUi { println(it) }
         }
         flow(70)
+
+        battery { println(it) }
+
+        screenOff { context, intent -> println("screen off") }
+
+        screenOn { context, intent -> println("screen on") }
+
+        Loged.f(batteryInfo)
     }
 
     /**
