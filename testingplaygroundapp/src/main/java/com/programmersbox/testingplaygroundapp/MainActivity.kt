@@ -25,6 +25,8 @@ import com.programmersbox.funutils.views.flash
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
+import com.programmersbox.loggingutils.fd
+import com.programmersbox.loggingutils.fe
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
@@ -36,15 +38,26 @@ import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
+var Context.key3: Boolean? by sharedPrefDelegate()
+
 class MainActivity : AppCompatActivity() {
 
     private val adapter = CustomAdapter(sizedListOf(50) { getRandomName() })
 
-    //private var keys: String? by sharedPrefDelegate()
+    private var keys: String? by sharedPrefDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        keys = null
+        Loged.fd(keys)
+        keys = "Hello"
+        Loged.fd(keys)
+        key3 = null
+        Loged.fe(key3)
+        key3 = false
+        Loged.fe(key3)
 
         testRV.adapter = adapter
 

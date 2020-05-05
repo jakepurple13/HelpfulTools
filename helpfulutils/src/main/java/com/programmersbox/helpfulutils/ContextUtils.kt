@@ -6,6 +6,7 @@ import android.content.SharedPreferences
 import android.os.Handler
 import android.os.Looper
 import java.io.Serializable
+import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
 private var sharedPrefName: String = "HelpfulUtils"
@@ -63,19 +64,25 @@ inline fun <reified T> SharedPreferences.get(key: String, defaultValue: T? = nul
 
 @Suppress("UNCHECKED_CAST")
 class SharedPrefDelegate<T : Serializable> internal constructor(
-    private val prefs: SharedPreferences,
+    private val prefs: Context.() -> SharedPreferences,
     private val key: String?,
-    private var defaultValue: T?
-) {
-    operator fun getValue(thisRef: Any?, property: KProperty<*>): T? = prefs.all[key ?: property.name] as? T ?: defaultValue
-    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: Any?) = prefs.edit().put((key ?: property.name) to value).apply()
+    private val defaultValue: T?
+) : ReadWriteProperty<Context, T?> {
+    private val keys: KProperty<*>.() -> String get() = { key ?: name }
+    override operator fun getValue(thisRef: Context, property: KProperty<*>): T? = thisRef.prefs().all[property.keys()] as? T ?: defaultValue
+    override operator fun setValue(thisRef: Context, property: KProperty<*>, value: T?) =
+        thisRef.prefs().edit().also { pref -> if (value == null) pref.remove(property.keys()) else pref.put(property.keys() to value) }.apply()
 }
 
 /**
- * Use this when you want to store and retrieve values that will be placed in the [defaultSharedPref]
+ * Use this when you want to store and retrieve values that will be placed in [SharedPreferences]
+ * default [SharedPreferences] is [defaultSharedPref]
  */
-fun <T : Serializable> Context.sharedPrefDelegate(defaultValue: T? = null, key: String? = null, prefs: SharedPreferences = defaultSharedPref) =
-    SharedPrefDelegate(prefs, key, defaultValue)
+fun <T : Serializable> sharedPrefDelegate(
+    defaultValue: T? = null,
+    key: String? = null,
+    prefs: Context.() -> SharedPreferences = { defaultSharedPref }
+) = SharedPrefDelegate(prefs, key, defaultValue)
 
 /**
  * A fun little method to always be able to run on the ui thread
