@@ -30,5 +30,5 @@ apply plugin: 'kotlin-kapt'
 //For the Annotations
 implementation 'com.github.jakepurple13.HelpfulTools:dslannotations:{version}'
 //For the actual generation
-kapt "com.github.jakepurple13.HelpfulTools:dslprocessor:$jakepurple13"
+kapt "com.github.jakepurple13.HelpfulTools:dslprocessor:{version}"
 ```
