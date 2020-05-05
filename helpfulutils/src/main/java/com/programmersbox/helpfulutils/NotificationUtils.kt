@@ -646,13 +646,13 @@ sealed class NotificationAction(private val context: Context) {
         @NotificationActionMarker
         fun addChoice(s: CharSequence) = +s
 
-        fun buildRemoteInput() = RemoteInput.Builder(resultKey)
+        internal fun buildRemoteInput() = RemoteInput.Builder(resultKey)
             .setLabel(label)
             .setAllowFreeFormInput(allowFreeFormInput)
             .also { if (choices.isNotEmpty()) it.setChoices(choices.toTypedArray()) }
             .build()
 
-        fun buildRemoteInputSdk() = android.app.RemoteInput.Builder(resultKey)
+        internal fun buildRemoteInputSdk() = android.app.RemoteInput.Builder(resultKey)
             .setLabel(label)
             .setAllowFreeFormInput(allowFreeFormInput)
             .also { if (choices.isNotEmpty()) it.setChoices(choices.toTypedArray()) }
@@ -683,7 +683,7 @@ sealed class NotificationAction(private val context: Context) {
     @NotificationActionMarker
     var semanticAction: SemanticActions = SemanticActions.NONE
 
-    internal fun buildSdk() = Notification.Action.Builder(actionIcon, actionTitle, pendingIntentAction)
+    internal fun buildSdk() = Notification.Action.Builder(Icon.createWithResource(context, actionIcon), actionTitle, pendingIntentAction)
         .also { if (this is Reply) it.addRemoteInput(buildRemoteInputSdk()) }
         .also { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) it.setAllowGeneratedReplies(allowGeneratedReplies) }
         .also { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) it.setContextual(contextual) }
