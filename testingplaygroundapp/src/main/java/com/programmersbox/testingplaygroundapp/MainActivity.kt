@@ -6,6 +6,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Bundle
@@ -50,8 +51,8 @@ class MainActivity : AppCompatActivity() {
     private var keys: String? by sharedPrefDelegate()
 
     private var batteryInformation: Battery? by sharedPrefDelegate(
-        getter = { key, defaultValue -> getObject(key, defaultValue) },
-        setter = { key: String, value: Battery? -> putObject(key, value) }
+        getter = { key, value -> getObject(key, value) },
+        setter = SharedPreferences.Editor::putObject
     )
 
     @SuppressLint("MissingPermission")
@@ -109,9 +110,22 @@ class MainActivity : AppCompatActivity() {
                     R.mipmap.ic_launcher,
                     "Title",
                     "Message",
-                    42,
+                    40,
                     "id_channel"
                 )
+                sendNotification(41) {
+                    smallIconId = R.mipmap.ic_launcher
+                    title = "Hello"
+                    message = "World"
+                    channelId = "id_channel"
+                    groupSummary = true
+                }
+                sendNotification(42) {
+                    smallIconId = R.mipmap.ic_launcher
+                    title = "Hello"
+                    message = "World"
+                    channelId = "id_channel"
+                }
                 sendNotification(43) {
                     smallIconId = R.mipmap.ic_launcher
                     title = "Hello"

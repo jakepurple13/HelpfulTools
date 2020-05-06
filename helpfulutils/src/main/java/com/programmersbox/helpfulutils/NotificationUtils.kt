@@ -1,5 +1,6 @@
 package com.programmersbox.helpfulutils
 
+import android.annotation.SuppressLint
 import android.app.*
 import android.content.Context
 import android.content.Intent
@@ -159,42 +160,49 @@ class NotificationDslBuilder(private val context: Context) {
 
     /**
      * @see Notification.Builder.setChannelId
+     * @see NotificationCompat.Builder.setChannelId
      */
     @NotificationUtilsMarker
     var channelId: String by Delegates.notNull()
 
     /**
      * @see Notification.Builder.setGroup
+     * @see NotificationCompat.Builder.setGroup
      */
     @NotificationUtilsMarker
     var groupId: String = ""
 
     /**
      * @see Notification.Builder.setContentTitle
+     * @see NotificationCompat.Builder.setContentTitle
      */
     @NotificationUtilsMarker
     var title: CharSequence? = null
 
     /**
      * @see Notification.Builder.setContentText
+     * @see NotificationCompat.Builder.setContentText
      */
     @NotificationUtilsMarker
     var message: CharSequence? = null
 
     /**
      * @see Notification.Builder.setSmallIcon
+     * @see NotificationCompat.Builder.setSmallIcon
      */
     @NotificationUtilsMarker
     var smallIconId: Int by Delegates.notNull()
 
     /**
      * @see Notification.Builder.setLargeIcon
+     * @see NotificationCompat.Builder.setLargeIcon
      */
     @NotificationUtilsMarker
     var largeIconBitmap: Bitmap? = null
 
     /**
      * @see Notification.Builder.setLargeIcon
+     * @see NotificationCompat.Builder.setLargeIcon
      */
     @NotificationUtilsMarker
     var largeIconIcon: Icon? = null
@@ -214,6 +222,7 @@ class NotificationDslBuilder(private val context: Context) {
 
     /**
      * @see Notification.Builder.setContentIntent
+     * @see NotificationCompat.Builder.setContentIntent
      */
     @NotificationUtilsMarker
     fun pendingActivity(pendingIntent: PendingIntent?) = run { privatePendingIntent = pendingIntent }
@@ -222,6 +231,7 @@ class NotificationDslBuilder(private val context: Context) {
 
     /**
      * @see Notification.Builder.setDeleteIntent
+     * @see NotificationCompat.Builder.setDeleteIntent
      */
     @NotificationUtilsMarker
     fun deleteIntent(pendingIntent: PendingIntent?) = run { privateDeleteIntent = pendingIntent }
@@ -230,16 +240,18 @@ class NotificationDslBuilder(private val context: Context) {
 
     /**
      * @see Notification.Builder.setActions
+     * @see NotificationCompat.Builder.addAction
      */
-    @NotificationUtilsMarker
+    @NotificationActionMarker
     fun addReplyAction(block: NotificationAction.Reply.() -> Unit) {
         actions.add(NotificationAction.Reply(context).apply(block))
     }
 
     /**
      * @see Notification.Builder.setActions
+     * @see NotificationCompat.Builder.addAction
      */
-    @NotificationUtilsMarker
+    @NotificationActionMarker
     fun addAction(block: NotificationAction.Action.() -> Unit) {
         actions.add(NotificationAction.Action(context).apply(block))
     }
@@ -260,54 +272,63 @@ class NotificationDslBuilder(private val context: Context) {
 
     /**
      * @see Notification.Builder.setAutoCancel
+     * @see NotificationCompat.Builder.setAutoCancel
      */
     @NotificationUtilsMarker
     var autoCancel: Boolean = false
 
     /**
      * @see Notification.Builder.setContentIntent
+     * @see NotificationCompat.Builder.setContentIntent
      */
     @NotificationUtilsMarker
     var colorized: Boolean = false
 
     /**
      * @see Notification.Builder.setTimeoutAfter
+     * @see NotificationCompat.Builder.setTimeoutAfter
      */
     @NotificationUtilsMarker
     var timeoutAfter: Long? = null
 
     /**
      * @see Notification.Builder.setShowWhen
+     * @see NotificationCompat.Builder.setShowWhen
      */
     @NotificationUtilsMarker
     var showWhen: Boolean = false
 
     /**
      * @see Notification.Builder.setLocalOnly
+     * @see NotificationCompat.Builder.setLocalOnly
      */
     @NotificationUtilsMarker
     var localOnly: Boolean = false
 
     /**
      * @see Notification.Builder.setOngoing
+     * @see NotificationCompat.Builder.setOngoing
      */
     @NotificationUtilsMarker
     var ongoing: Boolean = false
 
     /**
      * @see Notification.Builder.setNumber
+     * @see NotificationCompat.Builder.setNumber
      */
     @NotificationUtilsMarker
     var number: Int = 0
 
     /**
      * @see Notification.Builder.setSubText
+     * @see NotificationCompat.Builder.setSubText
      */
     @NotificationUtilsMarker
     var subText: CharSequence = ""
 
     /**
      * @see Notification.Builder.setOnlyAlertOnce
+     * @see NotificationCompat.Builder.setOnlyAlertOnce
      */
     @NotificationUtilsMarker
     var onlyAlertOnce: Boolean = false
@@ -324,18 +345,21 @@ class NotificationDslBuilder(private val context: Context) {
 
     /**
      * @see Notification.InboxStyle
+     * @see NotificationCompat.InboxStyle
      */
     @NotificationStyleMarker
     fun inboxStyle(block: NotificationStyle.Inbox.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.Inbox().apply(block) }
 
     /**
      * @see Notification.BigPictureStyle
+     * @see NotificationCompat.BigPictureStyle
      */
     @NotificationStyleMarker
     fun pictureStyle(block: NotificationStyle.Picture.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.Picture().apply(block) }
 
     /**
      * @see Notification.BigTextStyle
+     * @see NotificationCompat.BigTextStyle
      */
     @NotificationStyleMarker
     fun bigTextStyle(block: NotificationStyle.BigText.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.BigText().apply(block) }
@@ -381,6 +405,20 @@ class NotificationDslBuilder(private val context: Context) {
     @NotificationUtilsMarker
     fun setPerson(block: Person.Builder.() -> Unit) = run { person = Person.Builder().apply(block).build() }
 
+    /**
+     * @see Notification.Builder.setGroupSummary
+     * @see NotificationCompat.Builder.setGroupSummary
+     */
+    @NotificationUtilsMarker
+    var groupSummary: Boolean = false
+
+    /**
+     * @see Notification.Builder.setGroupAlertBehavior
+     * @see NotificationCompat.Builder.setGroupAlertBehavior
+     */
+    @NotificationUtilsMarker
+    var groupAlertBehavior: GroupBehavior = GroupBehavior.ALL
+
     private fun build() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Notification.Builder(context, channelId)
             .setSmallIcon(smallIconId)
@@ -401,9 +439,11 @@ class NotificationDslBuilder(private val context: Context) {
             .setStyle(notificationNotificationStyle?.buildSdk())
             .setOnlyAlertOnce(onlyAlertOnce)
             .setGroup(groupId.let { if (it.isEmpty()) channelId else it })
+            .setGroupSummary(groupSummary)
+            .setGroupAlertBehavior(groupAlertBehavior.idSdk)
             .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
-            .also { builder -> actions.forEach { builder.addAction(it.buildSdk()) } }
+            .also { builder -> builder.setActions(*actions.map(NotificationAction::buildSdk).toTypedArray()) }
             .build()
     } else {
         NotificationCompat.Builder(context, channelId)
@@ -425,6 +465,8 @@ class NotificationDslBuilder(private val context: Context) {
             .setStyle(notificationNotificationStyle?.build())
             .setOnlyAlertOnce(onlyAlertOnce)
             .setGroup(groupId.let { if (it.isEmpty()) channelId else it })
+            .setGroupSummary(groupSummary)
+            .setGroupAlertBehavior(groupAlertBehavior.id)
             .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
             .also { builder -> actions.forEach { builder.addAction(it.build()) } }
@@ -435,6 +477,24 @@ class NotificationDslBuilder(private val context: Context) {
         fun builder(context: Context, block: NotificationDslBuilder.() -> Unit): Notification = NotificationDslBuilder(context).apply(block).build()
     }
 
+}
+
+@SuppressLint("InlinedApi")
+enum class GroupBehavior(@RequiresApi(Build.VERSION_CODES.O) internal val idSdk: Int, internal val id: Int) {
+    /**
+     * @see Notification.GROUP_ALERT_ALL
+     */
+    ALL(Notification.GROUP_ALERT_ALL, NotificationCompat.GROUP_ALERT_ALL),
+
+    /**
+     * @see Notification.GROUP_ALERT_CHILDREN
+     */
+    CHILDREN(Notification.GROUP_ALERT_CHILDREN, NotificationCompat.GROUP_ALERT_ALL),
+
+    /**
+     * @see Notification.GROUP_ALERT_SUMMARY
+     */
+    SUMMARY(Notification.GROUP_ALERT_SUMMARY, NotificationCompat.GROUP_ALERT_ALL)
 }
 
 enum class SemanticActions(internal val id: Int) {
