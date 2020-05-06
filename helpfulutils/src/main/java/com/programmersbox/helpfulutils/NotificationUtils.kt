@@ -12,16 +12,20 @@ import android.os.Bundle
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
 import androidx.core.graphics.drawable.IconCompat
 import kotlin.properties.Delegates
 
-enum class NotificationChannelImportance(internal val importance: Int) {
+class NotificationException(message: String?) : Exception(message)
+
+@SuppressLint("InlinedApi")
+enum class NotificationChannelImportance(@RequiresApi(Build.VERSION_CODES.N) internal val importanceSdk: Int, internal val importance: Int) {
     /**
      * A notification with no importance: does not show in the shade.
      */
-    NONE(0),
+    NONE(NotificationManager.IMPORTANCE_NONE, NotificationManagerCompat.IMPORTANCE_NONE),
 
     /**
      * Min notification importance: only shows in the shade, below the fold.  This should
@@ -31,30 +35,30 @@ enum class NotificationChannelImportance(internal val importance: Int) {
      * as of Android version {@link android.os.Build.VERSION_CODES#O}, the system will show
      * a higher-priority notification about your app running in the background.
      */
-    MIN(1),
+    MIN(NotificationManager.IMPORTANCE_MIN, NotificationManagerCompat.IMPORTANCE_MIN),
 
     /**
      * Low notification importance: Shows in the shade, and potentially in the status bar
      * (see {@link #shouldHideSilentStatusBarIcons()}), but is not audibly intrusive.
      */
-    LOW(2),
+    LOW(NotificationManager.IMPORTANCE_LOW, NotificationManagerCompat.IMPORTANCE_LOW),
 
     /**
      * Default notification importance: shows everywhere, makes noise, but does not visually
      * intrude.
      */
-    DEFAULT(3),
+    DEFAULT(NotificationManager.IMPORTANCE_DEFAULT, NotificationManagerCompat.IMPORTANCE_DEFAULT),
 
     /**
      * Higher notification importance: shows everywhere, makes noise and peeks. May use full screen
      * intents.
      */
-    HIGH(4),
+    HIGH(NotificationManager.IMPORTANCE_HIGH, NotificationManagerCompat.IMPORTANCE_HIGH),
 
     /**
      * Unused.
      */
-    MAX(5)
+    MAX(NotificationManager.IMPORTANCE_MAX, NotificationManagerCompat.IMPORTANCE_MAX)
 }
 
 /**
@@ -145,16 +149,16 @@ fun Context.sendNotification(notificationId: Int, block: NotificationDslBuilder.
     notificationManager.notify(notificationId, NotificationDslBuilder.builder(this, block))
 
 @DslMarker
-annotation class NotificationUtilsMarker
+private annotation class NotificationUtilsMarker
 
 @DslMarker
-annotation class NotificationActionMarker
+private annotation class NotificationActionMarker
 
 @DslMarker
-annotation class NotificationStyleMarker
+private annotation class NotificationStyleMarker
 
 @DslMarker
-annotation class NotificationBubbleMarker
+private annotation class NotificationBubbleMarker
 
 class NotificationDslBuilder(private val context: Context) {
 
@@ -210,7 +214,7 @@ class NotificationDslBuilder(private val context: Context) {
     private var privatePendingIntent: PendingIntent? = null
 
     @NotificationUtilsMarker
-    fun pendingActivity(gotoActivity: Class<*>?, requestCode: Int = 0, block: TaskStackBuilder.() -> Unit = {}) {
+    fun pendingIntent(gotoActivity: Class<*>?, requestCode: Int = 0, block: TaskStackBuilder.() -> Unit = {}) {
         privatePendingIntent = gotoActivity?.let {
             TaskStackBuilder.create(context)
                 .addParentStack(gotoActivity)
@@ -225,7 +229,7 @@ class NotificationDslBuilder(private val context: Context) {
      * @see NotificationCompat.Builder.setContentIntent
      */
     @NotificationUtilsMarker
-    fun pendingActivity(pendingIntent: PendingIntent?) = run { privatePendingIntent = pendingIntent }
+    fun pendingIntent(pendingIntent: PendingIntent?) = run { privatePendingIntent = pendingIntent }
 
     private var privateDeleteIntent: PendingIntent? = null
 
@@ -383,7 +387,7 @@ class NotificationDslBuilder(private val context: Context) {
      * Add a bubble!
      */
     @NotificationBubbleMarker
-    fun addBubble(block: NotificationBubble.() -> Unit) = run { bubble = NotificationBubble.build(block) }
+    fun addBubble(block: NotificationBubble.() -> Unit) = run { bubble = NotificationBubble().apply(block) }
 
     @NotificationUtilsMarker
     var person: Person? = null
@@ -697,7 +701,7 @@ abstract class NotificationStyle {
             .setMediaSession(mediaSessionToken)
             .also { if (actions != null) it.setShowActionsInCompactView(*actions!!) }
 
-        override fun build(): NotificationCompat.Style = throw Exception("Media Style is only usable on version O and up")
+        override fun build(): NotificationCompat.Style = throw NotificationException("Media Style is only usable on version O and up")
 
     }
 }
@@ -801,7 +805,7 @@ sealed class NotificationAction(private val context: Context) {
     private var pendingIntentAction: PendingIntent? = null
 
     @NotificationActionMarker
-    fun pendingActivity(gotoActivity: Class<*>, requestCode: Int = 0, block: Intent.() -> Unit = {}) {
+    fun pendingActionIntent(gotoActivity: Class<*>, requestCode: Int = 0, block: Intent.() -> Unit = {}) {
         pendingIntentAction = PendingIntent.getBroadcast(
             context,
             requestCode,
@@ -811,7 +815,7 @@ sealed class NotificationAction(private val context: Context) {
     }
 
     @NotificationActionMarker
-    fun pendingActivity(pendingIntent: PendingIntent?) = run { pendingIntentAction = pendingIntent }
+    fun pendingActionIntent(pendingIntent: PendingIntent?) = run { pendingIntentAction = pendingIntent }
 
 }
 
@@ -869,16 +873,4 @@ class NotificationBubble {
         .setAutoExpandBubble(autoExpandBubble)
         .setDeleteIntent(deleteIntent)
         .build()
-
-    companion object {
-        @RequiresApi(Build.VERSION_CODES.Q)
-        @NotificationBubbleMarker
-        fun builder(block: NotificationBubble.() -> Unit) = NotificationBubble().apply(block).build()
-
-        @NotificationBubbleMarker
-        fun builderSdk(context: Context, block: NotificationBubble.() -> Unit) = NotificationBubble().apply(block).buildSdk(context)
-
-        @NotificationBubbleMarker
-        fun build(block: NotificationBubble.() -> Unit) = NotificationBubble().apply(block)
-    }
 }

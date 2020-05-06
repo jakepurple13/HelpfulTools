@@ -101,11 +101,12 @@ class MainActivity : AppCompatActivity() {
                     .show()
             }
 
+        createNotificationChannel("id_channel", importance = NotificationChannelImportance.HIGH)
+        createNotificationGroup("id_group")
+
         notificationButton
             .clicks()
             .collectOnUi {
-                createNotificationChannel("id_channel")
-                createNotificationGroup("id_group")
                 sendNotification(
                     R.mipmap.ic_launcher,
                     "Title",
@@ -131,11 +132,11 @@ class MainActivity : AppCompatActivity() {
                     title = "Hello"
                     message = "World"
                     channelId = "id_channel"
-                    pendingActivity(BlackjackActivity::class.java)
+                    pendingIntent(BlackjackActivity::class.java)
                     addAction {
                         actionTitle = "Action!"
                         actionIcon = R.mipmap.ic_launcher
-                        pendingActivity(ActionService::class.java)
+                        pendingActionIntent(ActionService::class.java)
                     }
 
                     addReplyAction {
@@ -143,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                         actionIcon = R.mipmap.ic_launcher
                         resultKey = KEY_TEXT_REPLY
                         label = "Reply here"
-                        pendingActivity(ReplyService::class.java)
+                        pendingActionIntent(ReplyService::class.java)
                     }
 
                     bigTextStyle {
@@ -157,11 +158,11 @@ class MainActivity : AppCompatActivity() {
                     title = "Hello"
                     message = "World"
                     channelId = "id_channel"
-                    pendingActivity(BlackjackActivity::class.java)
+                    pendingIntent(BlackjackActivity::class.java)
                     addAction {
                         actionTitle = "Action!"
                         actionIcon = R.mipmap.ic_launcher
-                        pendingActivity(ActionService::class.java)
+                        pendingActionIntent(ActionService::class.java)
                     }
 
                     addBubble {
@@ -178,6 +179,18 @@ class MainActivity : AppCompatActivity() {
                         summaryText = "Summary"
                     }
                 }
+            }
+
+        notificationButton
+            .longClicks()
+            .collectOnUi {
+                sendNotification(
+                    R.mipmap.ic_launcher,
+                    "Title",
+                    "Message",
+                    39,
+                    "id_channel"
+                )
             }
 
         val person = PersonBuilder.builder {
