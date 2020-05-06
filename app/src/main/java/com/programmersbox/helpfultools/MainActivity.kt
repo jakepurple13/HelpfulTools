@@ -44,6 +44,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         //----------------------------------------------
+        println("Random Number is: $randomNumber")
+        randomNumber = Random.nextInt(1, 100)
+        //----------------------------------------------
         moreActivity
             .clicks()
             .collectOnUi {

@@ -9,6 +9,7 @@ import androidx.core.app.RemoteInput
 import com.programmersbox.gsonutils.getObject
 import com.programmersbox.gsonutils.putObject
 import com.programmersbox.helpfultools.R
+import com.programmersbox.helpfultools.randomNumber
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
@@ -24,6 +25,8 @@ class ContextActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_context)
+
+        println("Random Number is: $randomNumber")
 
         println(batteryInformation)
         batteryInformation = batteryInfo

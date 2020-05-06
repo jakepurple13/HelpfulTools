@@ -2,10 +2,12 @@ package com.programmersbox.testingplaygroundapp
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -128,6 +130,32 @@ class MainActivity : AppCompatActivity() {
                         resultKey = KEY_TEXT_REPLY
                         label = "Reply here"
                         pendingActivity(ReplyService::class.java)
+                    }
+
+                    bigTextStyle {
+                        bigText = "This is a big text"
+                        contentTitle = "Title!"
+                        summaryText = "Summary"
+                    }
+                }
+                sendNotification(44) {
+                    smallIconId = R.mipmap.ic_launcher
+                    title = "Hello"
+                    message = "World"
+                    channelId = "id_channel"
+                    pendingActivity(BlackjackActivity::class.java)
+                    addAction {
+                        actionTitle = "Action!"
+                        actionIcon = R.mipmap.ic_launcher
+                        pendingActivity(ActionService::class.java)
+                    }
+
+                    addBubble {
+                        val target = Intent(this@MainActivity, BlackjackActivity::class.java)
+                        val bubbleIntent = PendingIntent.getActivity(this@MainActivity, 0, target, 0 /* flags */)
+                        bubbleIntent(bubbleIntent)
+                        desiredHeight = 600
+                        icon = Icon.createWithResource(this@MainActivity, R.mipmap.ic_launcher)
                     }
 
                     bigTextStyle {

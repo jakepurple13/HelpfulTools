@@ -12,7 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".cardgames.uno.UnoActivity" />
-        <activity android:name=".cardgames.blackjack.BlackjackActivity" />
+        <activity
+            android:name=".cardgames.blackjack.BlackjackActivity"
+            android:allowEmbedded="true"
+            android:documentLaunchMode="always"
+            android:resizeableActivity="true" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

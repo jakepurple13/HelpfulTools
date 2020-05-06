@@ -75,7 +75,6 @@ inline fun <reified T> SharedPreferences.get(key: String, defaultValue: T? = nul
 /**
  * **Thank you:** [Medium](https://medium.com/@krzychukosobudzki/sharedpreferences-and-delegated-properties-in-kotlin-5437feeb254d)
  */
-@Suppress("UNCHECKED_CAST")
 class SharedPrefDelegate<T> internal constructor(
     private val prefs: Context.() -> SharedPreferences,
     private val key: String?,

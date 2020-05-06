@@ -3,10 +3,7 @@ package com.programmersbox.testingplaygroundapp
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
-import com.programmersbox.helpfulutils.defaultSharedPref
-import com.programmersbox.helpfulutils.get
-import com.programmersbox.helpfulutils.set
-import com.programmersbox.helpfulutils.sharedPrefDelegate
+import com.programmersbox.helpfulutils.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,7 +16,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
 
-    var Context.asdf: Int? by InstrumentationRegistry.getInstrumentation().targetContext.sharedPrefDelegate()
+    private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+
+    private var Context.asdf: String? by sharedPrefDelegate()
+    private var Context.a: Int? by sharedPrefDelegate(9, "thisIsTheKey")
 
     @Test
     fun useAppContext() {
@@ -27,28 +27,28 @@ class ExampleInstrumentedTest {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
         assertEquals("com.programmersbox.testingplaygroundapp", appContext.packageName)
         with(appContext) {
-            var f: String? by sharedPrefDelegate("0")
+            //var f: String? by sharedPrefDelegate("0")
 
-            f = "5"
-            println(f)
+            asdf = "5"
+            println(asdf)
             println(defaultSharedPref.all.entries)
 
-            println(defaultSharedPref.get("f", "9"))
+            println(defaultSharedPref.get("asdf", "9"))
 
-            var a: Int? by sharedPrefDelegate(9, "thisIsTheKey")
             a = 54
             println("$a")
 
-            var x: Int? = 5
-            x = 9
-            println(x)
+            val z: String? = defaultSharedPref["asdf"]
+            println(z)
 
-            val z: String? = defaultSharedPref["f"]
-
-            defaultSharedPref["f"] = "Hello World"
-
+            defaultSharedPref["asdf"] = "Hello World"
         }
 
+    }
+
+    @Test
+    fun nextTry() {
+        appContext.powerManager.addThermalStatusListener { }
     }
 
 }

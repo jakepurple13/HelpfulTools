@@ -1,9 +1,6 @@
 package com.programmersbox.helpfulutils
 
-import android.app.Notification
-import android.app.NotificationChannel
-import android.app.NotificationChannelGroup
-import android.app.PendingIntent
+import android.app.*
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -16,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.RemoteInput
 import androidx.core.app.TaskStackBuilder
+import androidx.core.graphics.drawable.IconCompat
 import kotlin.properties.Delegates
 
 enum class NotificationChannelImportance(internal val importance: Int) {
@@ -154,6 +152,9 @@ annotation class NotificationActionMarker
 @DslMarker
 annotation class NotificationStyleMarker
 
+@DslMarker
+annotation class NotificationBubbleMarker
+
 class NotificationDslBuilder(private val context: Context) {
 
     /**
@@ -276,6 +277,12 @@ class NotificationDslBuilder(private val context: Context) {
     var timeoutAfter: Long? = null
 
     /**
+     * @see Notification.Builder.setShowWhen
+     */
+    @NotificationUtilsMarker
+    var showWhen: Boolean = false
+
+    /**
      * @see Notification.Builder.setLocalOnly
      */
     @NotificationUtilsMarker
@@ -346,6 +353,34 @@ class NotificationDslBuilder(private val context: Context) {
     @NotificationStyleMarker
     fun customStyle(block: NotificationStyle?) = run { notificationNotificationStyle = block }
 
+    private var bubble: NotificationBubble? = null
+
+    /**
+     * Add a bubble!
+     */
+    @NotificationBubbleMarker
+    fun addBubble(block: NotificationBubble.() -> Unit) = run { bubble = NotificationBubble.build(block) }
+
+    @NotificationUtilsMarker
+    var person: Person? = null
+
+    /**
+     * Set the person
+     *
+     * An example:
+     * ```kotlin
+     * val chatBot = Person.Builder()
+     ****      .setBot(true)
+     ****      .setName("BubbleBot")
+     ****      .setImportant(true)
+     ****      .build()
+     * ```
+     *
+     */
+    @RequiresApi(Build.VERSION_CODES.P)
+    @NotificationUtilsMarker
+    fun setPerson(block: Person.Builder.() -> Unit) = run { person = Person.Builder().apply(block).build() }
+
     private fun build() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Notification.Builder(context, channelId)
             .setSmallIcon(smallIconId)
@@ -358,6 +393,9 @@ class NotificationDslBuilder(private val context: Context) {
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
             .setNumber(number)
+            .setShowWhen(showWhen)
+            .also { builder -> person?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.addPerson(it) } }
+            .also { builder -> bubble?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) builder.setBubbleMetadata(it.build()) } }
             .also { it.extras.extrasSet() }
             .setSubText(subText)
             .setStyle(notificationNotificationStyle?.buildSdk())
@@ -379,6 +417,9 @@ class NotificationDslBuilder(private val context: Context) {
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
             .setNumber(number)
+            .setShowWhen(showWhen)
+            .also { builder -> person?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.addPerson(it.uri) } }
+            .also { builder -> bubble?.let { builder.bubbleMetadata = it.buildSdk(context) } }
             .also { it.extras.extrasSet() }
             .setSubText(subText)
             .setStyle(notificationNotificationStyle?.build())
@@ -712,4 +753,72 @@ sealed class NotificationAction(private val context: Context) {
     @NotificationActionMarker
     fun pendingActivity(pendingIntent: PendingIntent?) = run { pendingIntentAction = pendingIntent }
 
+}
+
+class NotificationBubble {
+
+    @NotificationBubbleMarker
+    var desiredHeight: Int by Delegates.notNull()
+
+    @NotificationBubbleMarker
+    var icon: Icon by Delegates.notNull()
+
+    @NotificationBubbleMarker
+    var suppressNotification: Boolean = false
+
+    @NotificationBubbleMarker
+    var autoExpandBubble: Boolean = false
+
+    private var bubbleIntent: PendingIntent? = null
+
+    /**
+     * The activity to show
+     *
+     * The activity must have the three properties below
+     * ```xml
+     * <activity
+     **   ...
+     **   android:allowEmbedded="true"
+     **   android:documentLaunchMode="always"
+     **   android:resizeableActivity="true"/>
+     * ```
+     */
+    @NotificationBubbleMarker
+    fun bubbleIntent(pendingIntent: PendingIntent?) = run { bubbleIntent = pendingIntent }
+
+    private var deleteIntent: PendingIntent? = null
+
+    @NotificationBubbleMarker
+    fun deleteIntent(pendingIntent: PendingIntent?) = run { deleteIntent = pendingIntent }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    internal fun build() = Notification.BubbleMetadata.Builder()
+        .setDesiredHeight(desiredHeight)
+        .setIcon(icon)
+        .also { builder -> bubbleIntent?.let { builder.setIntent(it) } }
+        .setSuppressNotification(suppressNotification)
+        .setAutoExpandBubble(autoExpandBubble)
+        .setDeleteIntent(deleteIntent)
+        .build()
+
+    internal fun buildSdk(context: Context) = NotificationCompat.BubbleMetadata.Builder()
+        .setDesiredHeight(desiredHeight)
+        .setIcon(IconCompat.createFromIcon(context, icon)!!)
+        .also { builder -> bubbleIntent?.let { builder.setIntent(it) } }
+        .setSuppressNotification(suppressNotification)
+        .setAutoExpandBubble(autoExpandBubble)
+        .setDeleteIntent(deleteIntent)
+        .build()
+
+    companion object {
+        @RequiresApi(Build.VERSION_CODES.Q)
+        @NotificationBubbleMarker
+        fun builder(block: NotificationBubble.() -> Unit) = NotificationBubble().apply(block).build()
+
+        @NotificationBubbleMarker
+        fun builderSdk(context: Context, block: NotificationBubble.() -> Unit) = NotificationBubble().apply(block).buildSdk(context)
+
+        @NotificationBubbleMarker
+        fun build(block: NotificationBubble.() -> Unit) = NotificationBubble().apply(block)
+    }
 }

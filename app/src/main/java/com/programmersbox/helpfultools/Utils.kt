@@ -1,9 +1,11 @@
 package com.programmersbox.helpfultools
 
+import android.content.Context
 import com.programmersbox.dslannotations.DslClass
 import com.programmersbox.dslannotations.DslField
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.helpfulutils.randomRemove
+import com.programmersbox.helpfulutils.sharedPrefDelegate
 import org.intellij.lang.annotations.Language
 
 fun getRandomName() = try {
@@ -11,6 +13,8 @@ fun getRandomName() = try {
 } catch (e: IndexOutOfBoundsException) {
     "Hello"
 }
+
+var Context.randomNumber: Int? by sharedPrefDelegate()
 
 @DslMarker
 annotation class DslTestMarker
