@@ -125,6 +125,11 @@ inline fun <reified T> Context.startActivity(vararg pairs: Pair<String, Serializ
  */
 fun Intent.putExtras(vararg pairs: Pair<String, Serializable>) = apply { pairs.forEach { putExtra(it.first, it.second) } }
 
+/**
+ * @param textToSpeak the text to speak
+ * @param onError if something goes wrong
+ * @param modify any modifications like pitch or speech rate
+ */
 fun Context.textToSpeech(textToSpeak: String?, onError: () -> Unit = {}, modify: TextToSpeech.() -> Unit = {}) {
     val tts = TextToSpeech(this, OnInitListener { }).apply(modify)
     TextToSpeech(this, OnInitListener { status ->
@@ -139,6 +144,9 @@ fun Context.textToSpeech(textToSpeak: String?, onError: () -> Unit = {}, modify:
     })
 }
 
+/**
+ * @param speechListener some methods to interact with the [SpeechRecognizer]
+ */
 @RequiresPermission(Manifest.permission.RECORD_AUDIO)
 fun Context.speechToText(speechListener: SpeechListener, prompt: String = "Say your text...") {
     val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
