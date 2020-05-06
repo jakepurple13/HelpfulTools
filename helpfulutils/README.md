@@ -66,6 +66,13 @@ var Context.key: String? by sharedPrefDelegate()
 
 val Context.sharedPref get() = defaultSharedPref
 
+Context.speechToText(object : SpeechListener {
+    //The arraylist is all the possibilities. Usually the first index is the closest but just in case, here's all of them
+    override fun getResult(text: ArrayList<String>?) = println(text)
+})
+
+Context.textToSpeech("Hello World")
+
 ```
 
 ## [Notification](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/NotificationUtils.kt)
