@@ -100,6 +100,15 @@ val notification = NotificationDslBuilder.builder(this) {
         contentTitle = "Content Title"
         bigText = "Big Text"
     }
+    //To add a bubble
+    //Will only work on versions that support it
+    addBubble {
+        val target = Intent(context, BubbleActivity::class.java)
+        val bubbleIntent = PendingIntent.getActivity(context, 0, target, 0 /* flags */)
+        bubbleIntent(bubbleIntent)
+        desiredHeight = 600
+        icon = Icon.createWithResource(context, R.mipmap.ic_launcher)
+    }
 }
 
 notificationManager.notify(/*notification id*/, notification)
