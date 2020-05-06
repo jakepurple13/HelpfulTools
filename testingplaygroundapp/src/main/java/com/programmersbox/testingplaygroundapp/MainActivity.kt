@@ -1,5 +1,7 @@
 package com.programmersbox.testingplaygroundapp
 
+import android.Manifest
+import android.annotation.SuppressLint
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -50,6 +52,7 @@ class MainActivity : AppCompatActivity() {
         setter = { key: String, value: Battery? -> putObject(key, value) }
     )
 
+    @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -76,7 +79,15 @@ class MainActivity : AppCompatActivity() {
 
         addButton
             .clicks()
-            .collectOnUi { adapter.addItem(getRandomName()) }
+            .collectOnUi {
+                notificationButton.topDrawable?.changeDrawableColor(Random.nextColor())
+                requestPermissions(Manifest.permission.RECORD_AUDIO) {
+                    if (it.isGranted) speechToText(object : SpeechListener {
+                        override fun getResult(text: ArrayList<String>?) = textToSpeech(text?.firstOrNull())
+                    })
+                }
+                adapter.addItem(getRandomName())
+            }
 
         gotoGames
             .clicks()

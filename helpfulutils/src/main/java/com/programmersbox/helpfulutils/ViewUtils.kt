@@ -3,6 +3,8 @@ package com.programmersbox.helpfulutils
 import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
 import android.transition.AutoTransition
 import android.transition.Transition
@@ -16,6 +18,7 @@ import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AlertDialog
+
 
 var TextView.startDrawable: Drawable?
     get() = compoundDrawables[0]
@@ -63,6 +66,13 @@ fun View.invisible() = run { visibility = View.INVISIBLE }
  * Set the visibility to [View.VISIBLE]
  */
 fun View.visible() = run { visibility = View.VISIBLE }
+
+/**
+ * changes color of a drawable
+ */
+fun Drawable.changeDrawableColor(color: Int) {
+    mutate().colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
+}
 
 /**
  * @see AlertDialog.Builder.setItems

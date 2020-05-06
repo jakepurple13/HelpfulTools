@@ -1,13 +1,23 @@
 package com.programmersbox.helpfulutils
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.speech.RecognitionListener
+import android.speech.RecognizerIntent
+import android.speech.SpeechRecognizer
+import android.speech.tts.TextToSpeech
+import android.speech.tts.TextToSpeech.OnInitListener
+import androidx.annotation.RequiresPermission
 import java.io.Serializable
+import java.util.*
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+
 
 private var sharedPrefName: String = "HelpfulUtils"
 
@@ -114,3 +124,54 @@ inline fun <reified T> Context.startActivity(vararg pairs: Pair<String, Serializ
  * An easy way to put data into an intent
  */
 fun Intent.putExtras(vararg pairs: Pair<String, Serializable>) = apply { pairs.forEach { putExtra(it.first, it.second) } }
+
+fun Context.textToSpeech(textToSpeak: String?, onError: () -> Unit = {}, modify: TextToSpeech.() -> Unit = {}) {
+    val tts = TextToSpeech(this, OnInitListener { }).apply(modify)
+    TextToSpeech(this, OnInitListener { status ->
+        if (status == TextToSpeech.SUCCESS) {
+            val result = tts.setLanguage(Locale.getDefault())
+            if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
+                onError()
+            } else tts.speak(textToSpeak, TextToSpeech.QUEUE_FLUSH, null, null)
+        } else {
+            onError()
+        }
+    })
+}
+
+@RequiresPermission(Manifest.permission.RECORD_AUDIO)
+fun Context.speechToText(speechListener: SpeechListener, prompt: String = "Say your text...") {
+    val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
+    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault())
+    intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+    intent.putExtra(RecognizerIntent.EXTRA_PROMPT, prompt)
+    SpeechRecognizer.createSpeechRecognizer(this).apply {
+        setRecognitionListener(object : RecognitionListener {
+            override fun onReadyForSpeech(params: Bundle) = speechListener.onReadyForSpeech(params)
+            override fun onBeginningOfSpeech() = speechListener.onBeginningOfSpeech()
+            override fun onRmsChanged(rmsdB: Float) = speechListener.onRmsChanged(rmsdB)
+            override fun onBufferReceived(buffer: ByteArray) = speechListener.onBufferReceived(buffer)
+            override fun onError(error: Int) = speechListener.onError(error)
+            override fun onPartialResults(partialResults: Bundle) = speechListener.onPartialResults(partialResults)
+            override fun onEvent(eventType: Int, params: Bundle) = speechListener.onEvent(eventType, params)
+            override fun onResults(results: Bundle) = speechListener.getResult(results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION))
+            override fun onEndOfSpeech() {
+                speechListener.onEndOfSpeech()
+                stopListening()
+            }
+
+        })
+    }.startListening(intent)
+}
+
+interface SpeechListener {
+    fun getResult(text: ArrayList<String>?)
+    fun onReadyForSpeech(params: Bundle) {}
+    fun onEndOfSpeech() {}
+    fun onBeginningOfSpeech() {}
+    fun onRmsChanged(rmsdB: Float) {}
+    fun onBufferReceived(buffer: ByteArray) {}
+    fun onError(error: Int) {}
+    fun onPartialResults(partialResults: Bundle) {}
+    fun onEvent(eventType: Int, params: Bundle) {}
+}
