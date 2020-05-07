@@ -18,8 +18,8 @@ class ExampleInstrumentedTest {
 
     private val appContext = InstrumentationRegistry.getInstrumentation().targetContext
 
-    private var Context.asdf: String? by sharedPrefDelegate()
-    private var Context.a: Int? by sharedPrefDelegate(9, "thisIsTheKey")
+    private var Context.asdf: String? by sharedPrefDelegate("")
+    private var Context.a: Int by sharedPrefDelegate(9, "thisIsTheKey")
 
     @Test
     fun useAppContext() {

@@ -42,7 +42,7 @@ import kotlinx.coroutines.launch
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
-var Context.key3: Boolean? by sharedPrefDelegate()
+var Context.key3: Boolean? by sharedPrefDelegate(null)
 
 class MainActivity : AppCompatActivity() {
 

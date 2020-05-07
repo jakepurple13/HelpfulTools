@@ -49,7 +49,7 @@ class ContextActivity : AppCompatActivity() {
                     label = "label"
                     actionTitle = "Action Title"
                     actionIcon = R.mipmap.ic_launcher
-                    pendingActivity(ReplyService::class.java)
+                    pendingActionIntent(ReplyService::class.java)
                 }
                 bigTextStyle {
                     summaryText = "Summary"

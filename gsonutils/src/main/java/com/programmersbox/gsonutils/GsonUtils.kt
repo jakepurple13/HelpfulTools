@@ -1,11 +1,14 @@
 package com.programmersbox.gsonutils
 
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
+import com.programmersbox.helpfulutils.defaultSharedPref
+import com.programmersbox.helpfulutils.sharedPrefDelegate
 
 /**
  * put any object into the intent
@@ -109,3 +112,15 @@ inline fun <reified T> String?.fromJson(vararg adapters: Pair<Class<*>, Any>): T
  */
 fun GsonBuilder.registerTypeAdapters(vararg adapters: Pair<Class<*>, Any>): GsonBuilder =
     adapters.forEach { registerTypeAdapter(it.first, it.second) }.let { this }
+
+/**
+ * Difference between this and [sharedPrefDelegate] is that this automatically uses [SharedPreferences.getObject] and [SharedPreferences.Editor.putObject]
+ * @see sharedPrefDelegate
+ */
+inline fun <reified T> sharedPrefObjectDelegate(
+    defaultValue: T? = null,
+    key: String? = null,
+    noinline getter: SharedPreferences.(key: String, defaultValue: T?) -> T? = { k, d -> getObject(k, d) },
+    noinline setter: SharedPreferences.Editor.(key: String, value: T?) -> SharedPreferences.Editor = SharedPreferences.Editor::putObject,
+    noinline prefs: Context.() -> SharedPreferences = { defaultSharedPref }
+) = sharedPrefDelegate(prefs = prefs, key = key, getter = getter, setter = setter, defaultValue = defaultValue)
