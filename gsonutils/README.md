@@ -35,3 +35,9 @@ Along with some [network](https://github.com/jakepurple13/HelpfulTools/blob/mast
 val string = getApi("api url")
 val apiObject = getJsonApi<GsonObject>("api url")
 ```
+
+
+Also added a method to tie in with the [SharedPrefDelegate](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/ContextUtils.kt#L103) called [sharedPrefObjectDelegate](https://github.com/jakepurple13/HelpfulTools/blob/master/gsonutils/src/main/java/com/programmersbox/gsonutils/GsonUtils.kt#L120:
+```kotlin
+var Context.gsonObject: GsonObject? by sharedPrefObjectDelegate()
+```

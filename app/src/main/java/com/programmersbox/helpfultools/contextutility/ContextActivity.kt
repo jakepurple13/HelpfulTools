@@ -6,21 +6,20 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.RemoteInput
-import com.programmersbox.gsonutils.getObject
-import com.programmersbox.gsonutils.putObject
+import com.programmersbox.gsonutils.sharedPrefObjectDelegate
 import com.programmersbox.helpfultools.R
 import com.programmersbox.helpfultools.randomNumber
-import com.programmersbox.helpfulutils.*
+import com.programmersbox.helpfulutils.Battery
+import com.programmersbox.helpfulutils.NotificationDslBuilder
+import com.programmersbox.helpfulutils.batteryInfo
+import com.programmersbox.helpfulutils.notificationManager
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
 import kotlinx.android.synthetic.main.activity_context.*
 
 class ContextActivity : AppCompatActivity() {
 
-    private var batteryInformation: Battery? by sharedPrefDelegate(
-        getter = { key, defaultValue -> getObject(key, defaultValue) },
-        setter = { key: String, value: Battery? -> putObject(key, value) }
-    )
+    private var batteryInformation: Battery? by sharedPrefObjectDelegate()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
