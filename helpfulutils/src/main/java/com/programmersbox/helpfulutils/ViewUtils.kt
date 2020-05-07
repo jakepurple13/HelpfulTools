@@ -13,6 +13,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -72,6 +73,22 @@ fun View.visible() = run { visibility = View.VISIBLE }
  */
 fun Drawable.changeDrawableColor(color: Int) {
     mutate().colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
+}
+
+/**
+ * hides the keyboard
+ */
+fun View.hideKeyboard() {
+    clearFocus()
+    context.inputMethodManager.hideSoftInputFromWindow(windowToken, 0)
+}
+
+/**
+ * shows the keyboard
+ */
+fun View.showKeyboard() {
+    requestFocus()
+    context.inputMethodManager.showSoftInput(this, InputMethodManager.SHOW_FORCED)
 }
 
 /**
