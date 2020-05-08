@@ -109,6 +109,17 @@ val notification = NotificationDslBuilder.builder(this) {
         desiredHeight = 600
         icon = Icon.createWithResource(context, R.mipmap.ic_launcher)
     }
+    //To add a custom NotificationView
+    remoteViews {
+        landscapeCollapsed(this@MainActivity.packageName, R.layout.collapsed_notification_landscape) {
+            setProgressBar(R.id.progress_bar, 100, 2, false)
+        }
+        portraitCollapsed(this@MainActivity.packageName, R.layout.collapsed_notification_portrait)
+        landscapeHeadsUp(this@MainActivity.packageName, R.layout.heads_up_notification_landscape)
+        portraitHeadsUp(this@MainActivity.packageName, R.layout.heads_up_notification_portrait)
+        landscapeExpanded(this@MainActivity.packageName, R.layout.expanded_notification_landscape)
+        portraitExpanded(this@MainActivity.packageName, R.layout.expanded_notification_portrait)
+    }
 }
 
 notificationManager.notify(/*notification id*/, notification)
