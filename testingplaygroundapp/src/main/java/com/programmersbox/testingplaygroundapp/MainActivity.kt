@@ -181,13 +181,13 @@ class MainActivity : AppCompatActivity() {
         notificationButton
             .longClicks()
             .collectOnUi {
-                /*sendNotification(
+                sendNotification(
                     R.mipmap.ic_launcher,
                     "Title",
                     "Message",
                     39,
                     "id_channel"
-                )*/
+                )
 
                 sendNotification(45) {
                     smallIconId = R.mipmap.ic_launcher

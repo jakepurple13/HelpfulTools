@@ -507,6 +507,7 @@ class NotificationDslBuilder(private val context: Context) {
     }
 
     companion object {
+        @NotificationUtilsMarker
         fun builder(context: Context, block: NotificationDslBuilder.() -> Unit): Notification = NotificationDslBuilder(context).apply(block).build()
     }
 

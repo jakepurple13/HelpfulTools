@@ -84,8 +84,7 @@ class ExampleUnitTest {
     }
 
     private fun List<Card>.printCards() = asciiCards(colorRed = 0xD01426, colorBlack = 0x039b3f0) {
-        PokerHand.getWinningHand(it)
-            .let { hand -> " = ${it.joinToString { it.toSymbolString() }} = ${hand.stringName}".color(hand.getColorLevel) }
+        PokerHand.getWinningHand(it).let { hand -> " = ${it.joinToString { it.toSymbolString() }} = ${hand.stringName}".color(hand.getColorLevel) }
     }.let(::println)
 
     private val Hand.getColorLevel

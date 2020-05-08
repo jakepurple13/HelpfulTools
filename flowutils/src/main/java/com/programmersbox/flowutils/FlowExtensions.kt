@@ -20,7 +20,7 @@ fun timerFlow(delayMillis: Long, startInMs: Long = delayMillis, action: suspend 
 /**
  * Collect on the ui thread
  */
-fun <T> Flow<T>.collectOnUi(action: (T) -> Unit) = GlobalScope.launch { collect { GlobalScope.launch(Dispatchers.Main) { action(it) } } }
+fun <T> Flow<T>.collectOnUi(action: (value: T) -> Unit) = GlobalScope.launch { collect { GlobalScope.launch(Dispatchers.Main) { action(it) } } }
 
 /**
  * collect from the flow on the ui loop
