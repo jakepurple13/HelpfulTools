@@ -9,7 +9,9 @@ import android.graphics.drawable.Icon
 import android.media.session.MediaSession
 import android.os.Build
 import android.os.Bundle
+import android.widget.RemoteViews
 import androidx.annotation.DrawableRes
+import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -159,6 +161,9 @@ private annotation class NotificationStyleMarker
 
 @DslMarker
 private annotation class NotificationBubbleMarker
+
+@DslMarker
+private annotation class RemoteMarker
 
 class NotificationDslBuilder(private val context: Context) {
 
@@ -423,6 +428,11 @@ class NotificationDslBuilder(private val context: Context) {
     @NotificationUtilsMarker
     var groupAlertBehavior: GroupBehavior = GroupBehavior.ALL
 
+    private var remoteViews: NotificationRemoteView? = null
+
+    @RemoteMarker
+    fun remoteViews(block: RemoteViewBuilder.() -> Unit) = run { remoteViews = RemoteViewBuilder().apply(block).build() }
+
     private fun build() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Notification.Builder(context, channelId)
             .setSmallIcon(smallIconId)
@@ -447,6 +457,13 @@ class NotificationDslBuilder(private val context: Context) {
             .setGroupAlertBehavior(groupAlertBehavior.idSdk)
             .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
+            .also { builder ->
+                remoteViews?.let { views ->
+                    views.headsUp?.let { builder.setCustomHeadsUpContentView(it) }
+                    views.collapsed?.let { builder.setCustomContentView(it) }
+                    views.expanded?.let { builder.setCustomBigContentView(it) }
+                }
+            }
             .also { builder -> builder.setActions(*actions.map(NotificationAction::buildSdk).toTypedArray()) }
             .build()
     } else {
@@ -473,6 +490,13 @@ class NotificationDslBuilder(private val context: Context) {
             .setGroupAlertBehavior(groupAlertBehavior.id)
             .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
+            .also { builder ->
+                remoteViews?.let { views ->
+                    views.headsUp?.let { builder.setCustomHeadsUpContentView(it) }
+                    views.collapsed?.let { builder.setCustomContentView(it) }
+                    views.expanded?.let { builder.setCustomBigContentView(it) }
+                }
+            }
             .also { builder -> actions.forEach { builder.addAction(it.build()) } }
             .build()
     }
@@ -874,3 +898,54 @@ class NotificationBubble {
         .setDeleteIntent(deleteIntent)
         .build()
 }
+
+class RemoteViewBuilder {
+
+    private var portraitHeadsUp: RemoteViews? = null
+    private var landscapeHeadsUp: RemoteViews? = null
+
+    @RemoteMarker
+    fun portraitHeadsUp(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
+        portraitHeadsUp = RemoteViews(packageName, layout).apply(block)
+    }
+
+    @RemoteMarker
+    fun landscapeHeadsUp(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
+        landscapeHeadsUp = RemoteViews(packageName, layout).apply(block)
+    }
+
+    private var portraitCollapsed: RemoteViews? = null
+    private var landscapeCollapsed: RemoteViews? = null
+
+    @RemoteMarker
+    fun portraitCollapsed(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
+        portraitCollapsed = RemoteViews(packageName, layout).apply(block)
+    }
+
+    @RemoteMarker
+    fun landscapeCollapsed(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
+        landscapeCollapsed = RemoteViews(packageName, layout).apply(block)
+    }
+
+    private var portraitExpanded: RemoteViews? = null
+    private var landscapeExpanded: RemoteViews? = null
+
+    @RemoteMarker
+    fun portraitExpanded(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
+        portraitExpanded = RemoteViews(packageName, layout).apply(block)
+    }
+
+    @RemoteMarker
+    fun landscapeExpanded(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
+        landscapeExpanded = RemoteViews(packageName, layout).apply(block)
+    }
+
+    internal fun build() = NotificationRemoteView(
+        headsUp = if (landscapeHeadsUp == null || portraitHeadsUp == null) null else RemoteViews(landscapeHeadsUp, portraitHeadsUp),
+        collapsed = if (landscapeCollapsed == null || portraitCollapsed == null) null else RemoteViews(landscapeCollapsed, portraitCollapsed),
+        expanded = if (landscapeExpanded == null || portraitExpanded == null) null else RemoteViews(landscapeExpanded, portraitExpanded)
+    )
+
+}
+
+internal class NotificationRemoteView(internal val headsUp: RemoteViews?, internal val collapsed: RemoteViews?, internal val expanded: RemoteViews?)

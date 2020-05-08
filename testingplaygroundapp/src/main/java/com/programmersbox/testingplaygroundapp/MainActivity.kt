@@ -2,11 +2,11 @@ package com.programmersbox.testingplaygroundapp
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
 import android.os.Bundle
@@ -14,6 +14,7 @@ import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.core.app.RemoteInput
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,8 +28,7 @@ import com.programmersbox.dslannotations.DslClass
 import com.programmersbox.dslannotations.DslField
 import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
-import com.programmersbox.gsonutils.getObject
-import com.programmersbox.gsonutils.putObject
+import com.programmersbox.gsonutils.sharedPrefObjectDelegate
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
@@ -50,10 +50,7 @@ class MainActivity : AppCompatActivity() {
 
     private var keys: String? by sharedPrefDelegate()
 
-    private var batteryInformation: Battery? by sharedPrefDelegate(
-        getter = { key, value -> getObject(key, value) },
-        setter = SharedPreferences.Editor::putObject
-    )
+    private var batteryInformation: Battery? by sharedPrefObjectDelegate()
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -184,13 +181,30 @@ class MainActivity : AppCompatActivity() {
         notificationButton
             .longClicks()
             .collectOnUi {
-                sendNotification(
+                /*sendNotification(
                     R.mipmap.ic_launcher,
                     "Title",
                     "Message",
                     39,
                     "id_channel"
-                )
+                )*/
+
+                sendNotification(45) {
+                    smallIconId = R.mipmap.ic_launcher
+                    title = "Hello"
+                    message = "World"
+                    channelId = "id_channel"
+                    customStyle(DecoratedStyle())
+                    remoteViews {
+                        landscapeCollapsed(this@MainActivity.packageName, R.layout.collapsed_notification)
+                        portraitCollapsed(this@MainActivity.packageName, R.layout.collapsed_notification)
+                        landscapeHeadsUp(this@MainActivity.packageName, R.layout.collapsed_notification)
+                        portraitHeadsUp(this@MainActivity.packageName, R.layout.collapsed_notification)
+                        landscapeExpanded(this@MainActivity.packageName, R.layout.expanded_notification)
+                        portraitExpanded(this@MainActivity.packageName, R.layout.expanded_notification)
+                    }
+
+                }
             }
 
         val person = PersonBuilder.builder {
@@ -279,6 +293,11 @@ class MainActivity : AppCompatActivity() {
         Loged.fi(batteryInformation)
         batteryInformation = batteryInfo
         Loged.fi(batteryInformation)
+    }
+
+    class DecoratedStyle : NotificationStyle() {
+        override fun build(): NotificationCompat.Style = NotificationCompat.DecoratedCustomViewStyle()
+        override fun buildSdk(): Notification.Style = Notification.DecoratedCustomViewStyle()
     }
 
     /**

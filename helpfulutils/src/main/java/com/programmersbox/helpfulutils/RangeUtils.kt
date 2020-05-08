@@ -1,6 +1,11 @@
 package com.programmersbox.helpfulutils
 
 /**
+ * Another way of doing this..that
+ */
+infix fun Int.through(that: Int): IntProgression = this..that
+
+/**
  * Use this if you want to have a number than must remain within a range that will
  * loop around if [loop] is true
  * remain at the range ends if [loop] is false

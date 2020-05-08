@@ -1,5 +1,6 @@
 package com.programmersbox.flowutils
 
+import android.view.View
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
@@ -31,6 +32,11 @@ class FlowItem<T>(startingValue: T, capacity: Int = 1) {
      * collect from the flow
      */
     fun collect(action: suspend (value: T) -> Unit) = itemFlow.flowQuery(action)
+
+    /**
+     * binds this value to update with a view
+     */
+    fun <R : View> bindToUI(view: R, action: R.(T) -> Unit) = itemFlow.flowQuery { view.post { view.action(it) } }
 
     /**
      * calls [getValue]

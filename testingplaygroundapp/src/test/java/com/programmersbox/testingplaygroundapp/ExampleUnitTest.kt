@@ -18,6 +18,22 @@ import kotlin.system.measureTimeMillis
 class ExampleUnitTest {
 
     @Test
+    fun forAll() {
+        5 keepAway 6 with { println("First: ${it.first} | Second: ${it.second}") }
+
+        val sparta = "Leonidas"
+        //Haha
+        this `is` sparta
+    }
+
+    class KeepAway(val first: Int, val second: Int)
+
+    private infix fun KeepAway.with(block: (KeepAway) -> Unit) = block(this)
+    private infix fun Int.keepAway(n: Int) = KeepAway(this, n)
+
+    private infix fun `is`(s: String) = println("THIS IS $s")
+
+    @Test
     fun other123() {
         val builder = measureTimeMillis {
             val sb = StringBuilder("hello")
