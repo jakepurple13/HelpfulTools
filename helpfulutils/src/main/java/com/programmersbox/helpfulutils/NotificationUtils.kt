@@ -430,6 +430,11 @@ class NotificationDslBuilder(private val context: Context) {
 
     private var remoteViews: NotificationRemoteView? = null
 
+    /**
+     * Add some custom views to your notification
+     *
+     * **Thanks to [Medium](https://itnext.io/android-custom-notification-in-6-mins-c2e7e2ddadab) for a good article to follow**
+     */
     @RemoteMarker
     fun remoteViews(block: RemoteViewBuilder.() -> Unit) = run { remoteViews = RemoteViewBuilder().apply(block).build() }
 
