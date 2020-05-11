@@ -52,8 +52,7 @@ class AndroidLogDetector : Detector(), UastScanner {
             ) else emptyList()).toTypedArray()
         )
         val fixGrouper = fix().group()
-        fun addToGroup(s: String) = fixGrouper.add(fix().replace().all().reformat(true).with(s).build())
-        fixes.forEach { addToGroup(it) }
+        fixGrouper.join(*fixes.map { fix().replace().all().reformat(true).with(it).build() }.toTypedArray())
         return fixGrouper.build()
     }
 
