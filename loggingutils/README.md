@@ -104,3 +104,14 @@ D/HelpfulTools/main: HelpfulTools
     ╠==============╝
     ╚═▷	com.programmersbox.helpfultools.MainActivity$onCreate$4.onClick(MainActivity.kt:92)
 ```
+
+# [LogedInterceptor](https://github.com/jakepurple13/HelpfulTools/blob/master/loggingutils/src/main/java/com/programmersbox/loggingutils/LogedInterceptor.kt)
+I added a LogedInterceptor so you can save logs to a file if you wish
+```kotlin
+class Interceptor : LogedInterceptor {
+    override fun log(level: LogLevel, tag: String, msg: String) {
+        //save to file or other actions with the log here
+        println("${level.name[0]}/$tag/$msg")
+    }
+}
+```
