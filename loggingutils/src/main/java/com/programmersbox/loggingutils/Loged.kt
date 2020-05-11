@@ -96,6 +96,8 @@ object Loged {
      *
      * @param msg the message to log
      */
+    @JvmStatic
+    @JvmOverloads
     fun e(msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME) =
         delegate(tag, msg, Log.ERROR, threadName, showPretty)
 
@@ -104,6 +106,8 @@ object Loged {
      *
      * @param msg the message to log
      */
+    @JvmStatic
+    @JvmOverloads
     fun i(msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME) =
         delegate(tag, msg, Log.INFO, threadName, showPretty)
 
@@ -112,6 +116,8 @@ object Loged {
      *
      * @param msg the message to log
      */
+    @JvmStatic
+    @JvmOverloads
     fun a(msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME) =
         delegate(tag, msg, Log.ASSERT, threadName, showPretty)
 
@@ -120,6 +126,8 @@ object Loged {
      *
      * @param msg the message to log
      */
+    @JvmStatic
+    @JvmOverloads
     fun wtf(msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME) =
         delegate(tag, msg, Log.ASSERT, threadName, showPretty)
 
@@ -128,6 +136,8 @@ object Loged {
      *
      * @param msg the message to log
      */
+    @JvmStatic
+    @JvmOverloads
     fun w(msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME) =
         delegate(tag, msg, Log.WARN, threadName, showPretty)
 
@@ -136,6 +146,8 @@ object Loged {
      *
      * @param msg the message to log
      */
+    @JvmStatic
+    @JvmOverloads
     fun d(msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME) =
         delegate(tag, msg, Log.DEBUG, threadName, showPretty)
 
@@ -144,6 +156,8 @@ object Loged {
      *
      * @param msg the message to log
      */
+    @JvmStatic
+    @JvmOverloads
     fun v(msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME) =
         delegate(tag, msg, Log.VERBOSE, threadName, showPretty)
 
@@ -159,6 +173,8 @@ object Loged {
      *  ### [Log.ERROR] = 6
      *  ### [Log.ASSERT] = 7
      */
+    @JvmStatic
+    @JvmOverloads
     fun r(
         msg: Any? = null, tag: String = TAG, showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
         vararg choices: Int = intArrayOf(2, 3, 4, 5, 6, 7)

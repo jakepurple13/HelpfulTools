@@ -27,9 +27,9 @@ class AndroidLogDetector : Detector(), UastScanner {
         val methodName = logCall.methodName
         val frameMethodName = methodName.let { if (it == "wtf") "a" else it }
         val tag = arguments[0].asSourceString()
-        val isJava = isJava(arguments[1].lang)
+        //val isJava = isJava(arguments[1].lang)
         val isKotlin = isKotlin(arguments[1].lang)
-        val className = "Loged.${if (isJava) "INSTANCE." else ""}"
+        val className = "Loged."
         val msgOrThrowable = arguments[1].let {
             when (it) {
                 is UQualifiedReferenceExpression -> it.sourcePsi?.text ?: it.asSourceString()
@@ -38,8 +38,8 @@ class AndroidLogDetector : Detector(), UastScanner {
         }
 
         val fixes = listOf(
-            "$className$methodName($msgOrThrowable, $tag${if (isJava) ", true, true" else ""})",
-            "${className}r($msgOrThrowable, $tag${if (isJava) ", true, true" else ""})",
+            "$className$methodName($msgOrThrowable, $tag)",
+            "${className}r($msgOrThrowable, $tag)",
             *(if (isKotlin) listOf(
                 "$className$methodName($msgOrThrowable)",
                 "${className}r($msgOrThrowable)"
