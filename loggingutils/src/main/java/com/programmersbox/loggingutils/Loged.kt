@@ -38,6 +38,11 @@ object Loged {
     var UNIT_TESTING = false
 
     /**
+     * If you want to add an interceptor to add the logs to a certain location, make a class that implements [LogedInterceptor]
+     */
+    var logedInterceptor: LogedInterceptor? = null
+
+    /**
      * Converting the StackTraceElement into a string that will let us click straight to it
      */
     private val stackToString: StackTraceElement.() -> String = { "${className}.${methodName}(${fileName}:${lineNumber})" }
@@ -75,8 +80,10 @@ object Loged {
     /**
      * Actually printing to the console
      */
-    private fun print(tag: String, msg: String, level: Int, threadName: Boolean) =
-        if (UNIT_TESTING) println(msg) else Log.println(level, tag + if (threadName) "/${Thread.currentThread().name}" else "", msg).let { Unit }
+    private fun print(tag: String, msg: String, level: Int, threadName: Boolean) {
+        if (UNIT_TESTING) println(msg) else Log.println(level, tag + if (threadName) "/${Thread.currentThread().name}" else "", msg)
+        logedInterceptor?.log(LogLevel(level), tag + if (threadName) "/${Thread.currentThread().name}" else "", msg)
+    }
 
     /**
      * Delegating the showPretty or not

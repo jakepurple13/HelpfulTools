@@ -44,6 +44,11 @@ class ExampleUnitTest {
             println(string.length)
         }
 
+        val builder2 = measureTimeMillis {
+            val string = (0..9999).fold(StringBuilder("hello")) { acc, _ -> acc.append("world") }
+            println(string.length)
+        }
+
         val noBuilder = measureTimeMillis {
             var sb = "hello"
             for (i in 0..9999) {
@@ -54,6 +59,7 @@ class ExampleUnitTest {
         }
 
         println("builder: $builder")
+        println("builder2: $builder2")
         println("noBuilder: $noBuilder")
     }
 
@@ -84,7 +90,8 @@ class ExampleUnitTest {
     }
 
     private fun List<Card>.printCards() = asciiCards(colorRed = 0xD01426, colorBlack = 0x039b3f0) {
-        PokerHand.getWinningHand(it).let { hand -> " = ${it.joinToString { it.toSymbolString() }} = ${hand.stringName}".color(hand.getColorLevel) }
+        PokerHand.getWinningHand(it)
+            .let { hand -> " = ${it.joinToString { c -> c.toSymbolString() }} = ${hand.stringName}".color(hand.getColorLevel) }
     }.let(::println)
 
     private val Hand.getColorLevel

@@ -203,7 +203,11 @@ class MainActivity : AppCompatActivity() {
                         landscapeExpanded(this@MainActivity.packageName, R.layout.expanded_notification)
                         portraitExpanded(this@MainActivity.packageName, R.layout.expanded_notification)
                     }
+                }
 
+                sendNotification(46) {
+                    smallIconId = R.mipmap.ic_launcher
+                    channelId = "id_channel"
                 }
             }
 
