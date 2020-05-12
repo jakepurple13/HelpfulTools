@@ -2,6 +2,7 @@
 
 ![GitHub license](https://img.shields.io/github/license/jakepurple13/HelpfulTools?style=for-the-badge)
 ![GitHub top language](https://img.shields.io/github/languages/top/jakepurple13/helpfultools?style=for-the-badge)
+![GitHub tag (latest by date)](https://img.shields.io/github/v/tag/jakepurple13/helpfultools?style=for-the-badge)
 
 Just some small simple tools that I have found myself copying+pasting to almost all projects I do.
 
