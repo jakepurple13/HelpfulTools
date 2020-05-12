@@ -28,7 +28,9 @@ import com.programmersbox.dslannotations.DslClass
 import com.programmersbox.dslannotations.DslField
 import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
+import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.gsonutils.sharedPrefObjectDelegate
+import com.programmersbox.gsonutils.toPrettyJson
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
@@ -36,6 +38,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
@@ -65,6 +68,11 @@ class MainActivity : AppCompatActivity() {
         Loged.fe(key3)
         key3 = false
         Loged.fe(key3)
+
+        Loged.d(DeviceInfo.Info().toPrettyJson())
+        Loged.d(DeviceInfo.Info().toPrettyJson().fromJson<DeviceInfo.Info>())
+        val f = DeviceInfo.Info().toPrettyJson().fromJson<DeviceInfo.Info>()
+        println(f)
 
         testRV.adapter = adapter
 
@@ -173,6 +181,7 @@ class MainActivity : AppCompatActivity() {
         notificationButton
             .longClicks()
             .collectOnUi {
+
                 sendNotification(
                     R.mipmap.ic_launcher,
                     "Title",
@@ -183,7 +192,6 @@ class MainActivity : AppCompatActivity() {
 
                 sendNotification(45, "id_channel", R.mipmap.ic_launcher) {
                     message = "World"
-                    channelId = "id_channel"
                     customStyle(DecoratedStyle())
                     remoteViews {
                         landscapeCollapsed(this@MainActivity.packageName, R.layout.collapsed_notification)
@@ -196,6 +204,18 @@ class MainActivity : AppCompatActivity() {
                 }
 
                 sendNotification(46, "id_channel", R.mipmap.ic_launcher) {}
+
+                GlobalScope.launch {
+                    for (i in 0..100) {
+                        sendNotification(47, "id_channel", R.mipmap.ic_launcher) {
+                            progress {
+                                max = 100
+                                progress = i
+                            }
+                        }
+                        delay(60)
+                    }
+                }
             }
 
         val person = PersonBuilder.builder {

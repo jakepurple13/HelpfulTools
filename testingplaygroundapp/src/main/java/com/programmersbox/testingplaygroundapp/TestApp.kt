@@ -16,6 +16,6 @@ class TestApp : Application() {
 
 class Interceptor : LogedInterceptor {
     override fun log(level: LogLevel, tag: String, msg: String) {
-        println("${level.name[0]}/$tag/$msg")
+        //println("${level.name[0]}/$tag/$msg")
     }
 }

@@ -17,6 +17,7 @@ import kotlinx.coroutines.launch
  */
 @FlowPreview
 @ExperimentalCoroutinesApi
+@Deprecated("As of 1.3.6, Native coroutines have something similar/probably better", ReplaceWith("MutableStateFlow(startingValue)"))
 class FlowItem<T>(startingValue: T, capacity: Int = 1) {
     private val itemBroadcast = BroadcastChannel<T>(capacity)
     private val itemFlow = itemBroadcast.asFlow().onStart { emit(flowItem) }
@@ -73,4 +74,5 @@ class FlowItem<T>(startingValue: T, capacity: Int = 1) {
 
 @FlowPreview
 @ExperimentalCoroutinesApi
+@Deprecated("As of 1.3.6, Native coroutines have something similar/probably better", ReplaceWith("this.asStateFlow()"))
 fun <T> T.asFlowItem() = FlowItem(this)

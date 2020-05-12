@@ -2,10 +2,13 @@ package com.programmersbox.flowutils
 
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
+import kotlin.system.measureTimeMillis
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -19,21 +22,52 @@ class ExampleUnitTest {
         println(FlowItem(100))
     }
 
+    @Test
+    fun stateFlowIItemTest() = runBlocking {
+        flowItemTest()
+        stateFlowTest()
+    }
+
     val item: FlowItem<Int> = 1.asFlowItem()
 
     @Test
     fun flowItemTest() = runBlocking {
-        item.collect { println(it) }
-        delay(1000)
-        item(10)
-        item.setValue(100)
-        delay(1000)
-        item.now()
-        GlobalScope.launch { item.flow.collect { println("From item.flow $it") } }
-        item(20)
-        delay(1000)
-        item.setValue(60)
-        delay(1000)
+        val f = measureTimeMillis {
+            item.collect { println(it) }
+            delay(1000)
+            item(10)
+            item.setValue(100)
+            delay(1000)
+            item.now()
+            GlobalScope.launch { item.flow.collect { println("From item.flow $it") } }
+            item(20)
+            delay(1000)
+            item.setValue(60)
+            delay(1000)
+            println(item())
+        }
+        println("Time: $f")
+    }
+
+    val item2 = MutableStateFlow(1)
+
+    @Test
+    fun stateFlowTest() = runBlocking {
+        val f = measureTimeMillis {
+            GlobalScope.launch { item2.onStart { emit(item2.value) }.collect { println(it) } }
+            delay(1000)
+            item2(10)
+            item2(100)
+            delay(1000)
+            item2.now()
+            GlobalScope.launch { item2.onStart { emit(item2.value) }.collect { println("From item.flow $it") } }
+            item2(20)
+            delay(1000)
+            item2(60)
+            delay(1000)
+            println(item2())
+        }
+        println("Time: $f")
     }
 
     @Test
