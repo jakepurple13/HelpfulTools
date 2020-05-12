@@ -30,6 +30,7 @@ enum class FrameType(frame: Frame) {
     ```
      */
     BOX(Frame("=", "=", "║", "║", "╔", "╗", "╚", "╝", "=", "=")),
+
     /**
      * ASTERISK Frame
      * Will look like this
@@ -51,6 +52,7 @@ enum class FrameType(frame: Frame) {
     ```
      */
     ASTERISK(Frame("*", "*", "*", "*", "*", "*", "*", "*", "*", "*")),
+
     /**
      * Plus Frame
      * Will look like this
@@ -72,6 +74,7 @@ enum class FrameType(frame: Frame) {
     ```
      */
     PLUS(Frame("+", "+", "+", "+", "+", "+", "+", "+", "+", "+")),
+
     /**
      * DIAGONAL Frame
      * Will look like this
@@ -93,6 +96,7 @@ enum class FrameType(frame: Frame) {
     ```
      */
     DIAGONAL(Frame("-", "-", "│", "│", "╱", "╲", "╲", "╱", "-", "-")),
+
     /**
      * OVAL Frame
      * Will look like this
@@ -114,6 +118,7 @@ enum class FrameType(frame: Frame) {
     ```
      */
     OVAL(Frame("-", "-", "│", "│", "╭", "╮", "╰", "╯", "-", "-")),
+
     /**
      * BOXED Frame
      * Will look like this
@@ -135,6 +140,7 @@ enum class FrameType(frame: Frame) {
     ```
      */
     BOXED(Frame("▀", "▄", "▌", "▐", "▛", "▜", "▙", "▟", "▀", "▄")),
+
     /**
      * CUSTOM Frame
      * You decide how all of it looks
@@ -237,57 +243,75 @@ fun <T> Iterable<T>.frame(
     return "$topLeft${topBottomText(top, true)}$topRight\n$mid\n$bottomLeft${topBottomText(bottom, false)}$bottomRight"
 }
 
+private var logedFrame = FrameType.BOX
+
+/**
+ * Set a default [FrameType] to use for the frame logging
+ * Default is [FrameType.BOX]
+ */
+var Loged.defaultFrameType: FrameType
+    get() = logedFrame
+    set(value) = run { logedFrame = value }
+
 //--------------
+@JvmOverloads
 fun Loged.fv(
     msg: Any? = null,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 2)
 
+@JvmOverloads
 fun Loged.fd(
     msg: Any? = null,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 3)
 
+@JvmOverloads
 fun Loged.fi(
     msg: Any? = null,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 4)
 
+@JvmOverloads
 fun Loged.fw(
     msg: Any? = null,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 5)
 
+@JvmOverloads
 fun Loged.fe(
     msg: Any? = null,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 6)
 
+@JvmOverloads
 fun Loged.fa(
     msg: Any? = null,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 7)
 
 //----------------------------
+@JvmOverloads
 fun Loged.fv(
     msg: Iterable<*>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 2)
 
+@JvmOverloads
 fun Loged.fd(
     msg: Iterable<*>,
     tag: String = TAG, infoText: String = TAG,
@@ -295,32 +319,36 @@ fun Loged.fd(
     frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 3)
 
+@JvmOverloads
 fun Loged.fi(
     msg: Iterable<*>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 4)
 
+@JvmOverloads
 fun Loged.fw(
     msg: Iterable<*>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 5)
 
+@JvmOverloads
 fun Loged.fe(
     msg: Iterable<*>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 6)
 
+@JvmOverloads
 fun Loged.fa(
     msg: Iterable<*>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠")
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠")
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 7)
 
 //----------------
@@ -328,52 +356,53 @@ fun <T> Loged.fv(
     msg: Iterable<T>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 2, transform = transform)
 
 fun <T> Loged.fd(
     msg: Iterable<T>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 3, transform = transform)
 
 fun <T> Loged.fi(
     msg: Iterable<T>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 4, transform = transform)
 
 fun <T> Loged.fw(
     msg: Iterable<T>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 5, transform = transform)
 
 fun <T> Loged.fe(
     msg: Iterable<T>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 6, transform = transform)
 
 fun <T> Loged.fa(
     msg: Iterable<T>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"), transform: (T) -> String = { it.toString() }
 ) = Loged.f(msg, tag, infoText, showPretty, threadName, frameType, 7, transform = transform)
 
 /**
  * [Loged.r] but adds a frame around the [msg] using the [String.frame] method
  */
+@JvmOverloads
 fun Loged.f(
     msg: Any? = null,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"),
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"),
     vararg choices: Int = intArrayOf(2, 3, 4, 5, 6, 7)
 ) = r("${if (UNIT_TESTING) "" else "$infoText\n"}${msg.toString().frame(frameType.copy(top = tag))}", tag, showPretty, threadName, *choices)
 
@@ -384,7 +413,7 @@ fun Loged.f(
     msg: Iterable<*>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"),
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"),
     vararg choices: Int = intArrayOf(2, 3, 4, 5, 6, 7)
 ) = r("${if (UNIT_TESTING) "" else "$infoText\n"}${msg.frame(frameType.copy(top = tag))}", tag, showPretty, threadName, *choices)
 
@@ -396,7 +425,7 @@ fun <T> Loged.f(
     msg: Iterable<T>,
     tag: String = TAG, infoText: String = TAG,
     showPretty: Boolean = SHOW_PRETTY, threadName: Boolean = WITH_THREAD_NAME,
-    frameType: FrameType = FrameType.BOX.copy(bottomLeft = "╠"),
+    frameType: FrameType = logedFrame.copy(bottomLeft = "╠"),
     vararg choices: Int = intArrayOf(2, 3, 4, 5, 6, 7), transform: (T) -> String = { it.toString() }
 ) = r(
     "${if (UNIT_TESTING) "" else "$infoText\n"}${msg.frame(frameType.copy(top = tag), transform = transform)}",

@@ -20,6 +20,7 @@ class ExampleUnitTest {
         Loged.WITH_THREAD_NAME = true
         Loged.OTHER_CLASS_FILTER = { true }
         Loged.OTHER_CLASS_FILTER { true }
+        Loged.defaultFrameType = FrameType.values().random()
     }
 
     @Test
