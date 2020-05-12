@@ -56,6 +56,7 @@ class Deck<T> : AbstractDeck<T> {
         /**
          * A default card_games.Deck of Playing Cards
          */
+        @JvmStatic
         fun defaultDeck() = Deck(*Suit.values().map { suit -> (1..13).map { value -> Card(value, suit) } }.flatten().toTypedArray())
 
         /**

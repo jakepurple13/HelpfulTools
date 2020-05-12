@@ -256,6 +256,7 @@ object DragSwipeUtils {
      *
      * @return an instance of [DragSwipeHelper]. Use this if you want to disable drag/swipe at any point, or enable if you had disabled it
      */
+    @JvmStatic
     fun <T, VH : RecyclerView.ViewHolder> setDragSwipeUp(
         dragSwipeAdapter: DragSwipeAdapter<T, VH>,
         recyclerView: RecyclerView,
@@ -273,6 +274,8 @@ object DragSwipeUtils {
     /**
      * @see setDragSwipeUp
      */
+    @JvmStatic
+    @JvmOverloads
     fun <T, VH : RecyclerView.ViewHolder> setDragSwipeUp(
         dragSwipeAdapter: DragSwipeAdapter<T, VH>,
         recyclerView: RecyclerView,
@@ -294,6 +297,8 @@ object DragSwipeUtils {
      *
      * @param callback a custom callback if you want to add custom drawings and so on
      */
+    @JvmStatic
+    @JvmOverloads
     fun <T, VH : RecyclerView.ViewHolder> setDragSwipeUp(
         recyclerView: RecyclerView,
         callback: DragSwipeManageAdapter<T, VH>,
@@ -308,10 +313,12 @@ object DragSwipeUtils {
     /**
      * This will enable the drag/swipe ability
      */
+    @JvmStatic
     fun enableDragSwipe(helper: DragSwipeHelper, recyclerView: RecyclerView) = helper.itemTouchHelper.attachToRecyclerView(recyclerView)
 
     /**
      * This will disable the drag/swipe ability
      */
+    @JvmStatic
     fun disableDragSwipe(helper: DragSwipeHelper) = helper.itemTouchHelper.attachToRecyclerView(null)
 }

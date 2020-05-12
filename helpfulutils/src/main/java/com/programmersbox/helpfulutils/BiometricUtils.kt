@@ -22,6 +22,7 @@ class BiometricBuilder(private var fragmentActivity: FragmentActivity) {
     class BiometricPromptBuilder {
 
         companion object {
+            @JvmStatic
             fun biometricPromptBuilder(block: BiometricPromptBuilder.() -> Unit) = BiometricPromptBuilder().apply(block).build()
         }
 
@@ -80,6 +81,7 @@ class BiometricBuilder(private var fragmentActivity: FragmentActivity) {
     }
 
     companion object {
+        @JvmStatic
         @RequiresApi(Build.VERSION_CODES.P)
         @RequiresPermission(allOf = [Manifest.permission.USE_BIOMETRIC])
         fun biometricBuilder(fragmentActivity: FragmentActivity, block: BiometricBuilder.() -> Unit) =

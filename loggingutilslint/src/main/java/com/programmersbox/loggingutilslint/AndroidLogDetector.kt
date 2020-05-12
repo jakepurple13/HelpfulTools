@@ -40,10 +40,8 @@ class AndroidLogDetector : Detector(), UastScanner {
         val fixes = listOf(
             "$className$methodName($msgOrThrowable, $tag)",
             "${className}r($msgOrThrowable, $tag)",
-            *(if (isKotlin) listOf(
-                "$className$methodName($msgOrThrowable)",
-                "${className}r($msgOrThrowable)"
-            ) else emptyList()).toTypedArray(),
+            "$className$methodName($msgOrThrowable)",
+            "${className}r($msgOrThrowable)",
             *(if (isKotlin) listOf(
                 "${className}f$frameMethodName($msgOrThrowable, $tag)",
                 "${className}f$frameMethodName($msgOrThrowable)",

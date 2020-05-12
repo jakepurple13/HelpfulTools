@@ -24,17 +24,20 @@ object Loged {
     /**
      * Makes this the name of your package to prevent unwanted logs
      */
+    @JvmStatic
     var FILTER_BY_PACKAGE_NAME = ""
 
     /**
      * A log tag for all log messages using the [Loged] class
      * Default is "Loged"
      */
+    @JvmStatic
     var TAG = "Loged"
 
     /**
      * Enable this if you are unit testing. This will do a normal [println] instead of a [Log.println] if true
      */
+    @JvmStatic
     var UNIT_TESTING = false
 
     /**

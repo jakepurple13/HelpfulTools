@@ -485,7 +485,7 @@ class NotificationDslBuilder(private val context: Context) {
             .setNumber(number)
             .setShowWhen(showWhen)
             .also { builder -> person?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.addPerson(it.uri) } }
-            .also { builder -> bubble?.let { builder.bubbleMetadata = it.buildSdk(context) } }
+            .also { builder -> bubble?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) builder.bubbleMetadata = it.buildSdk(context) } }
             .also { it.extras.extrasSet() }
             .setSubText(subText)
             .setStyle(notificationNotificationStyle?.build())
@@ -507,6 +507,7 @@ class NotificationDslBuilder(private val context: Context) {
     }
 
     companion object {
+        @JvmStatic
         @NotificationUtilsMarker
         fun builder(context: Context, block: NotificationDslBuilder.() -> Unit): Notification = NotificationDslBuilder(context).apply(block).build()
     }
@@ -787,6 +788,7 @@ sealed class NotificationAction(private val context: Context) {
             .also { if (choices.isNotEmpty()) it.setChoices(choices.toTypedArray()) }
             .build()
 
+        @RequiresApi(Build.VERSION_CODES.KITKAT_WATCH)
         internal fun buildRemoteInputSdk() = android.app.RemoteInput.Builder(resultKey)
             .setLabel(label)
             .setAllowFreeFormInput(allowFreeFormInput)
@@ -818,6 +820,7 @@ sealed class NotificationAction(private val context: Context) {
     @NotificationActionMarker
     var semanticAction: SemanticActions = SemanticActions.NONE
 
+    @RequiresApi(Build.VERSION_CODES.M)
     internal fun buildSdk() = Notification.Action.Builder(Icon.createWithResource(context, actionIcon), actionTitle, pendingIntentAction)
         .also { if (this is Reply) it.addRemoteInput(buildRemoteInputSdk()) }
         .also { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) it.setAllowGeneratedReplies(allowGeneratedReplies) }
@@ -895,6 +898,7 @@ class NotificationBubble {
         .setDeleteIntent(deleteIntent)
         .build()
 
+    @RequiresApi(Build.VERSION_CODES.M)
     internal fun buildSdk(context: Context) = NotificationCompat.BubbleMetadata.Builder()
         .setDesiredHeight(desiredHeight)
         .setIcon(IconCompat.createFromIcon(context, icon)!!)

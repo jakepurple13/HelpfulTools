@@ -81,6 +81,8 @@ object DeviceInfo {
  *    EasyCountDownTimer(1000, 1000, { println(it) }) { println("OnFinished") }
  */
 object EasyCountDownTimer {
+    @JvmStatic
+    @JvmOverloads
     operator fun invoke(
         millisInFuture: Long, countdownInterval: Long = 1000,
         onTick: (millisUntilFinished: Long) -> Unit = {}, finished: () -> Unit

@@ -14,18 +14,18 @@ class Linting {
         Log.e("Hello", "World");
         Log.d("Hello", "World");
 
-        Loged.INSTANCE.w("World", "Hello", true, true);
-        Loged.INSTANCE.a("World", "Hello", true, true);
-        Loged.INSTANCE.i("World", "Hello", true, true);
-        Loged.INSTANCE.v("World", "Hello", true, true);
-        Loged.INSTANCE.e("World", "Hello", true, true);
-        Loged.INSTANCE.d("World", "Hello", true, true);
-        Loged.INSTANCE.wtf("World", "Hello", true, true);
-        Loged.INSTANCE.r("World", "Hello", true, true, 2, 3, 4, 5, 6, 7);
+        Loged.w("World", "Hello");
+        Loged.a("World", "Hello", true);
+        Loged.i("World", "Hello", true, true);
+        Loged.v("World", "Hello", true, true);
+        Loged.e("World");
+        Loged.d();
+        Loged.wtf("World", "Hello", true, true);
+        Loged.r("World", "Hello", true, true, 2, 3, 4, 5, 6, 7);
     }
 
     void test2() {
         Log.d("Gson", new DeviceInfo.Info().toString());
-        Loged.INSTANCE.d(new DeviceInfo.Info(), "Gson", true, true);
+        Loged.d(new DeviceInfo.Info(), "Gson", true, true);
     }
 }
