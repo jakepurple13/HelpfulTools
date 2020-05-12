@@ -83,6 +83,7 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
     open operator fun dec() = apply { current -= 1 }
     operator fun iterator() = itemList.iterator()
     operator fun invoke() = item
+    operator fun get(index: Int) = itemList[index]
 }
 
 /**

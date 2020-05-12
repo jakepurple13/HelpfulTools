@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.PorterDuff
 import android.graphics.PorterDuffColorFilter
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.transition.AutoTransition
 import android.transition.Transition
 import android.transition.TransitionManager
@@ -18,7 +19,10 @@ import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.LayoutRes
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
+import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.constraintlayout.widget.ConstraintSet
 
 
 var TextView.startDrawable: Drawable?
@@ -50,8 +54,28 @@ fun Context.colorFromTheme(@AttrRes colorAttr: Int, @ColorInt defaultColor: Int 
 /**
  * Starts a transition manager
  */
+@RequiresApi(Build.VERSION_CODES.KITKAT)
 fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition(), block: T.() -> Unit) =
     TransitionManager.beginDelayedTransition(this, transition).apply { block() }
+
+/**
+ * This will take care of [ConstraintSet.applyTo] for you
+ */
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+class ConstraintRange(private val original: ConstraintLayout, vararg items: ConstraintSet, loop: Boolean = true) :
+    ItemRange<ConstraintSet>(*items, loop = loop) {
+    override operator fun inc(): ConstraintRange {
+        super.inc()
+        original.animateChildren { item.applyTo(original) }
+        return this
+    }
+
+    override operator fun dec(): ConstraintRange {
+        super.dec()
+        original.animateChildren { item.applyTo(original) }
+        return this
+    }
+}
 
 /**
  * Set the visibility to [View.GONE]
