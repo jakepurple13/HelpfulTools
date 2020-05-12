@@ -266,17 +266,23 @@ val Context.nsdManager get() = getSystemService(Context.NSD_SERVICE) as NsdManag
  * get DisplayManager
  * @see DisplayManager
  */
-val Context.displayManager get() = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
+val Context.displayManager
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    get() = getSystemService(Context.DISPLAY_SERVICE) as DisplayManager
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 /**
  * get UserManager
  * @see UserManager
  */
-val Context.userManager get() = getSystemService(Context.USER_SERVICE) as UserManager
+val Context.userManager
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    get() = getSystemService(Context.USER_SERVICE) as UserManager
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 /**
  * get BluetoothManager
  * @see BluetoothManager
  */
-val Context.bluetoothManager get() = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+val Context.bluetoothManager
+    @RequiresApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    get() = getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
 //----------------------------------------------------------------------------------------------------------------------------------------------------

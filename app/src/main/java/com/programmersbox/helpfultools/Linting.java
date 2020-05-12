@@ -1,8 +1,12 @@
 package com.programmersbox.helpfultools;
 
+import android.os.CountDownTimer;
 import android.util.Log;
 
+import com.programmersbox.funutils.cards.Card;
+import com.programmersbox.funutils.cards.Deck;
 import com.programmersbox.helpfulutils.DeviceInfo;
+import com.programmersbox.helpfulutils.EasyCountDownTimer;
 import com.programmersbox.loggingutils.Loged;
 
 class Linting {
@@ -28,4 +32,14 @@ class Linting {
         Log.d("Gson", new DeviceInfo.Info().toString());
         Loged.d(new DeviceInfo.Info(), "Gson", true, true);
     }
+
+    void test3() {
+        CountDownTimer timer = EasyCountDownTimer.invoke(1000L, () -> {
+            System.out.println("Finished");
+            return null;
+        });
+
+        Deck<Card> deck = Deck.defaultDeck();
+    }
+
 }

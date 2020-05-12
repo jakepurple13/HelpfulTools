@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,7 @@ import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
 import android.speech.tts.TextToSpeech.OnInitListener
+import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import java.io.Serializable
 import java.util.*
@@ -129,6 +131,7 @@ fun Intent.putExtras(vararg pairs: Pair<String, Serializable>) = apply { pairs.f
  * @param onError if something goes wrong
  * @param modify any modifications like pitch or speech rate
  */
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 fun Context.textToSpeech(textToSpeak: String?, onError: () -> Unit = {}, modify: TextToSpeech.() -> Unit = {}) {
     val tts = TextToSpeech(this, OnInitListener { }).apply(modify)
     TextToSpeech(this, OnInitListener { status ->

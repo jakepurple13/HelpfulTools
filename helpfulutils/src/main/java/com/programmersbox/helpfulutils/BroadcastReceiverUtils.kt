@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.os.BatteryManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 
 /**
  * @see Intent.ACTION_TIME_TICK
@@ -18,6 +20,7 @@ fun Context.timeTick(received: (context: Context, intent: Intent) -> Unit) = obj
  * This will give updates whenever the battery changes
  * @see Intent.ACTION_BATTERY_CHANGED
  */
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 fun Context.battery(batteryInfo: (info: Battery) -> Unit) = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) = batteryInfo(batteryInformation(context, intent))
 }.also { registerReceiver(it, batteryIntentFilter()) }
@@ -26,7 +29,9 @@ fun Context.battery(batteryInfo: (info: Battery) -> Unit) = object : BroadcastRe
  * This will give the current status
  * @see Intent.ACTION_BATTERY_CHANGED
  */
-val Context.batteryInfo: Battery get() = batteryInformation(this, registerReceiver(null, batteryIntentFilter()))
+val Context.batteryInfo: Battery
+    @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
+    get() = batteryInformation(this, registerReceiver(null, batteryIntentFilter()))
 
 data class Battery(
     val percent: Float,
@@ -42,6 +47,7 @@ data class Battery(
 enum class ChargeType { USB, AC, WIRELESS, NONE }
 enum class BatteryHealth { COLD, DEAD, GOOD, OVER_VOLTAGE, OVERHEAT, UNSPECIFIED_FAILURE, UNKNOWN }
 
+@RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 private fun batteryInformation(context: Context, intent: Intent?): Battery {
     //percentage
     val level: Int = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
@@ -122,4 +128,20 @@ fun Context.screenOff(received: (context: Context, intent: Intent) -> Unit) = ob
 fun Context.screenOn(received: (context: Context, intent: Intent) -> Unit) = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) = received(context, intent)
 }.also { registerReceiver(it, IntentFilter(Intent.ACTION_SCREEN_ON)) }
+
+enum class ScreenState { ON, OFF, UNKNOWN }
+
+/**
+ * @see Intent.ACTION_SCREEN_ON
+ * @see Intent.ACTION_SCREEN_OFF
+ */
+fun Context.screenState(received: (ScreenState) -> Unit) = object : BroadcastReceiver() {
+    override fun onReceive(context: Context, intent: Intent) = received(
+        when (intent.action) {
+            Intent.ACTION_SCREEN_OFF -> ScreenState.OFF
+            Intent.ACTION_SCREEN_ON -> ScreenState.ON
+            else -> ScreenState.UNKNOWN
+        }
+    )
+}.also { registerReceiver(it, IntentFilter(Intent.ACTION_SCREEN_ON).apply { addAction(Intent.ACTION_SCREEN_OFF) }) }
 //--------------------------
