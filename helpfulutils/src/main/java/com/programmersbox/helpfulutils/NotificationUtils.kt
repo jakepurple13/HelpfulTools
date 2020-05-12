@@ -66,6 +66,7 @@ enum class NotificationChannelImportance(@RequiresApi(Build.VERSION_CODES.N) int
 /**
  * Creates a [NotificationChannel]
  */
+@JvmOverloads
 @RequiresApi(Build.VERSION_CODES.O)
 fun Context.createNotificationChannel(
     id: String,
@@ -77,6 +78,7 @@ fun Context.createNotificationChannel(
 /**
  * Creates a [NotificationChannelGroup]
  */
+@JvmOverloads
 @RequiresApi(Build.VERSION_CODES.O)
 fun Context.createNotificationGroup(id: String, name: CharSequence = id, block: NotificationChannelGroup.() -> Unit = {}) =
     notificationManager.createNotificationChannelGroup(NotificationChannelGroup(id, name).apply(block))
@@ -90,6 +92,7 @@ fun Context.createNotificationGroup(id: String, name: CharSequence = id, block: 
  * @param gotoActivity the activity that will launch when notification is pressed
  * @param notificationId the id of the notification
  */
+@JvmOverloads
 fun Context.sendNotification(
     @DrawableRes smallIconId: Int,
     title: String?,
