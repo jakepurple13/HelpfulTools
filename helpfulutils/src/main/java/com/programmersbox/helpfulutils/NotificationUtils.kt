@@ -132,6 +132,9 @@ private annotation class NotificationStyleMarker
 private annotation class NotificationBubbleMarker
 
 @DslMarker
+private annotation class NotificationProgressMarker
+
+@DslMarker
 private annotation class RemoteMarker
 
 class NotificationDslBuilder(
@@ -400,6 +403,11 @@ class NotificationDslBuilder(
 
     private var remoteViews: NotificationRemoteView? = null
 
+    private var progress: NotificationProgress? = null
+
+    @NotificationProgressMarker
+    fun progress(block: NotificationProgress.() -> Unit) = run { progress = NotificationProgress().apply(block) }
+
     /**
      * Add some custom views to your notification
      *
@@ -432,6 +440,7 @@ class NotificationDslBuilder(
             .setGroupAlertBehavior(groupAlertBehavior.idSdk)
             .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
+            .also { builder -> progress?.let { builder.setProgress(it.max, it.progress, it.indeterminate) } }
             .also { builder ->
                 remoteViews?.let { views ->
                     views.headsUp?.let { builder.setCustomHeadsUpContentView(it) }
@@ -465,6 +474,7 @@ class NotificationDslBuilder(
             .setGroupAlertBehavior(groupAlertBehavior.id)
             .setDeleteIntent(privateDeleteIntent)
             .setContentIntent(privatePendingIntent)
+            .also { builder -> progress?.let { builder.setProgress(it.max, it.progress, it.indeterminate) } }
             .also { builder ->
                 remoteViews?.let { views ->
                     views.headsUp?.let { builder.setCustomHeadsUpContentView(it) }
@@ -483,6 +493,17 @@ class NotificationDslBuilder(
             NotificationDslBuilder(context, channelId, smallIconId).apply(block).build()
     }
 
+}
+
+class NotificationProgress internal constructor() {
+    @NotificationProgressMarker
+    var max: Int by Delegates.notNull()
+
+    @NotificationProgressMarker
+    var progress: Int by Delegates.notNull()
+
+    @NotificationProgressMarker
+    var indeterminate: Boolean = false
 }
 
 @SuppressLint("InlinedApi")
@@ -612,7 +633,7 @@ abstract class NotificationStyle {
 
     }
 
-    class Picture : NotificationStyle() {
+    class Picture internal constructor() : NotificationStyle() {
         /**
          * @see Notification.BigPictureStyle.setBigContentTitle
          */
@@ -650,7 +671,7 @@ abstract class NotificationStyle {
             .setSummaryText(summaryText)
     }
 
-    class BigText : NotificationStyle() {
+    class BigText internal constructor() : NotificationStyle() {
 
         /**
          * @see Notification.BigTextStyle.setBigContentTitle
@@ -683,7 +704,7 @@ abstract class NotificationStyle {
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    class Media : NotificationStyle() {
+    class Media internal constructor() : NotificationStyle() {
 
         /**
          * @see Notification.MediaStyle.setMediaSession
@@ -723,7 +744,7 @@ sealed class NotificationAction(private val context: Context) {
     @NotificationActionMarker
     var actionIcon: Int by Delegates.notNull()
 
-    class Reply(context: Context) : NotificationAction(context) {
+    class Reply internal constructor(context: Context) : NotificationAction(context) {
 
         /**
          * @see RemoteInput.Builder.mResultKey
@@ -768,7 +789,7 @@ sealed class NotificationAction(private val context: Context) {
 
     }
 
-    class Action(context: Context) : NotificationAction(context)
+    class Action internal constructor(context: Context) : NotificationAction(context)
 
     /**
      * @see Notification.Action.Builder.setContextual
@@ -823,7 +844,7 @@ sealed class NotificationAction(private val context: Context) {
 
 }
 
-class NotificationBubble {
+class NotificationBubble internal constructor() {
 
     @NotificationBubbleMarker
     var desiredHeight: Int by Delegates.notNull()
@@ -880,7 +901,7 @@ class NotificationBubble {
         .build()
 }
 
-class RemoteViewBuilder {
+class RemoteViewBuilder internal constructor() {
 
     private var portraitHeadsUp: RemoteViews? = null
     private var landscapeHeadsUp: RemoteViews? = null

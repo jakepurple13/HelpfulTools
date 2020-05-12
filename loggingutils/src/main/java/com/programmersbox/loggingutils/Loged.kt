@@ -93,6 +93,7 @@ object Loged {
     private fun delegate(tag: String, msg: Any?, level: Int, threadName: Boolean, showPretty: Boolean = SHOW_PRETTY) =
         logedInterceptor?.log(LogLevel(level), tag, msg.toString())
             .also { if (showPretty) prettyLog(tag, msg, level, threadName) else log(tag, msg, level, threadName) }
+            .let { Unit }
 
     /**
      * Error log
