@@ -1,4 +1,4 @@
-# HelpfulTools
+# [HelpfulTools](https://github.com/jakepurple13/HelpfulTools/wiki)
 
 ![GitHub license](https://img.shields.io/github/license/jakepurple13/HelpfulTools?style=for-the-badge)
 ![GitHub top language](https://img.shields.io/github/languages/top/jakepurple13/helpfultools?style=for-the-badge)
