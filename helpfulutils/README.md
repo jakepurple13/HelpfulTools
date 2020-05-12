@@ -90,11 +90,9 @@ createNotificationChannel("testChannel")
 createNotificationGroup("testGroup")
 
 //NotificationDslBuilder has support for below O and above O
-val notification = NotificationDslBuilder.builder(this) {
+val notification = NotificationDslBuilder.builder(this, channel = "testChannel", smallIconId = R.mipmap.ic_launcher) {
     title = "Title"
     message = "Message"
-    channelId = "testChannel"
-    smallIconId = R.mipmap.ic_launcher
     autoCancel = true
     addReplyAction {
         resultKey = "result"
