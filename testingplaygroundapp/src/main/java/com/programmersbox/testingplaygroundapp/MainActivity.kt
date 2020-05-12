@@ -292,6 +292,8 @@ class MainActivity : AppCompatActivity() {
 
         screenOn { context, intent -> println("screen on") }
 
+        screenState { println(it) }
+
         Loged.f(batteryInfo)
 
         Loged.fi(batteryInformation)

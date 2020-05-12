@@ -57,6 +57,14 @@ val batteryInfo: BroadcastReceiver = Context.battery { info: Battery -> println(
 val screenOff: BroadcastReceiver = Context.screenOff { _,_ -> println("Screen turned off") } 
 val screenOn: BroadcastReceiver = Context.screenOn { _,_ -> println("Screen turned on") } 
 
+val screenState: BroadcastReceiver = Context.screenState {
+   when(it) {
+      ScreenState.OFF -> {}
+      ScreenState.ON -> {}
+      ScreenState.UNKNOWN -> {}
+   }
+}
+
 ```
 
 ## [Context](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/ContextUtils.kt)
