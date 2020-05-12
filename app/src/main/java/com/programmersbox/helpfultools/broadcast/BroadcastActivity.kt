@@ -8,10 +8,7 @@ import com.programmersbox.flowutils.FlowItem
 import com.programmersbox.flowutils.collectOnUi
 import com.programmersbox.flowutils.plusAssign
 import com.programmersbox.helpfultools.R
-import com.programmersbox.helpfulutils.battery
-import com.programmersbox.helpfulutils.screenOff
-import com.programmersbox.helpfulutils.screenOn
-import com.programmersbox.helpfulutils.timeTick
+import com.programmersbox.helpfulutils.*
 import kotlinx.android.synthetic.main.activity_broadcast.*
 import kotlinx.coroutines.flow.combine
 import java.text.SimpleDateFormat
@@ -46,6 +43,7 @@ class BroadcastActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     private fun setScreenReceiver() {
+        var screenState: BroadcastReceiver? = null
         var screenOn: BroadcastReceiver? = null
         var screenOff: BroadcastReceiver? = null
 
@@ -58,10 +56,18 @@ class BroadcastActivity : AppCompatActivity() {
         screenReceiver.setOnClickListener {
             screenOn = screenOn { _, _ -> screenOnFlow += 1 }
             screenOff = screenOff { _, _ -> screenOffFlow += 1 }
+            screenState = screenState {
+                when (it) {
+                    ScreenState.ON -> screenOnFlow += 1
+                    ScreenState.OFF -> screenOffFlow += 1
+                    ScreenState.UNKNOWN -> Unit
+                }
+            }
         }
         unscreenReceiver.setOnClickListener {
             screenOn?.let(this::unregisterReceiver)
             screenOff?.let(this::unregisterReceiver)
+            screenState?.let(this::unregisterReceiver)
         }
     }
 
