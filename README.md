@@ -17,6 +17,7 @@ First, add JitPack:
 ```
 
 [![](https://jitpack.io/v/jakepurple13/HelpfulTools.svg?style=flat-square)](https://jitpack.io/#jakepurple13/HelpfulTools)
+
 ```groovy
 implementation 'com.github.jakepurple13.HelpfulTools:flowutils:{version}'
 implementation 'com.github.jakepurple13.HelpfulTools:gsonutils:{version}'
