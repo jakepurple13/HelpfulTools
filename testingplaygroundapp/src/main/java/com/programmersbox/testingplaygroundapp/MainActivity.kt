@@ -111,24 +111,18 @@ class MainActivity : AppCompatActivity() {
                     40,
                     "id_channel"
                 )
-                sendNotification(41) {
-                    smallIconId = R.mipmap.ic_launcher
+                sendNotification(41, "id_channel", R.mipmap.ic_launcher) {
                     title = "Hello"
                     message = "World"
-                    channelId = "id_channel"
                     groupSummary = true
                 }
-                sendNotification(42) {
-                    smallIconId = R.mipmap.ic_launcher
+                sendNotification(42, "id_channel", R.mipmap.ic_launcher) {
                     title = "Hello"
                     message = "World"
-                    channelId = "id_channel"
                 }
-                sendNotification(43) {
-                    smallIconId = R.mipmap.ic_launcher
+                sendNotification(43, "id_channel", R.mipmap.ic_launcher) {
                     title = "Hello"
                     message = "World"
-                    channelId = "id_channel"
                     pendingIntent(BlackjackActivity::class.java)
                     addAction {
                         actionTitle = "Action!"
@@ -150,11 +144,9 @@ class MainActivity : AppCompatActivity() {
                         summaryText = "Summary"
                     }
                 }
-                sendNotification(44) {
-                    smallIconId = R.mipmap.ic_launcher
+                sendNotification(44, "id_channel", R.mipmap.ic_launcher) {
                     title = "Hello"
                     message = "World"
-                    channelId = "id_channel"
                     pendingIntent(BlackjackActivity::class.java)
                     addAction {
                         actionTitle = "Action!"
@@ -189,9 +181,7 @@ class MainActivity : AppCompatActivity() {
                     "id_channel"
                 )
 
-                sendNotification(45) {
-                    smallIconId = R.mipmap.ic_launcher
-                    title = "Hello"
+                sendNotification(45, "id_channel", R.mipmap.ic_launcher) {
                     message = "World"
                     channelId = "id_channel"
                     customStyle(DecoratedStyle())
@@ -205,10 +195,7 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
 
-                sendNotification(46) {
-                    smallIconId = R.mipmap.ic_launcher
-                    channelId = "id_channel"
-                }
+                sendNotification(46, "id_channel", R.mipmap.ic_launcher) {}
             }
 
         val person = PersonBuilder.builder {

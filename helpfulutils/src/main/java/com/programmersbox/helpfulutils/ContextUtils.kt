@@ -169,7 +169,6 @@ fun Context.speechToText(speechListener: SpeechListener, prompt: String = "Say y
                 speechListener.onEndOfSpeech()
                 stopListening()
             }
-
         })
     }.startListening(intent)
 }

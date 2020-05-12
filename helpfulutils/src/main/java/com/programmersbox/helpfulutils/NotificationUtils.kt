@@ -107,51 +107,17 @@ fun Context.sendNotification(
     // number to NotificationManager.cancel().
     notificationManager.notify(
         notificationId,
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) oAndGreaterNotification(smallIconId, title, message, channelId, groupId, gotoActivity)
-        else compatNotification(smallIconId, title, message, channelId, groupId, gotoActivity)
+        NotificationDslBuilder.builder(this, channelId, smallIconId) {
+            this.title = title
+            this.message = message
+            this.groupId = groupId
+            pendingIntent(gotoActivity)
+        }
     )
 }
 
-@RequiresApi(Build.VERSION_CODES.O)
-private fun Context.oAndGreaterNotification(
-    @DrawableRes smallIconId: Int,
-    title: String?,
-    message: String?,
-    channelId: String,
-    groupId: String,
-    gotoActivity: Class<*>? = null
-): Notification = Notification.Builder(this, channelId)
-    .setSmallIcon(smallIconId)
-    .setContentTitle(title)
-    .setContentText(message)
-    .setGroup(groupId)
-    .setContentIntent(pendingActivity(gotoActivity))
-    .build()
-
-private fun Context.compatNotification(
-    @DrawableRes smallIconId: Int,
-    title: String?,
-    message: String?,
-    channelId: String,
-    groupId: String,
-    gotoActivity: Class<*>? = null
-): Notification = NotificationCompat.Builder(this, channelId)
-    .setSmallIcon(smallIconId)
-    .setContentTitle(title)
-    .setContentText(message)
-    .setGroup(groupId)
-    .setContentIntent(pendingActivity(gotoActivity))
-    .build()
-
-private fun Context.pendingActivity(gotoActivity: Class<*>?) = gotoActivity?.let {
-    TaskStackBuilder.create(this)
-        .addParentStack(gotoActivity)
-        .addNextIntent(Intent(this, it))
-        .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-}
-
-fun Context.sendNotification(notificationId: Int, block: NotificationDslBuilder.() -> Unit) =
-    notificationManager.notify(notificationId, NotificationDslBuilder.builder(this, block))
+fun Context.sendNotification(notificationId: Int, channelId: String, @DrawableRes smallIconId: Int, block: NotificationDslBuilder.() -> Unit) =
+    notificationManager.notify(notificationId, NotificationDslBuilder.builder(this, channelId, smallIconId, block))
 
 @DslMarker
 private annotation class NotificationUtilsMarker
@@ -168,14 +134,22 @@ private annotation class NotificationBubbleMarker
 @DslMarker
 private annotation class RemoteMarker
 
-class NotificationDslBuilder(private val context: Context) {
-
+class NotificationDslBuilder(
+    private val context: Context,
     /**
      * @see Notification.Builder.setChannelId
      * @see NotificationCompat.Builder.setChannelId
      */
     @NotificationUtilsMarker
-    var channelId: String by Delegates.notNull()
+    var channelId: String,
+    /**
+     * @see Notification.Builder.setSmallIcon
+     * @see NotificationCompat.Builder.setSmallIcon
+     */
+    @DrawableRes
+    @NotificationUtilsMarker
+    var smallIconId: Int
+) {
 
     /**
      * @see Notification.Builder.setGroup
@@ -197,13 +171,6 @@ class NotificationDslBuilder(private val context: Context) {
      */
     @NotificationUtilsMarker
     var message: CharSequence? = null
-
-    /**
-     * @see Notification.Builder.setSmallIcon
-     * @see NotificationCompat.Builder.setSmallIcon
-     */
-    @NotificationUtilsMarker
-    var smallIconId: Int by Delegates.notNull()
 
     /**
      * @see Notification.Builder.setLargeIcon
@@ -512,7 +479,8 @@ class NotificationDslBuilder(private val context: Context) {
     companion object {
         @JvmStatic
         @NotificationUtilsMarker
-        fun builder(context: Context, block: NotificationDslBuilder.() -> Unit): Notification = NotificationDslBuilder(context).apply(block).build()
+        fun builder(context: Context, channelId: String, @DrawableRes smallIconId: Int, block: NotificationDslBuilder.() -> Unit): Notification =
+            NotificationDslBuilder(context, channelId, smallIconId).apply(block).build()
     }
 
 }
