@@ -5,6 +5,9 @@ import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 /**
  * This will [Observable.subscribeOn] the io thread and [Observable.observeOn] the main thread
@@ -20,3 +23,13 @@ operator fun <T> Observer<T>.invoke() = onComplete()
  * Does a [map]ping function with [apply] to modify the new element
  */
 fun <T> Observable<T>.modify(block: (T) -> Unit): Observable<T> = map { it.apply(block) }
+
+class BehaviorDelegate<T> internal constructor(private val subject: BehaviorSubject<T>) : ReadWriteProperty<Nothing?, T?> {
+    override operator fun getValue(thisRef: Nothing?, property: KProperty<*>): T? = subject.value
+    override operator fun setValue(thisRef: Nothing?, property: KProperty<*>, value: T?) = value?.let(subject::onNext).let { Unit }
+}
+
+/**
+ * Use this to link a variable to a [BehaviorSubject]
+ */
+fun <T> behaviorDelegate(subject: BehaviorSubject<T>) = BehaviorDelegate(subject)

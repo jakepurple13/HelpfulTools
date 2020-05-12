@@ -1,5 +1,6 @@
 package com.programmersbox.rxutils
 
+import io.reactivex.subjects.BehaviorSubject
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import kotlin.random.Random
@@ -20,6 +21,19 @@ class ExampleUnitTest {
         publish.onNext("World")
         publish.modify { }.subscribe()
         publish("!!!")
+    }
+
+    @Test
+    fun otherRxTest() {
+        val publish = BehaviorSubject.create<String>()
+        publish
+            .doOnError { println(it) }
+            .subscribe { println(it) }
+        var item: String? by behaviorDelegate(publish)
+        println(item)
+        item = "Hello"
+        item = "World"
+        println(item)
     }
 
     @Test
