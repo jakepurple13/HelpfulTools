@@ -10,7 +10,7 @@ enum class LogLevel {
     WARN, ASSERT, INFO, VERBOSE, ERROR, DEBUG;
 
     companion object {
-        operator fun invoke(level: Int) = when (level) {
+        internal operator fun invoke(level: Int) = when (level) {
             Log.WARN -> WARN
             Log.ASSERT -> ASSERT
             Log.INFO -> INFO

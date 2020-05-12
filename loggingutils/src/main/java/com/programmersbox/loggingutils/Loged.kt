@@ -85,14 +85,14 @@ object Loged {
      */
     private fun print(tag: String, msg: String, level: Int, threadName: Boolean) {
         if (UNIT_TESTING) println(msg) else Log.println(level, tag + if (threadName) "/${Thread.currentThread().name}" else "", msg)
-        logedInterceptor?.log(LogLevel(level), tag + if (threadName) "/${Thread.currentThread().name}" else "", msg)
     }
 
     /**
      * Delegating the showPretty or not
      */
     private fun delegate(tag: String, msg: Any?, level: Int, threadName: Boolean, showPretty: Boolean = SHOW_PRETTY) =
-        if (showPretty) prettyLog(tag, msg, level, threadName) else log(tag, msg, level, threadName)
+        logedInterceptor?.log(LogLevel(level), tag, msg.toString())
+            .also { if (showPretty) prettyLog(tag, msg, level, threadName) else log(tag, msg, level, threadName) }
 
     /**
      * Error log

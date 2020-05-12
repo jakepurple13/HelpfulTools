@@ -37,11 +37,9 @@ class ContextActivity : AppCompatActivity() {
 
     private fun notificationSetup() {
         notificationSend.setOnClickListener {
-            notificationManager.notify(34, NotificationDslBuilder.builder(this) {
+            notificationManager.notify(34, NotificationDslBuilder.builder(this, channelId = "testChannel", smallIconId = R.mipmap.ic_launcher) {
                 title = "Title"
                 message = "Message"
-                channelId = "testChannel"
-                smallIconId = R.mipmap.ic_launcher
                 autoCancel = true
                 addReplyAction {
                     resultKey = "result"
