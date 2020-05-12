@@ -1,5 +1,7 @@
 # HelpfulTools
 
+[![GitHub license](https://img.shields.io/github/license/jakepurple13/HelpfulTools?style=for-the-badge)](https://github.com/jakepurple13/HelpfulTools/blob/master/LICENSE)
+
 Just some small simple tools that I have found myself copying+pasting to almost all projects I do.
 
 First, add JitPack:
