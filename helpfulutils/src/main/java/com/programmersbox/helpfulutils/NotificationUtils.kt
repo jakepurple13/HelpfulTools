@@ -401,12 +401,12 @@ class NotificationDslBuilder(
     @NotificationUtilsMarker
     var groupAlertBehavior: GroupBehavior = GroupBehavior.ALL
 
-    private var remoteViews: NotificationRemoteView? = null
-
     private var progress: NotificationProgress? = null
 
     @NotificationProgressMarker
     fun progress(block: NotificationProgress.() -> Unit) = run { progress = NotificationProgress().apply(block) }
+
+    private var remoteViews: NotificationRemoteView? = null
 
     /**
      * Add some custom views to your notification
@@ -772,7 +772,13 @@ sealed class NotificationAction(private val context: Context) {
          * @see RemoteInput.Builder.setChoices
          */
         @NotificationActionMarker
-        fun addChoice(s: CharSequence) = +s
+        fun addChoice(s: CharSequence) = choices.add(s).let { Unit }
+
+        /**
+         * @see RemoteInput.Builder.setChoices
+         */
+        @NotificationActionMarker
+        fun addChoices(vararg s: CharSequence) = choices.addAll(s).let { Unit }
 
         internal fun buildRemoteInput() = RemoteInput.Builder(resultKey)
             .setLabel(label)
