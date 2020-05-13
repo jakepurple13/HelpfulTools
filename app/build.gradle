@@ -64,7 +64,7 @@ dependencies {
     implementation "com.github.jakepurple13.HelpfulTools:dslannotations:$jakepurple13"
     kapt "com.github.jakepurple13.HelpfulTools:dslprocessor:$jakepurple13"
     implementation project(':testingplayground')
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.5'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.3.6-mpp-dev-7'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.3.5'
     implementation "com.squareup.okhttp3:okhttp:4.5.0"
     implementation "io.reactivex.rxjava2:rxkotlin:2.4.0"
