@@ -4,6 +4,8 @@
 ![GitHub top language](https://img.shields.io/github/languages/top/jakepurple13/helpfultools?style=for-the-badge)
 ![JitPack](https://img.shields.io/jitpack/v/github/jakepurple13/HelpfulTools?style=for-the-badge)
 
+[![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=jakepurple13/HelpfulTools)](https://dependabot.com)
+
 Just some small simple tools that I have found myself copying+pasting to almost all projects I do.
 
 First, add JitPack:
