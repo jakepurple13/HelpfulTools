@@ -48,7 +48,7 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
      * Current index
      */
     var current = 0
-        protected set(value) {
+        set(value) {
             field = when {
                 itemList.isEmpty() -> throw IndexOutOfBoundsException("The list is empty")
                 value > itemList.lastIndex -> if (loop) 0 else itemList.lastIndex
