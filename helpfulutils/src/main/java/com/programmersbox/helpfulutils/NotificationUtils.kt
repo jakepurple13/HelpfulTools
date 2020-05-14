@@ -364,6 +364,7 @@ class NotificationDslBuilder(
     /**
      * Add a bubble!
      */
+    @RequiresApi(Build.VERSION_CODES.M)
     @NotificationBubbleMarker
     fun addBubble(block: NotificationBubble.() -> Unit) = run { bubble = NotificationBubble().apply(block) }
 
