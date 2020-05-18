@@ -32,6 +32,27 @@ class ExampleUnitTest {
         val sparta = "Leonidas"
         //Haha
         this `is` sparta
+
+        try {
+            val up = Exception("")
+            //Haha
+            throw up
+        } catch (e: Exception) {
+
+        }
+
+        //Hehe
+        fun ction() = Unit
+        //Hehe
+        val etine = "<3"
+        val ue = 3
+        var iable = 3
+
+        val just = '4'
+        val case = "Hello"
+        //Haha
+        just in case
+
     }
 
     class KeepAway(val first: Int, val second: Int)
