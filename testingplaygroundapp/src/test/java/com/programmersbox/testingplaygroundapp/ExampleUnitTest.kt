@@ -3,10 +3,12 @@ package com.programmersbox.testingplaygroundapp
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Deck
 import com.programmersbox.funutils.cards.Suit
+import com.programmersbox.loggingutils.Loged
 import com.programmersbox.testingplayground.color
 import com.programmersbox.testingplaygroundapp.cardgames.asciiCards
 import com.programmersbox.testingplaygroundapp.cardgames.poker.Hand
 import com.programmersbox.testingplaygroundapp.cardgames.poker.PokerHand
+import org.junit.Before
 import org.junit.Test
 import kotlin.system.measureTimeMillis
 
@@ -16,6 +18,12 @@ import kotlin.system.measureTimeMillis
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
+    @Before
+    fun setup() {
+        Loged.FILTER_BY_PACKAGE_NAME = "programmersbox"
+        Loged.UNIT_TESTING = true
+    }
 
     @Test
     fun forAll() {
@@ -32,6 +40,11 @@ class ExampleUnitTest {
     private infix fun Int.keepAway(n: Int) = KeepAway(this, n)
 
     private infix fun `is`(s: String) = println("THIS IS $s")
+
+    @Test
+    fun other80() {
+        Loged::class.toClassInfo().printClassInfoInBox<String>()
+    }
 
     @Test
     fun other123() {
