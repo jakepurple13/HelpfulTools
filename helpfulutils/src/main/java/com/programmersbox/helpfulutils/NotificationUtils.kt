@@ -10,6 +10,7 @@ import android.media.session.MediaSession
 import android.os.Build
 import android.os.Bundle
 import android.widget.RemoteViews
+import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.annotation.LayoutRes
 import androidx.annotation.RequiresApi
@@ -260,11 +261,19 @@ class NotificationDslBuilder(
     var autoCancel: Boolean = false
 
     /**
-     * @see Notification.Builder.setContentIntent
-     * @see NotificationCompat.Builder.setContentIntent
+     * @see Notification.Builder.setColorized
+     * @see NotificationCompat.Builder.setColorized
      */
     @NotificationUtilsMarker
     var colorized: Boolean = false
+
+    /**
+     * @see Notification.Builder.setColor
+     * @see NotificationCompat.Builder.setColor
+     */
+    @ColorInt
+    @NotificationUtilsMarker
+    var color: Int? = null
 
     /**
      * @see Notification.Builder.setTimeoutAfter
@@ -425,6 +434,7 @@ class NotificationDslBuilder(
             .setContentText(message)
             .setAutoCancel(autoCancel)
             .setColorized(colorized)
+            .also { builder -> color?.let { builder.setColor(it) } }
             .also { builder -> timeoutAfter?.let { builder.setTimeoutAfter(it) } }
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
@@ -459,6 +469,7 @@ class NotificationDslBuilder(
             .setContentText(message)
             .setAutoCancel(autoCancel)
             .setColorized(colorized)
+            .also { builder -> color?.let { builder.color = it } }
             .also { builder -> timeoutAfter?.let { builder.setTimeoutAfter(it) } }
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
