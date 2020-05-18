@@ -141,8 +141,8 @@ class UnoActivity : AppCompatActivity() {
         currentCardInfo.text = card.type
     }
 
-    inner class CardAdapter(private val isPlayer: Boolean = false, dataList: MutableList<UnoCard> = mutableListOf()) :
-        DragSwipeAdapter<UnoCard, ViewHolder>(dataList) {
+    inner class CardAdapter(private val isPlayer: Boolean = false) :
+        DragSwipeAdapter<UnoCard, ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder =
             ViewHolder(layoutInflater.inflate(R.layout.card_item, parent, false))
 

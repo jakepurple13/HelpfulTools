@@ -153,6 +153,8 @@ fun <T, VH : RecyclerView.ViewHolder> DragSwipeActions<T>.makeMovementFlags(
  * # Make your Adapter extend this!!!
  * This is the big kahuna, extending this allows your adapter to work with the rest of these Utils.
  *
+ * If you want there to be an initial set of items, pass in those values to the constructor
+ *
  * This is a simple one that adds 5 different methods.
  *
  * [setListNotify],
@@ -162,7 +164,7 @@ fun <T, VH : RecyclerView.ViewHolder> DragSwipeActions<T>.makeMovementFlags(
  * [swapItems]
  *
  */
-abstract class DragSwipeAdapter<T, VH : RecyclerView.ViewHolder>(val dataList: MutableList<T>) : RecyclerView.Adapter<VH>() {
+abstract class DragSwipeAdapter<T, VH : RecyclerView.ViewHolder>(val dataList: MutableList<T> = mutableListOf()) : RecyclerView.Adapter<VH>() {
     var helper: DragSwipeHelper? = null
     override fun getItemCount(): Int = dataList.size
     override fun onBindViewHolder(holder: VH, position: Int) = holder.onBind(dataList[position], position)
