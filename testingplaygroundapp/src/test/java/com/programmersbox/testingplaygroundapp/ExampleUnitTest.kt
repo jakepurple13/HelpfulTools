@@ -40,7 +40,7 @@ class ExampleUnitTest {
         } catch (e: Exception) {
 
         }
-
+        //--------------------------------------------------------------------------------------------------------------------------------------------
         //Hehe
         fun ction() = Unit
         //Hehe
@@ -52,6 +52,8 @@ class ExampleUnitTest {
         val case = "Hello"
         //Haha
         just in case
+        //--------------------------------------------------------------------------------------------------------------------------------------------
+        Anti().save()
 
     }
 
@@ -61,6 +63,22 @@ class ExampleUnitTest {
     private infix fun Int.keepAway(n: Int) = KeepAway(this, n)
 
     private infix fun `is`(s: String) = println("THIS IS $s")
+
+    interface Human {
+        fun save() = println("Human save")
+    }
+
+    open class Hero {
+        open fun save() = println("Hero save")
+    }
+
+    class Anti : Hero(), Human {
+        override fun save() {
+            //Hehe
+            super<Hero>.save()
+            super<Human>.save()
+        }
+    }
 
     @Test
     fun other80() {
