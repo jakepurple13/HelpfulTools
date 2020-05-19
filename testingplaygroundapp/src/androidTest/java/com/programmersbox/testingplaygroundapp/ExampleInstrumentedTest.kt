@@ -20,6 +20,7 @@ class ExampleInstrumentedTest {
 
     private var Context.asdf: String? by sharedPrefDelegate("")
     private var Context.a: Int? by sharedPrefDelegate(9, "thisIsTheKey")
+    private var Context.abc: Int by sharedPrefNotNullDelegate(9, "thisIsTheKey")
 
     @Test
     fun useAppContext() {

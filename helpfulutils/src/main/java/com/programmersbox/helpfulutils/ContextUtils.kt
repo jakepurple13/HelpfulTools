@@ -112,6 +112,29 @@ fun <T> sharedPrefDelegate(
 ) = SharedPrefDelegate(prefs, key, getter, setter, defaultValue)
 
 /**
+ * Use this when you want to store and retrieve values that will be placed in [SharedPreferences]
+ * default preference is [defaultSharedPref]
+ *
+ * Only difference between this and [sharedPrefDelegate] is that this cannot be null
+ *
+ * **Thanks to [Medium](https://medium.com/@krzychukosobudzki/sharedpreferences-and-delegated-properties-in-kotlin-5437feeb254d) for a being a helpful article**
+ * @see sharedPrefDelegate
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T> sharedPrefNotNullDelegate(
+    defaultValue: T,
+    key: String? = null,
+    getter: SharedPreferences.(key: String, defaultValue: T) -> T = { k, d -> all[k] as? T ?: d },
+    setter: SharedPreferences.Editor.(key: String, value: T) -> SharedPreferences.Editor = { k, v -> if (v == null) remove(k) else put(k to v) },
+    prefs: Context.() -> SharedPreferences = { defaultSharedPref }
+) = object : ReadWriteProperty<Context, T> {
+    private val keys: KProperty<*>.() -> String get() = { key ?: name }
+    override operator fun getValue(thisRef: Context, property: KProperty<*>): T = thisRef.prefs().getter(property.keys(), defaultValue)
+    override operator fun setValue(thisRef: Context, property: KProperty<*>, value: T) =
+        thisRef.prefs().edit().setter(property.keys(), value).apply()
+}
+
+/**
  * A fun little method to always be able to run on the ui thread
  */
 fun runOnUIThread(runnable: () -> Unit) = Handler(Looper.getMainLooper()).post(runnable)
