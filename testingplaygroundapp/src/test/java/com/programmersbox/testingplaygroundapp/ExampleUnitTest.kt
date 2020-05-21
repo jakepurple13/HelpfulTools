@@ -81,6 +81,101 @@ class ExampleUnitTest {
     }
 
     @Test
+    fun keyValues() = stringsBuilding(
+        "none" to "None",
+
+        "heatCool" to "Heat/Cool",
+        "hpAux" to "HP/Aux",
+        "hpDualFuel" to "HP/DualFuel",
+
+        "flrWrmng" to "Floorwarming",
+        "spaceHeat" to "Space Heat",
+        "floorBoth" to "Floor/Space",
+
+        "omit" to "Omit",
+
+        "dualSP" to "Dual",
+        "singleSP" to "Single",
+        "disabled" to "Disabled"
+    )
+
+    private fun stringsBuilding(vararg pairs: Pair<String, String>) {
+        val stringsConvert: (Map.Entry<String, String>) -> String = { "<string name=\"${it.key}\">${it.value.replace("\n", "\\n")}</string>" }
+        val paramConvert: (String) -> List<Pair<String, String>> = {
+            it.split(" ").filter { it == "%d" || it == "%s" }.mapIndexed { i, s ->
+                val idName = "${if (s == "%d") "int" else "string"}$i"
+                Pair("$idName: ${if (s == "%d") "Int" else "String"}", idName)
+            }
+        }
+        val kotlinConverting: (Map.Entry<String, String>) -> String = {
+            val value = paramConvert(it.value)
+            val secondParams = if (value.isNotEmpty()) value.joinToString(", ", prefix = ", ") { it.second } else ""
+            "override fun ${it.key}(${value.joinToString(", ") { it.first }}) = resources.getString(R.string.${it.key}$secondParams)"
+        }
+        val kotlinInterfaceConverting: (Map.Entry<String, String>) -> String = {
+            "fun ${it.key}(${paramConvert(it.value).joinToString(", ") { it.first }}): String"
+        }
+        val s: Map<String, String> = mapOf(*pairs)
+        println(s.map(stringsConvert).joinToString("\n"))
+        println()
+        println(s.map(kotlinConverting).joinToString("\n"))
+        println()
+        println(s.map(kotlinInterfaceConverting).joinToString("\n"))
+    }
+
+    @Test
+    fun keyValueTester() {
+        val f = ResourceMaker.Builder()
+            .addItems(
+                "none" to "None",
+
+                "heatCool" to "Heat/Cool",
+                "hpAux" to "HP/Aux",
+                "hpDualFuel" to "HP/DualFuel",
+
+                "flrWrmng" to "Floorwarming",
+                "spaceHeat" to "Space Heat",
+                "floorBoth" to "Floor/Space",
+
+                "omit" to "Omit",
+
+                "dualSP" to "Dual",
+                "singleSP" to "Single",
+                "disabled" to "Disabled"
+            )
+            .build()
+
+        println(f.toStringsXML().joinToString("\n"))
+        println(f.toKotlinInterface().joinToString("\n"))
+        println(f.toKotlinOverrideClass().joinToString("\n"))
+        println(f.toJavaInterface().joinToString("\n"))
+        println(f.toJavaOverrideClass().joinToString("\n"))
+
+        val f2 = ResourceMaker.Builder {
+            addItems(
+                "none" to "None",
+
+                "heatCool" to "Heat/Cool",
+                "hpAux" to "HP/Aux",
+                "hpDualFuel" to "HP/DualFuel",
+
+                "flrWrmng" to "Floorwarming",
+                "spaceHeat" to "Space Heat",
+                "floorBoth" to "Floor/Space",
+
+                "omit" to "Omit",
+
+                "dualSP" to "Dual",
+                "singleSP" to "Single",
+                "disabled" to "Disabled"
+            )
+        }
+
+        println(f2.toStringsXML().joinToString("\n"))
+
+    }
+
+    @Test
     fun other80() {
         Loged::class.toClassInfo().printClassInfoInBox<String>()
     }
