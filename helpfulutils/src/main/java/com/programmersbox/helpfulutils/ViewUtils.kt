@@ -23,7 +23,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
-
+import androidx.core.transition.doOnEnd
 
 var TextView.startDrawable: Drawable?
     get() = compoundDrawables[0]
@@ -169,12 +169,55 @@ inline fun <reified T : Enum<T>> AlertDialog.Builder.setEnumMultiChoiceItems(
  * @see AlertDialog.Builder.setView
  * but allows setup for everything with the higher-order function
  */
-fun AlertDialog.Builder.setView(@LayoutRes layoutRes: Int, viewSetup: View.() -> Unit) =
+fun AlertDialog.Builder.setView(@LayoutRes layoutRes: Int, viewSetup: View.() -> Unit): AlertDialog.Builder =
     setView(LayoutInflater.from(context).inflate(layoutRes, null, false).apply(viewSetup))
 
 /**
  * @see AlertDialog.Builder.setCustomTitle
  * but allows setup for everything with the higher-order function
  */
-fun AlertDialog.Builder.setCustomTitle(@LayoutRes layoutRes: Int, viewSetup: View.() -> Unit) =
+fun AlertDialog.Builder.setCustomTitle(@LayoutRes layoutRes: Int, viewSetup: View.() -> Unit): AlertDialog.Builder =
     setCustomTitle(LayoutInflater.from(context).inflate(layoutRes, null, false).apply(viewSetup))
+
+/**
+ * Taken from [Gist](https://gist.github.com/DDihanov/6624925ced3b4db6f4ce6cbe1704a891)
+ *
+1. Convenience method to animate several constraint layouts one after another
+important to only pass in the constraint layout LAYOUT FILE ids
+if you have a case where the inflated view from the fragment/activity is not a ConstraintLayout, then for the next
+layouts which are going to act as frames, leave the parent out and only have the ConstraintLayout as root
+this advice was taken from [Medium](https://medium.com/@harivigneshjayapalan/well-using-constraintset-within-the-scrollview-is-not-encouraged-position-and-behaviour-may-ac6a2c6facc3)
+2. This file requires kotlin android extensions plugin
+
+ *   example usage in a Fragment:
+ *   where ConstraintLayout is the ConstraintLayout you want to animate
+ * ```kotlin
+ **** ConstraintLayout.chainAnimate(
+ ****   R.layout.fragment_state_a,
+ ****   R.layout.fragment_state_b,
+ ****   R.layout.fragment_state_c
+ **** )
+ * ```
+ */
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+fun ConstraintLayout.chainAnimate(@LayoutRes vararg layoutIds: Int) {
+    val iterator = layoutIds.toMutableList().iterator()
+
+    val start = iterator.next()
+
+    val transition = if (iterator.hasNext()) {
+        iterator.remove()
+        val transition = AutoTransition()
+        transition.doOnEnd { chainAnimate(*layoutIds) }
+        transition
+    } else null
+
+    constructSetAndAnimate(context, start, this, transition)
+}
+
+@RequiresApi(Build.VERSION_CODES.KITKAT)
+private fun constructSetAndAnimate(context: Context, layoutId: Int, root: ConstraintLayout, transition: AutoTransition? = null) {
+    val set = ConstraintSet().apply { clone(context, layoutId) }
+    TransitionManager.beginDelayedTransition(root, transition)
+    set.applyTo(root)
+}
