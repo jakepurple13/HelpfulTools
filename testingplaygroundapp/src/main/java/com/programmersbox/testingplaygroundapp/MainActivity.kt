@@ -97,6 +97,9 @@ class MainActivity : AppCompatActivity() {
                 adapter.addItem(getRandomName())
             }
 
+        addButton.longClicks()
+            .collectOnUi { startActivity(Intent(this@MainActivity, BindingActivity::class.java)) }
+
         gotoGames
             .clicks()
             .collectOnUi {
