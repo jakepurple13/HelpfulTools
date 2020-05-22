@@ -130,7 +130,7 @@ fun Int.toCMYK(): Colors.CMYK {
  * or
  * 02:05:50 if there are hours
  */
-fun <T : Number> T.stringForTime(): String? {
+fun <T : Number> T.stringForTime(): String {
     var millisecond = this.toLong()
     if (millisecond < 0 || millisecond >= 24 * 60 * 60 * 1000) return "00:00"
     millisecond /= 1000
