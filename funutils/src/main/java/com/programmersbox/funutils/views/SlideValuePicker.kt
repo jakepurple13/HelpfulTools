@@ -6,6 +6,7 @@ import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
+import androidx.annotation.CallSuper
 import androidx.annotation.ColorInt
 import androidx.core.content.res.getDimensionOrThrow
 import androidx.core.content.res.getDimensionPixelSizeOrThrow
@@ -21,7 +22,7 @@ import kotlin.reflect.KProperty
 /**
  * Thank you [Medium](https://medium.com/@shkcodes/building-slide-color-picker-f68bbe37543) for a good article for an awesome view
  */
-class SlideValuePicker @JvmOverloads constructor(
+open class SlideValuePicker @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
@@ -46,8 +47,6 @@ class SlideValuePicker @JvmOverloads constructor(
 
     private val circlePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.STROKE
-        strokeWidth = 4F
-        color = Color.WHITE
     }
     private val rectanglePaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
         style = Paint.Style.FILL
@@ -77,10 +76,13 @@ class SlideValuePicker @JvmOverloads constructor(
                 R.styleable.SlideValuePicker_expanded_height_multiplier,
                 GRADIENT_RECT_DEFAULT_HEIGHT_MULTIPLIER
             )
+            circlePaint.color = getColor(R.styleable.SlideValuePicker_circle_color, Color.WHITE)
+            circlePaint.strokeWidth = getDimension(R.styleable.SlideValuePicker_circle_width, 4F)
         }
         originalRadius = radius
         halfRectHeight = originalRadius
         setColors()
+        @Suppress("LeakingThis")
         setOnTouchListener(this)
     }
 
@@ -120,6 +122,7 @@ class SlideValuePicker @JvmOverloads constructor(
             }
             MotionEvent.ACTION_MOVE -> {
                 centerCircleY = clamp(event.y, upperBound, lowerBound)
+                progressChanged((centerCircleY - upperBound) / (lowerBound - upperBound))
             }
         }
         return true
@@ -165,7 +168,7 @@ class SlideValuePicker @JvmOverloads constructor(
 
     private fun setSelectedColor(position: Float) {
         progress = (position - upperBound) / (lowerBound - upperBound)
-        listener?.onProgressChanged(progress)
+        //listener?.onProgressChanged(progress)
         val colorRes = ArgbEvaluatorCompat.getInstance().evaluate(progress, startColor, endColor)
         rectanglePaint.shader = null
         rectanglePaint.color = colorRes
@@ -177,12 +180,16 @@ class SlideValuePicker @JvmOverloads constructor(
 
     private fun <T> viewProperty(default: T) = object : ObservableProperty<T>(default) {
 
-        override fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean =
-            newValue != oldValue
+        override fun beforeChange(property: KProperty<*>, oldValue: T, newValue: T): Boolean = newValue != oldValue
 
         override fun afterChange(property: KProperty<*>, oldValue: T, newValue: T) {
             postInvalidateOnAnimation()
         }
+    }
+
+    @CallSuper
+    protected open fun progressChanged(progress: Float) {
+        listener?.onProgressChanged(progress)
     }
 
     interface Listener {
@@ -205,6 +212,11 @@ class SlideValuePicker @JvmOverloads constructor(
     fun setEndColor(@ColorInt color: Int) {
         endColor = color
         setColors()
+        postInvalidate()
+    }
+
+    fun setCircleColor(@ColorInt color: Int) {
+        circlePaint.color = color
         postInvalidate()
     }
 
