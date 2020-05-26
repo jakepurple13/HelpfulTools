@@ -5,13 +5,16 @@ import android.os.Bundle
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModel
+import com.programmersbox.funutils.views.SlideValuePicker
 import com.programmersbox.helpfulutils.layoutInflater
+import com.programmersbox.helpfulutils.nextColor
 import com.programmersbox.helpfulutils.postDelayed
 import com.programmersbox.helpfulutils.sizedListOf
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
 import com.programmersbox.testingplaygroundapp.databinding.BindingTestItemBinding
 import kotlinx.android.synthetic.main.activity_binding.*
+import kotlin.random.Random
 
 class BindingActivity : AppCompatActivity() {
 
@@ -26,6 +29,22 @@ class BindingActivity : AppCompatActivity() {
         bindRV.postDelayed(1000) {
             adapter.addItems(sizedListOf(10) { BindingTest(getRandomName(), it + 10) })
             Loged.f(adapter.dataList)
+        }
+
+        if (Random.nextBoolean()) {
+            slidePicker.setOnProgressChangeListener(object : SlideValuePicker.Listener {
+                override fun onProgressChanged(progress: Float) {
+                    Loged.f(progress)
+                }
+            })
+        } else {
+            slidePicker.setOnProgressChangeListener { Loged.f(it) }
+        }
+
+        changeColor.setOnClickListener {
+            println(slidePicker.progress)
+            slidePicker2.setEndColor(Random.nextColor())
+            slidePicker2.setStartColor(Random.nextColor())
         }
 
     }

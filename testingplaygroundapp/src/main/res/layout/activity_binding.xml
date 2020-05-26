@@ -4,14 +4,49 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipChildren="false"
     tools:context=".BindingActivity">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/bindRV"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/binding_test_item" />
+
+    <com.programmersbox.funutils.views.SlideValuePicker
+        android:id="@+id/slidePicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:expanded_height_multiplier="4.8"
+        app:layout_constraintBottom_toTopOf="@id/changeColor"
+        app:layout_constraintEnd_toStartOf="@id/slidePicker2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bindRV"
+        app:radius="36dp"
+        app:text_size="12sp" />
+
+    <com.programmersbox.funutils.views.SlideValuePicker
+        android:id="@+id/slidePicker2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:end_color="@color/colorPrimaryDark"
+        app:expanded_height_multiplier="4.8"
+        app:layout_constraintBottom_toTopOf="@id/changeColor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/slidePicker"
+        app:layout_constraintTop_toBottomOf="@id/bindRV"
+        app:radius="36dp"
+        app:start_color="@color/colorPrimary"
+        app:text_size="12sp" />
+
+    <Button
+        android:id="@+id/changeColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Change Color"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

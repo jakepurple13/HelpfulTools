@@ -31,4 +31,11 @@
         <attr name="slider_bubbleTextColor" format="color" />
         <eat-comment />
     </declare-styleable>
+    <declare-styleable name="SlideValuePicker">
+        <attr name="radius" format="dimension" />
+        <attr name="start_color" format="color" />
+        <attr name="end_color" format="color" />
+        <attr name="expanded_height_multiplier" format="float" />
+        <attr name="text_size" format="dimension" />
+    </declare-styleable>
 </resources>
