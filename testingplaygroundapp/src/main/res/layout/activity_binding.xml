@@ -16,65 +16,76 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/binding_test_item" />
 
-    <com.programmersbox.funutils.views.SlideValuePicker
-        android:id="@+id/slidePicker"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/pickers"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:expanded_height_multiplier="4.8"
-        app:layout_constraintBottom_toTopOf="@id/changeColor"
-        app:layout_constraintEnd_toStartOf="@id/slidePicker2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bindRV"
-        app:radius="36dp"
-        app:text_size="12sp" />
-
-    <com.programmersbox.funutils.views.SlideValuePicker
-        android:id="@+id/slidePicker2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:circle_color="#94232f"
-        app:circle_width="10dp"
-        app:end_color="@color/colorPrimaryDark"
-        app:expanded_height_multiplier="4.8"
-        app:layout_constraintBottom_toTopOf="@id/changeColor"
-        app:layout_constraintEnd_toStartOf="@id/slidePicker3"
-        app:layout_constraintStart_toEndOf="@id/slidePicker"
-        app:layout_constraintTop_toBottomOf="@id/bindRV"
-        app:radius="36dp"
-        app:start_color="@color/colorPrimary"
-        app:text_size="12sp" />
-
-    <com.programmersbox.testingplaygroundapp.FlowSlidePicker
-        android:id="@+id/slidePicker3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:circle_color="#94232f"
-        app:circle_width="10dp"
-        app:end_color="@color/colorPrimaryDark"
-        app:expanded_height_multiplier="4.8"
-        app:layout_constraintBottom_toTopOf="@id/changeColor"
-        app:layout_constraintEnd_toStartOf="@id/slidePicker4"
-        app:layout_constraintStart_toEndOf="@id/slidePicker2"
-        app:layout_constraintTop_toBottomOf="@id/bindRV"
-        app:radius="36dp"
-        app:start_color="@color/colorPrimary"
-        app:text_size="12sp" />
-
-    <com.programmersbox.testingplaygroundapp.SwitchSlidePicker
-        android:id="@+id/slidePicker4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:circle_color="#94232f"
-        app:circle_width="10dp"
-        app:end_color="@color/colorPrimaryDark"
-        app:expanded_height_multiplier="4.8"
+        android:layout_margin="5dp"
+        android:clipChildren="false"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:weightSum="4"
         app:layout_constraintBottom_toTopOf="@id/changeColor"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/slidePicker3"
-        app:layout_constraintTop_toBottomOf="@id/bindRV"
-        app:radius="36dp"
-        app:start_color="@color/colorPrimary"
-        app:text_size="12sp" />
+        app:layout_constraintTop_toBottomOf="@id/bindRV">
+
+        <com.programmersbox.funutils.views.SlideValuePicker
+            android:id="@+id/slidePicker"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            app:expanded_height_multiplier="4.8"
+            app:radius="36dp"
+            app:text_size="12sp" />
+
+        <com.programmersbox.funutils.views.SlideValuePicker
+            android:id="@+id/slidePicker2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:circle_color="#94232f"
+            app:circle_width="10dp"
+            android:layout_marginHorizontal="5dp"
+            app:end_color="@color/colorPrimaryDark"
+            app:expanded_height_multiplier="4.8"
+            app:radius="36dp"
+            app:start_color="@color/colorPrimary"
+            app:text_size="12sp" />
+
+        <com.programmersbox.testingplaygroundapp.FlowSlidePicker
+            android:id="@+id/slidePicker3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            app:circle_color="#94232f"
+            app:circle_width="10dp"
+            app:end_color="@color/colorPrimaryDark"
+            android:layout_marginHorizontal="5dp"
+            app:expanded_height_multiplier="4.8"
+            app:radius="36dp"
+            app:start_color="@color/colorPrimary"
+            app:text_size="12sp" />
+
+        <com.programmersbox.testingplaygroundapp.SwitchSlidePicker
+            android:id="@+id/slidePicker4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:layout_marginHorizontal="5dp"
+            app:circle_color="#94232f"
+            app:circle_width="10dp"
+            app:end_color="@color/colorPrimaryDark"
+            app:expanded_height_multiplier="4.8"
+            app:radius="36dp"
+            app:start_color="@color/colorPrimary"
+            app:text_size="12sp" />
+
+    </LinearLayout>
 
     <Button
         android:id="@+id/changeColor"
