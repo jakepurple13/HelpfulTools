@@ -27,6 +27,7 @@ implementation 'com.github.jakepurple13.HelpfulTools:loggingutils:{version}'
 implementation 'com.github.jakepurple13.HelpfulTools:rxutils:{version}'
 implementation 'com.github.jakepurple13.HelpfulTools:dragswipe:{version}'
 implementation 'com.github.jakepurple13.HelpfulTools:funutils:{version}'
+implementation "com.github.jakepurple13.HelpfulTools:thirdpartyutils:{version}"
 ```
 
 For the dslprocessor module, also include:
