@@ -1,5 +1,6 @@
 package com.programmersbox.gsonutils
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -9,6 +10,8 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.programmersbox.helpfulutils.defaultSharedPref
 import com.programmersbox.helpfulutils.sharedPrefDelegate
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
 
 /**
  * put any object into the intent
@@ -124,3 +127,19 @@ inline fun <reified T> sharedPrefObjectDelegate(
     noinline setter: SharedPreferences.Editor.(key: String, value: T?) -> SharedPreferences.Editor = SharedPreferences.Editor::putObject,
     noinline prefs: Context.() -> SharedPreferences = { defaultSharedPref }
 ) = sharedPrefDelegate(prefs = prefs, key = key, getter = getter, setter = setter, defaultValue = defaultValue)
+
+/**
+ * A way so that you can set global variables instead of needing to initialize them in onCreate
+ * this calls
+ */
+inline fun <reified T> intentDelegate(
+    key: String? = null,
+    crossinline getter: Intent.(key: String, defaultValue: T?) -> T? = { k, d -> getObjectExtra(k, d) }
+) = object : ReadOnlyProperty<Activity, T?> {
+    private val keys: KProperty<*>.() -> String get() = { key ?: name }
+    private var value: T? = null
+    override operator fun getValue(thisRef: Activity, property: KProperty<*>): T? {
+        if (value == null) value = thisRef.intent.getter(property.keys(), null)
+        return value
+    }
+}
