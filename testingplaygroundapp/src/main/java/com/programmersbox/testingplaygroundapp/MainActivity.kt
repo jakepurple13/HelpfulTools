@@ -19,9 +19,6 @@ import androidx.core.app.RemoteInput
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.RequestBuilder
-import com.bumptech.glide.request.target.CustomTarget
-import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
 import com.programmersbox.dslannotations.DslClass
@@ -34,6 +31,7 @@ import com.programmersbox.gsonutils.toPrettyJson
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
+import com.programmersbox.thirdpartyutils.into
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
 import kotlinx.coroutines.Dispatchers
@@ -155,6 +153,7 @@ class MainActivity : AppCompatActivity() {
                         summaryText = "Summary"
                     }
                 }
+
                 sendNotification(44, "id_channel", R.mipmap.ic_launcher) {
                     title = "Hello"
                     message = "World"
@@ -416,30 +415,6 @@ class NewDsl<T, R> {
     companion object {
         fun <T, R> buildDsl(block: NewDsl<T, R>.() -> Unit) = NewDsl<T, R>().apply(block).build()
     }
-}
-
-@DslMarker
-annotation class GlideMarker
-
-fun <T> RequestBuilder<T>.into(target: CustomTargetBuilder<T>.() -> Unit) = into(CustomTargetBuilder<T>().apply(target).build())
-
-class CustomTargetBuilder<T> {
-
-    private var resourceReady: (T, Transition<in T>?) -> Unit by Delegates.notNull()
-
-    @GlideMarker
-    fun resourceReady(block: (image: T, transition: Transition<in T>?) -> Unit) = run { resourceReady = block }
-
-    private var loadCleared: (Drawable?) -> Unit = {}
-
-    @GlideMarker
-    fun loadCleared(block: (placeHolder: Drawable?) -> Unit) = run { loadCleared = block }
-
-    fun build() = object : CustomTarget<T>() {
-        override fun onLoadCleared(placeholder: Drawable?) = loadCleared(placeholder)
-        override fun onResourceReady(resource: T, transition: Transition<in T>?) = resourceReady(resource, transition)
-    }
-
 }
 
 class FlowItemBuilder<T> {

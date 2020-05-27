@@ -25,6 +25,7 @@
             <option value="$PROJECT_DIR$/rxutils" />
             <option value="$PROJECT_DIR$/testingplayground" />
             <option value="$PROJECT_DIR$/testingplaygroundapp" />
+            <option value="$PROJECT_DIR$/thirdpartyutils" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

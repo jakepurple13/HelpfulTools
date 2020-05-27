@@ -1,3 +1,4 @@
+include ':thirdpartyutils'
 include ':dslannotations'
 include ':dslprocessor'
 include ':loggingutilslint'
