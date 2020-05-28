@@ -26,6 +26,7 @@ import com.programmersbox.dslannotations.DslField
 import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
 import com.programmersbox.gsonutils.fromJson
+import com.programmersbox.gsonutils.sharedPrefNotNullObjectDelegate
 import com.programmersbox.gsonutils.sharedPrefObjectDelegate
 import com.programmersbox.gsonutils.toPrettyJson
 import com.programmersbox.helpfulutils.*
@@ -53,10 +54,14 @@ class MainActivity : AppCompatActivity() {
 
     private var batteryInformation: Battery? by sharedPrefObjectDelegate()
 
+    private var info: DeviceInfo.Info by sharedPrefNotNullObjectDelegate(DeviceInfo.Info())
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        println(info)
 
         keys = null
         Loged.fd(keys)

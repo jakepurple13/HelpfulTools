@@ -10,6 +10,7 @@ import com.google.gson.JsonSyntaxException
 import com.google.gson.reflect.TypeToken
 import com.programmersbox.helpfulutils.defaultSharedPref
 import com.programmersbox.helpfulutils.sharedPrefDelegate
+import com.programmersbox.helpfulutils.sharedPrefNotNullDelegate
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -127,6 +128,18 @@ inline fun <reified T> sharedPrefObjectDelegate(
     noinline setter: SharedPreferences.Editor.(key: String, value: T?) -> SharedPreferences.Editor = SharedPreferences.Editor::putObject,
     noinline prefs: Context.() -> SharedPreferences = { defaultSharedPref }
 ) = sharedPrefDelegate(prefs = prefs, key = key, getter = getter, setter = setter, defaultValue = defaultValue)
+
+/**
+ * Difference between this and [sharedPrefNotNullDelegate] is that this automatically uses [SharedPreferences.getObject] and [SharedPreferences.Editor.putObject]
+ * @see sharedPrefNotNullDelegate
+ */
+inline fun <reified T> sharedPrefNotNullObjectDelegate(
+    defaultValue: T,
+    key: String? = null,
+    noinline getter: SharedPreferences.(key: String, defaultValue: T) -> T = { k, d -> getObject(k, d)!! },
+    noinline setter: SharedPreferences.Editor.(key: String, value: T) -> SharedPreferences.Editor = SharedPreferences.Editor::putObject,
+    noinline prefs: Context.() -> SharedPreferences = { defaultSharedPref }
+) = sharedPrefNotNullDelegate(prefs = prefs, key = key, getter = getter, setter = setter, defaultValue = defaultValue)
 
 /**
  * A way so that you can set global variables instead of needing to initialize them in onCreate
