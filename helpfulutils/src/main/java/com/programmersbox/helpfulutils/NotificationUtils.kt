@@ -120,6 +120,22 @@ fun Context.sendNotification(
 fun Context.sendNotification(notificationId: Int, channelId: String, @DrawableRes smallIconId: Int, block: NotificationDslBuilder.() -> Unit) =
     notificationManager.notify(notificationId, NotificationDslBuilder.builder(this, channelId, smallIconId, block))
 
+fun NotificationManager.notify(
+    context: Context,
+    notificationId: Int,
+    channelId: String,
+    @DrawableRes smallIconId: Int,
+    block: NotificationDslBuilder.() -> Unit
+) = notify(notificationId, NotificationDslBuilder.builder(context, channelId, smallIconId, block))
+
+fun NotificationManagerCompat.notify(
+    context: Context,
+    notificationId: Int,
+    channelId: String,
+    @DrawableRes smallIconId: Int,
+    block: NotificationDslBuilder.() -> Unit
+) = notify(notificationId, NotificationDslBuilder.builder(context, channelId, smallIconId, block))
+
 @DslMarker
 private annotation class NotificationUtilsMarker
 
@@ -426,6 +442,14 @@ class NotificationDslBuilder(
     @RemoteMarker
     fun remoteViews(block: RemoteViewBuilder.() -> Unit) = run { remoteViews = RemoteViewBuilder().apply(block).build() }
 
+    /**
+     * Deprecated on O and above
+     * @deprecated use {@link NotificationChannelImportance} instead.
+     */
+    @Deprecated(message = "Deprecated on O and above. Use NotificationChannelImportance instead")
+    @NotificationUtilsMarker
+    var priority: NotificationPriority = NotificationPriority.DEFAULT
+
     private fun build() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Notification.Builder(context, channelId)
             .setSmallIcon(smallIconId)
@@ -440,6 +464,7 @@ class NotificationDslBuilder(
             .setOngoing(ongoing)
             .setNumber(number)
             .setShowWhen(showWhen)
+            .setPriority(priority.idSdk)
             .also { builder -> person?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.addPerson(it) } }
             .also { builder -> bubble?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) builder.setBubbleMetadata(it.build()) } }
             .also { it.extras.extrasSet() }
@@ -475,6 +500,7 @@ class NotificationDslBuilder(
             .setOngoing(ongoing)
             .setNumber(number)
             .setShowWhen(showWhen)
+            .setPriority(priority.id)
             .also { builder -> person?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.addPerson(it.uri) } }
             .also { builder -> bubble?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) builder.bubbleMetadata = it.buildSdk(context) } }
             .also { it.extras.extrasSet() }
@@ -505,6 +531,38 @@ class NotificationDslBuilder(
             NotificationDslBuilder(context, channelId, smallIconId).apply(block).build()
     }
 
+}
+
+enum class NotificationPriority(internal val idSdk: Int, internal val id: Int) {
+    /**
+     * @see Notification.PRIORITY_MIN
+     * @see NotificationCompat.PRIORITY_MIN
+     */
+    MIN(Notification.PRIORITY_MIN, NotificationCompat.PRIORITY_MIN),
+
+    /**
+     * @see Notification.PRIORITY_LOW
+     * @see NotificationCompat.PRIORITY_LOW
+     */
+    LOW(Notification.PRIORITY_LOW, NotificationCompat.PRIORITY_LOW),
+
+    /**
+     * @see Notification.PRIORITY_DEFAULT
+     * @see NotificationCompat.PRIORITY_DEFAULT
+     */
+    DEFAULT(Notification.PRIORITY_DEFAULT, NotificationCompat.PRIORITY_DEFAULT),
+
+    /**
+     * @see Notification.PRIORITY_HIGH
+     * @see NotificationCompat.PRIORITY_HIGH
+     */
+    HIGH(Notification.PRIORITY_HIGH, NotificationCompat.PRIORITY_HIGH),
+
+    /**
+     * @see Notification.PRIORITY_MAX
+     * @see NotificationCompat.PRIORITY_MAX
+     */
+    MAX(Notification.PRIORITY_MAX, NotificationCompat.PRIORITY_MAX)
 }
 
 class NotificationProgress internal constructor() {
