@@ -174,8 +174,6 @@ class MainActivity : AppCompatActivity() {
                         }
                         desiredHeight = 600
                         setIconById(R.mipmap.ic_launcher)
-                        desiredHeightRes = 45
-                        desiredHeightRes = R.dimen.material_emphasis_medium
                     }
 
                     bigTextStyle {
