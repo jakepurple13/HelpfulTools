@@ -8,7 +8,6 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
-import android.graphics.drawable.Icon
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -174,7 +173,9 @@ class MainActivity : AppCompatActivity() {
                             PendingIntent.getActivity(this@MainActivity, 0, Intent(this@MainActivity, BlackjackActivity::class.java), 0 /* flags */)
                         }
                         desiredHeight = 600
-                        icon = Icon.createWithResource(this@MainActivity, R.mipmap.ic_launcher)
+                        setIconById(R.mipmap.ic_launcher)
+                        desiredHeightRes = 45
+                        desiredHeightRes = R.dimen.material_emphasis_medium
                     }
 
                     bigTextStyle {

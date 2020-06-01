@@ -10,10 +10,7 @@ import android.media.session.MediaSession
 import android.os.Build
 import android.os.Bundle
 import android.widget.RemoteViews
-import androidx.annotation.ColorInt
-import androidx.annotation.DrawableRes
-import androidx.annotation.LayoutRes
-import androidx.annotation.RequiresApi
+import androidx.annotation.*
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.app.RemoteInput
@@ -580,12 +577,24 @@ enum class NotificationPriority(internal val idSdk: Int, internal val id: Int) {
 }
 
 class NotificationProgress internal constructor() {
+    /**
+     * @see Notification.Builder.setProgress
+     * @see Notification.Builder.setProgress
+     */
     @NotificationProgressMarker
     var max: Int by Delegates.notNull()
 
+    /**
+     * @see Notification.Builder.setProgress
+     * @see Notification.Builder.setProgress
+     */
     @NotificationProgressMarker
     var progress: Int by Delegates.notNull()
 
+    /**
+     * @see Notification.Builder.setProgress
+     * @see Notification.Builder.setProgress
+     */
     @NotificationProgressMarker
     var indeterminate: Boolean = false
 }
@@ -939,15 +948,56 @@ sealed class NotificationAction(private val context: Context) {
 
 class NotificationBubble internal constructor(private val context: Context) {
 
+    /**
+     * @see Notification.BubbleMetadata.Builder.setDesiredHeight
+     * @see NotificationCompat.BubbleMetadata.Builder.setDesiredHeight
+     */
     @NotificationBubbleMarker
-    var desiredHeight: Int by Delegates.notNull()
+    var desiredHeight: Int = 0
+        set(value) {
+            field = value
+            desiredHeightRes = 0
+        }
 
+    /**
+     * @see Notification.BubbleMetadata.Builder.setDesiredHeight
+     * @see NotificationCompat.BubbleMetadata.Builder.setDesiredHeight
+     */
+    @NotificationBubbleMarker
+    @get:DimenRes
+    @setparam:DimenRes
+    var desiredHeightRes: Int = 0
+        set(value) {
+            field = value
+            desiredHeight = 0
+        }
+
+    /**
+     * @see Notification.BubbleMetadata.Builder.setIcon
+     * @see NotificationCompat.BubbleMetadata.Builder.setIcon
+     */
     @NotificationBubbleMarker
     var icon: Icon by Delegates.notNull()
 
+    /**
+     * @see Notification.BubbleMetadata.Builder.setIcon
+     * @see NotificationCompat.BubbleMetadata.Builder.setIcon
+     */
+    @RequiresApi(Build.VERSION_CODES.M)
+    @NotificationBubbleMarker
+    fun setIconById(@DrawableRes id: Int) = run { icon = Icon.createWithResource(context, id) }
+
+    /**
+     * @see Notification.BubbleMetadata.Builder.setSuppressNotification
+     * @see NotificationCompat.BubbleMetadata.Builder.setSuppressNotification
+     */
     @NotificationBubbleMarker
     var suppressNotification: Boolean = false
 
+    /**
+     * @see Notification.BubbleMetadata.Builder.setAutoExpandBubble
+     * @see NotificationCompat.BubbleMetadata.Builder.setAutoExpandBubble
+     */
     @NotificationBubbleMarker
     var autoExpandBubble: Boolean = false
 
@@ -985,15 +1035,29 @@ class NotificationBubble internal constructor(private val context: Context) {
 
     private var deleteIntent: PendingIntent? = null
 
+    /**
+     * @see Notification.BubbleMetadata.Builder.setDeleteIntent
+     * @see NotificationCompat.BubbleMetadata.Builder.setDeleteIntent
+     */
     @NotificationBubbleMarker
     fun deleteIntent(pendingIntent: PendingIntent?) = run { deleteIntent = pendingIntent }
 
+    /**
+     * @see Notification.BubbleMetadata.Builder.setDeleteIntent
+     * @see NotificationCompat.BubbleMetadata.Builder.setDeleteIntent
+     */
     @NotificationBubbleMarker
     fun deleteIntent(block: (context: Context) -> PendingIntent?) = run { deleteIntent = block(context) }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     internal fun build() = Notification.BubbleMetadata.Builder()
-        .setDesiredHeight(desiredHeight)
+        .also { builder ->
+            when {
+                desiredHeight == 0 -> builder.setDesiredHeightResId(desiredHeightRes)
+                desiredHeightRes == 0 -> builder.setDesiredHeight(desiredHeight)
+                else -> throw NotificationException("Desired Height cannot be 0")
+            }
+        }
         .setIcon(icon)
         .also { builder -> bubbleIntent?.let { builder.setIntent(it) } }
         .setSuppressNotification(suppressNotification)
@@ -1003,6 +1067,13 @@ class NotificationBubble internal constructor(private val context: Context) {
 
     @RequiresApi(Build.VERSION_CODES.M)
     internal fun buildSdk(context: Context) = NotificationCompat.BubbleMetadata.Builder()
+        .also { builder ->
+            when {
+                desiredHeight == 0 -> builder.setDesiredHeightResId(desiredHeightRes)
+                desiredHeightRes == 0 -> builder.setDesiredHeight(desiredHeight)
+                else -> throw NotificationException("Desired Height cannot be 0")
+            }
+        }
         .setDesiredHeight(desiredHeight)
         .setIcon(IconCompat.createFromIcon(context, icon)!!)
         .also { builder -> bubbleIntent?.let { builder.setIntent(it) } }
@@ -1017,11 +1088,19 @@ class RemoteViewBuilder internal constructor() {
     private var portraitHeadsUp: RemoteViews? = null
     private var landscapeHeadsUp: RemoteViews? = null
 
+    /**
+     * @see Notification.Builder.setCustomHeadsUpContentView
+     * @see NotificationCompat.Builder.setCustomHeadsUpContentView
+     */
     @RemoteMarker
     fun portraitHeadsUp(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
         portraitHeadsUp = RemoteViews(packageName, layout).apply(block)
     }
 
+    /**
+     * @see Notification.Builder.setCustomHeadsUpContentView
+     * @see NotificationCompat.Builder.setCustomHeadsUpContentView
+     */
     @RemoteMarker
     fun landscapeHeadsUp(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
         landscapeHeadsUp = RemoteViews(packageName, layout).apply(block)
@@ -1030,11 +1109,19 @@ class RemoteViewBuilder internal constructor() {
     private var portraitCollapsed: RemoteViews? = null
     private var landscapeCollapsed: RemoteViews? = null
 
+    /**
+     * @see Notification.Builder.setCustomContentView
+     * @see NotificationCompat.Builder.setCustomContentView
+     */
     @RemoteMarker
     fun portraitCollapsed(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
         portraitCollapsed = RemoteViews(packageName, layout).apply(block)
     }
 
+    /**
+     * @see Notification.Builder.setCustomContentView
+     * @see NotificationCompat.Builder.setCustomContentView
+     */
     @RemoteMarker
     fun landscapeCollapsed(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
         landscapeCollapsed = RemoteViews(packageName, layout).apply(block)
@@ -1043,11 +1130,19 @@ class RemoteViewBuilder internal constructor() {
     private var portraitExpanded: RemoteViews? = null
     private var landscapeExpanded: RemoteViews? = null
 
+    /**
+     * @see Notification.Builder.setCustomBigContentView
+     * @see NotificationCompat.Builder.setCustomBigContentView
+     */
     @RemoteMarker
     fun portraitExpanded(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
         portraitExpanded = RemoteViews(packageName, layout).apply(block)
     }
 
+    /**
+     * @see Notification.Builder.setCustomBigContentView
+     * @see NotificationCompat.Builder.setCustomBigContentView
+     */
     @RemoteMarker
     fun landscapeExpanded(packageName: String, @LayoutRes layout: Int, block: RemoteViews.() -> Unit = {}) {
         landscapeExpanded = RemoteViews(packageName, layout).apply(block)
