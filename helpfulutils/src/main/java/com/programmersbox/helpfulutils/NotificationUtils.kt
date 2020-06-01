@@ -231,7 +231,7 @@ class NotificationDslBuilder(
      * @see NotificationCompat.Builder.setContentIntent
      */
     @NotificationUtilsMarker
-    fun pendingIntent(block: () -> PendingIntent?) = run { privatePendingIntent = block() }
+    fun pendingIntent(block: (context: Context) -> PendingIntent?) = run { privatePendingIntent = block(context) }
 
     private var privateDeleteIntent: PendingIntent? = null
 
@@ -247,7 +247,7 @@ class NotificationDslBuilder(
      * @see NotificationCompat.Builder.setDeleteIntent
      */
     @NotificationUtilsMarker
-    fun deleteIntent(block: () -> PendingIntent?) = run { privateDeleteIntent = block() }
+    fun deleteIntent(block: (context: Context) -> PendingIntent?) = run { privateDeleteIntent = block(context) }
 
     private val actions = mutableListOf<NotificationAction>()
 
@@ -405,7 +405,7 @@ class NotificationDslBuilder(
      */
     @RequiresApi(Build.VERSION_CODES.M)
     @NotificationBubbleMarker
-    fun addBubble(block: NotificationBubble.() -> Unit) = run { bubble = NotificationBubble().apply(block) }
+    fun addBubble(block: NotificationBubble.() -> Unit) = run { bubble = NotificationBubble(context).apply(block) }
 
     @NotificationUtilsMarker
     var person: Person? = null
@@ -933,11 +933,11 @@ sealed class NotificationAction(private val context: Context) {
     fun pendingActionIntent(pendingIntent: PendingIntent?) = run { pendingIntentAction = pendingIntent }
 
     @NotificationActionMarker
-    fun pendingActionIntent(block: () -> PendingIntent?) = run { pendingIntentAction = block() }
+    fun pendingActionIntent(block: (context: Context) -> PendingIntent?) = run { pendingIntentAction = block(context) }
 
 }
 
-class NotificationBubble internal constructor() {
+class NotificationBubble internal constructor(private val context: Context) {
 
     @NotificationBubbleMarker
     var desiredHeight: Int by Delegates.notNull()
@@ -981,7 +981,7 @@ class NotificationBubble internal constructor() {
      * ```
      */
     @NotificationBubbleMarker
-    fun bubbleIntent(block: () -> PendingIntent?) = run { bubbleIntent = block() }
+    fun bubbleIntent(block: (context: Context) -> PendingIntent?) = run { bubbleIntent = block(context) }
 
     private var deleteIntent: PendingIntent? = null
 
@@ -989,7 +989,7 @@ class NotificationBubble internal constructor() {
     fun deleteIntent(pendingIntent: PendingIntent?) = run { deleteIntent = pendingIntent }
 
     @NotificationBubbleMarker
-    fun deleteIntent(block: () -> PendingIntent?) = run { deleteIntent = block() }
+    fun deleteIntent(block: (context: Context) -> PendingIntent?) = run { deleteIntent = block(context) }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     internal fun build() = Notification.BubbleMetadata.Builder()
