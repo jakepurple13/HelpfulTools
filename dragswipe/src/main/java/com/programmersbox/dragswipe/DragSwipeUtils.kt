@@ -285,8 +285,8 @@ object DragSwipeUtils {
         swipeDirs: Iterable<Direction> = listOf(NOTHING),
         dragSwipeActions: DragSwipeActions<T>? = null
     ): DragSwipeHelper {
-        val drag = if (dragDirs.count() != 0) dragDirs.drop(1).fold(dragDirs.first().value) { acc, d -> acc + d } else NOTHING.value
-        val swipe = if (swipeDirs.count() != 0) swipeDirs.drop(1).fold(swipeDirs.first().value) { acc, s -> acc + s } else NOTHING.value
+        val drag = dragDirs.drop(1).fold(dragDirs.first().value) { acc, d -> acc + d }
+        val swipe = swipeDirs.drop(1).fold(swipeDirs.first().value) { acc, s -> acc + s }
         val callback = DragSwipeManageAdapter(dragSwipeAdapter, drag, swipe)
         callback.dragSwipeActions = dragSwipeActions ?: callback.dragSwipeActions
         val helper = ItemTouchHelper(callback)
