@@ -226,6 +226,13 @@ class NotificationDslBuilder(
     @NotificationUtilsMarker
     fun pendingIntent(pendingIntent: PendingIntent?) = run { privatePendingIntent = pendingIntent }
 
+    /**
+     * @see Notification.Builder.setContentIntent
+     * @see NotificationCompat.Builder.setContentIntent
+     */
+    @NotificationUtilsMarker
+    fun pendingIntent(block: () -> PendingIntent?) = run { privatePendingIntent = block() }
+
     private var privateDeleteIntent: PendingIntent? = null
 
     /**
@@ -234,6 +241,13 @@ class NotificationDslBuilder(
      */
     @NotificationUtilsMarker
     fun deleteIntent(pendingIntent: PendingIntent?) = run { privateDeleteIntent = pendingIntent }
+
+    /**
+     * @see Notification.Builder.setDeleteIntent
+     * @see NotificationCompat.Builder.setDeleteIntent
+     */
+    @NotificationUtilsMarker
+    fun deleteIntent(block: () -> PendingIntent?) = run { privateDeleteIntent = block() }
 
     private val actions = mutableListOf<NotificationAction>()
 
@@ -918,6 +932,9 @@ sealed class NotificationAction(private val context: Context) {
     @NotificationActionMarker
     fun pendingActionIntent(pendingIntent: PendingIntent?) = run { pendingIntentAction = pendingIntent }
 
+    @NotificationActionMarker
+    fun pendingActionIntent(block: () -> PendingIntent?) = run { pendingIntentAction = block() }
+
 }
 
 class NotificationBubble internal constructor() {
@@ -951,10 +968,28 @@ class NotificationBubble internal constructor() {
     @NotificationBubbleMarker
     fun bubbleIntent(pendingIntent: PendingIntent?) = run { bubbleIntent = pendingIntent }
 
+    /**
+     * The activity to show
+     *
+     * The activity must have the three properties below
+     * ```xml
+     * <activity
+     **   ...
+     **   android:allowEmbedded="true"
+     **   android:documentLaunchMode="always"
+     **   android:resizeableActivity="true"/>
+     * ```
+     */
+    @NotificationBubbleMarker
+    fun bubbleIntent(block: () -> PendingIntent?) = run { bubbleIntent = block() }
+
     private var deleteIntent: PendingIntent? = null
 
     @NotificationBubbleMarker
     fun deleteIntent(pendingIntent: PendingIntent?) = run { deleteIntent = pendingIntent }
+
+    @NotificationBubbleMarker
+    fun deleteIntent(block: () -> PendingIntent?) = run { deleteIntent = block() }
 
     @RequiresApi(Build.VERSION_CODES.Q)
     internal fun build() = Notification.BubbleMetadata.Builder()
