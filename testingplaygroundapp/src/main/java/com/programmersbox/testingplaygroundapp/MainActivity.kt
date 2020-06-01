@@ -170,9 +170,9 @@ class MainActivity : AppCompatActivity() {
                     }
 
                     addBubble {
-                        val target = Intent(this@MainActivity, BlackjackActivity::class.java)
-                        val bubbleIntent = PendingIntent.getActivity(this@MainActivity, 0, target, 0 /* flags */)
-                        bubbleIntent(bubbleIntent)
+                        bubbleIntent {
+                            PendingIntent.getActivity(this@MainActivity, 0, Intent(this@MainActivity, BlackjackActivity::class.java), 0 /* flags */)
+                        }
                         desiredHeight = 600
                         icon = Icon.createWithResource(this@MainActivity, R.mipmap.ic_launcher)
                     }
