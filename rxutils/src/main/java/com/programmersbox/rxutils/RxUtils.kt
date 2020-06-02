@@ -26,9 +26,9 @@ operator fun <T> Observer<T>.invoke() = onComplete()
  */
 fun <T> Observable<T>.modify(block: (T) -> Unit): Observable<T> = map { it.apply(block) }
 
-class BehaviorDelegate<T> internal constructor(private val subject: BehaviorSubject<T>) : ReadWriteProperty<Nothing?, T?> {
-    override operator fun getValue(thisRef: Nothing?, property: KProperty<*>): T? = subject.value
-    override operator fun setValue(thisRef: Nothing?, property: KProperty<*>, value: T?) = value?.let(subject::onNext).let { Unit }
+class BehaviorDelegate<T> internal constructor(private val subject: BehaviorSubject<T>) : ReadWriteProperty<Any?, T?> {
+    override operator fun getValue(thisRef: Any?, property: KProperty<*>): T? = subject.value
+    override operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) = value?.let(subject::onNext).let { Unit }
 }
 
 /**
@@ -38,13 +38,19 @@ fun <T> behaviorDelegate(subject: BehaviorSubject<T>) = BehaviorDelegate(subject
 
 /**
  * An easy way to transform a list
- * calls map { it.map(transform) }
+ * calls
+ * ```kotlin
+ *      map { it.map(transform) }
+ * ```
  */
 fun <T, R> Observable<List<T>>.listMap(transform: (T) -> R): Observable<List<R>> = map { it.map(transform) }
 
 /**
  * An easy way to transform a list
- * calls map { it.map(transform) }
+ * calls
+ * ```kotlin
+ *      map { it.map(transform) }
+ * ```
  */
 fun <T, R> Flowable<List<T>>.listMap(transform: (T) -> R) = map { it.map(transform) }
 
