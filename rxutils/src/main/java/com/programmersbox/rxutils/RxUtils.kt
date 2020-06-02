@@ -1,5 +1,6 @@
 package com.programmersbox.rxutils
 
+import io.reactivex.BackpressureStrategy
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -46,3 +47,9 @@ fun <T, R> Observable<List<T>>.listMap(transform: (T) -> R): Observable<List<R>>
  * calls map { it.map(transform) }
  */
 fun <T, R> Flowable<List<T>>.listMap(transform: (T) -> R) = map { it.map(transform) }
+
+fun <T> Observable<T>.toLatestFlowable(): Flowable<T> = toFlowable(BackpressureStrategy.LATEST)
+fun <T> Observable<T>.toBufferFlowable(): Flowable<T> = toFlowable(BackpressureStrategy.BUFFER)
+fun <T> Observable<T>.toDropFlowable(): Flowable<T> = toFlowable(BackpressureStrategy.DROP)
+fun <T> Observable<T>.toErrorFlowable(): Flowable<T> = toFlowable(BackpressureStrategy.ERROR)
+fun <T> Observable<T>.toMissingFlowable(): Flowable<T> = toFlowable(BackpressureStrategy.MISSING)
