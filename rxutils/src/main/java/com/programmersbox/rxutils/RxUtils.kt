@@ -1,5 +1,6 @@
 package com.programmersbox.rxutils
 
+import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -33,3 +34,15 @@ class BehaviorDelegate<T> internal constructor(private val subject: BehaviorSubj
  * Use this to link a variable to a [BehaviorSubject]
  */
 fun <T> behaviorDelegate(subject: BehaviorSubject<T>) = BehaviorDelegate(subject)
+
+/**
+ * An easy way to transform a list
+ * calls map { it.map(transform) }
+ */
+fun <T, R> Observable<List<T>>.listMap(transform: (T) -> R): Observable<List<R>> = map { it.map(transform) }
+
+/**
+ * An easy way to transform a list
+ * calls map { it.map(transform) }
+ */
+fun <T, R> Flowable<List<T>>.listMap(transform: (T) -> R) = map { it.map(transform) }
