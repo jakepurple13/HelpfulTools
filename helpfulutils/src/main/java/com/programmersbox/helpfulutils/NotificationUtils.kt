@@ -959,10 +959,6 @@ class NotificationBubble internal constructor(private val context: Context) {
      */
     @NotificationBubbleMarker
     var desiredHeight: Int = 0
-        set(value) {
-            field = value
-            desiredHeightRes = 0
-        }
 
     /**
      * @see Notification.BubbleMetadata.Builder.setDesiredHeight
@@ -972,10 +968,6 @@ class NotificationBubble internal constructor(private val context: Context) {
     @get:DimenRes
     @setparam:DimenRes
     var desiredHeightRes: Int = 0
-        set(value) {
-            field = value
-            desiredHeight = 0
-        }
 
     /**
      * @see Notification.BubbleMetadata.Builder.setIcon
