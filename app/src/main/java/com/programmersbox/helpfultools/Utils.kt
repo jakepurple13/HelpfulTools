@@ -47,7 +47,6 @@ class NewDsl<T, R> {
         paramFour(numberItem)
         rItem?.let { tItem?.let { it1 -> paramFive(it1, it) } }
         tItem?.let { paramSix(it) }
-
     }
 
     companion object {

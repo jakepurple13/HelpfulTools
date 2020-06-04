@@ -461,6 +461,9 @@ class NotificationDslBuilder(
     @NotificationUtilsMarker
     var priority: NotificationPriority = NotificationPriority.DEFAULT
 
+    @NotificationUtilsMarker
+    var category: NotificationCategory? = null
+
     private fun build() = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
         Notification.Builder(context, channelId)
             .setSmallIcon(smallIconId)
@@ -473,6 +476,7 @@ class NotificationDslBuilder(
             .also { builder -> timeoutAfter?.let { builder.setTimeoutAfter(it) } }
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
+            .also { builder -> category?.let { builder.setCategory(it.info) } }
             .setNumber(number)
             .setShowWhen(showWhen)
             .setPriority(priority.idSdk)
@@ -509,6 +513,7 @@ class NotificationDslBuilder(
             .also { builder -> timeoutAfter?.let { builder.setTimeoutAfter(it) } }
             .setLocalOnly(localOnly)
             .setOngoing(ongoing)
+            .also { builder -> category?.let { builder.setCategory(it.info) } }
             .setNumber(number)
             .setShowWhen(showWhen)
             .setPriority(priority.id)
@@ -1157,3 +1162,87 @@ class RemoteViewBuilder internal constructor() {
 }
 
 internal class NotificationRemoteView(internal val headsUp: RemoteViews?, internal val collapsed: RemoteViews?, internal val expanded: RemoteViews?)
+
+enum class NotificationCategory(internal val info: String) {
+    /**
+     * Notification category: incoming call (voice or video) or similar synchronous communication request.
+     */
+    CALL("call"),
+
+    /**
+     * Notification category: map turn-by-turn navigation.
+     */
+    NAVIGATION("navigation"),
+
+    /**
+     * Notification category: incoming direct message (SMS, instant message, etc.).
+     */
+    MESSAGE("msg"),
+
+    /**
+     * Notification category: asynchronous bulk message (email).
+     */
+    EMAIL("email"),
+
+    /**
+     * Notification category: calendar event.
+     */
+    EVENT("event"),
+
+    /**
+     * Notification category: promotion or advertisement.
+     */
+    PROMO("promo"),
+
+    /**
+     * Notification category: alarm or timer.
+     */
+    ALARM("alarm"),
+
+    /**
+     * Notification category: progress of a long-running background operation.
+     */
+    PROGRESS("progress"),
+
+    /**
+     * Notification category: social network or sharing update.
+     */
+    SOCIAL("social"),
+
+    /**
+     * Notification category: error in background operation or authentication status.
+     */
+    ERROR("err"),
+
+    /**
+     * Notification category: media transport control for playback.
+     */
+    TRANSPORT("transport"),
+
+    /**
+     * Notification category: system or device status update.  Reserved for system use.
+     */
+    SYSTEM("sys"),
+
+    /**
+     * Notification category: indication of running background service.
+     */
+    SERVICE("service"),
+
+    /**
+     * Notification category: a specific, timely recommendation for a single thing.
+     * For example, a news app might want to recommend a news story it believes the user will
+     * want to read next.
+     */
+    RECOMMENDATION("recommendation"),
+
+    /**
+     * Notification category: ongoing information about device or contextual status.
+     */
+    STATUS("status"),
+
+    /**
+     * Notification category: user-scheduled reminder.
+     */
+    REMINDER("reminder")
+}
