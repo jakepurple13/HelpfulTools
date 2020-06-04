@@ -149,6 +149,9 @@ private annotation class NotificationBubbleMarker
 private annotation class NotificationProgressMarker
 
 @DslMarker
+private annotation class NotificationPersonBuilder
+
+@DslMarker
 private annotation class RemoteMarker
 
 class NotificationDslBuilder(
@@ -369,6 +372,14 @@ class NotificationDslBuilder(
     fun inboxStyle(block: NotificationStyle.Inbox.() -> Unit) = run { notificationNotificationStyle = NotificationStyle.Inbox().apply(block) }
 
     /**
+     * @see Notification.MessagingStyle
+     * @see NotificationCompat.MessagingStyle
+     */
+    @NotificationStyleMarker
+    fun messageStyle(block: NotificationStyle.Messaging.() -> Unit) =
+        run { notificationNotificationStyle = NotificationStyle.Messaging(context).apply(block) }
+
+    /**
      * @see Notification.BigPictureStyle
      * @see NotificationCompat.BigPictureStyle
      */
@@ -405,7 +416,7 @@ class NotificationDslBuilder(
     fun addBubble(block: NotificationBubble.() -> Unit) = run { bubble = NotificationBubble(context).apply(block) }
 
     @NotificationUtilsMarker
-    var person: Person? = null
+    private var person: NotificationPerson? = null
 
     /**
      * Set the person
@@ -422,7 +433,7 @@ class NotificationDslBuilder(
      */
     @RequiresApi(Build.VERSION_CODES.P)
     @NotificationUtilsMarker
-    fun setPerson(block: Person.Builder.() -> Unit) = run { person = Person.Builder().apply(block).build() }
+    fun setPerson(block: NotificationPerson.() -> Unit) = run { person = NotificationPerson().apply(block) }
 
     /**
      * @see Notification.Builder.setGroupSummary
@@ -480,7 +491,7 @@ class NotificationDslBuilder(
             .setNumber(number)
             .setShowWhen(showWhen)
             .setPriority(priority.idSdk)
-            .also { builder -> person?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.addPerson(it) } }
+            .also { builder -> person?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) builder.addPerson(it.buildSdk()) } }
             .also { builder -> bubble?.let { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) builder.setBubbleMetadata(it.build()) } }
             .also { it.extras.extrasSet() }
             .setSubText(subText)
@@ -799,6 +810,69 @@ abstract class NotificationStyle {
             .setBigContentTitle(contentTitle)
             .setSummaryText(summaryText)
 
+    }
+
+    class Messaging internal constructor(private val context: Context) : NotificationStyle() {
+
+        class Message {
+            @NotificationStyleMarker
+            val message: String by Delegates.notNull()
+
+            @NotificationStyleMarker
+            val timestamp: Long = System.currentTimeMillis()
+
+            internal var person: NotificationPerson by Delegates.notNull()
+
+            @NotificationStyleMarker
+            fun setPerson(block: NotificationPerson.() -> Unit) = run { person = NotificationPerson().apply(block) }
+        }
+
+        private var person: NotificationPerson by Delegates.notNull()
+
+        @NotificationStyleMarker
+        fun setMainPerson(block: NotificationPerson.() -> Unit) = run { person = NotificationPerson().apply(block) }
+
+        /**
+         * @see Notification.MessagingStyle.setGroupConversation
+         * @see NotificationCompat.MessagingStyle.setGroupConversation
+         */
+        @NotificationStyleMarker
+        var isGroupConversation: Boolean = false
+
+        /**
+         * @see Notification.MessagingStyle.setConversationTitle
+         * @see NotificationCompat.MessagingStyle.setConversationTitle
+         */
+        @NotificationStyleMarker
+        var conversationTitle: CharSequence? = null
+
+        private val messages = mutableListOf<Message>()
+
+        @NotificationStyleMarker
+        fun message(block: Message.() -> Unit) = run { messages.add(Message().apply(block)) }
+
+        private val historicMessages = mutableListOf<Message>()
+
+        @RequiresApi(Build.VERSION_CODES.P)
+        @NotificationStyleMarker
+        fun historicMessage(block: Message.() -> Unit) = run { historicMessages.add(Message().apply(block)) }
+
+        @RequiresApi(Build.VERSION_CODES.M)
+        override fun build(): NotificationCompat.Style = NotificationCompat.MessagingStyle(person.build(context))
+            .setConversationTitle(conversationTitle)
+            .setGroupConversation(isGroupConversation)
+            .also { builder -> messages.forEach { builder.addMessage(it.message, it.timestamp, it.person.build(context)) } }
+
+        @RequiresApi(Build.VERSION_CODES.P)
+        override fun buildSdk(): Notification.Style = Notification.MessagingStyle(person.buildSdk())
+            .setConversationTitle(conversationTitle)
+            .setGroupConversation(isGroupConversation)
+            .also { builder -> messages.forEach { builder.addMessage(it.message, it.timestamp, it.person.buildSdk()) } }
+            .also { builder ->
+                historicMessages.forEach {
+                    builder.addHistoricMessage(Notification.MessagingStyle.Message(it.message, it.timestamp, it.person.buildSdk()))
+                }
+            }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -1237,4 +1311,45 @@ enum class NotificationCategory(internal val info: String) {
      * Notification category: user-scheduled reminder.
      */
     REMINDER("reminder")
+}
+
+class NotificationPerson() {
+
+    @NotificationPersonBuilder
+    var isBot: Boolean = false
+
+    @NotificationPersonBuilder
+    var isImportant: Boolean = false
+
+    @NotificationPersonBuilder
+    var name: String by Delegates.notNull()
+
+    @NotificationPersonBuilder
+    var icon: Icon? = null
+
+    @NotificationPersonBuilder
+    var key: String? = null
+
+    @NotificationPersonBuilder
+    var uri: String? = null
+
+    @RequiresApi(Build.VERSION_CODES.M)
+    internal fun build(context: Context) = androidx.core.app.Person.Builder()
+        .setBot(isBot)
+        .setIcon(icon?.let { IconCompat.createFromIcon(context, it) })
+        .setImportant(isImportant)
+        .whatIfNotNull(key) { setKey(it) }
+        .setName(name)
+        .setUri(uri)
+        .build()
+
+    @RequiresApi(Build.VERSION_CODES.P)
+    internal fun buildSdk() = Person.Builder()
+        .setBot(isBot)
+        .setIcon(icon)
+        .setImportant(isImportant)
+        .whatIfNotNull(key) { setKey(it) }
+        .setName(name)
+        .setUri(uri)
+        .build()
 }
