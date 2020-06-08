@@ -1,5 +1,6 @@
 package com.programmersbox.dragswipe
 
+import android.graphics.Canvas
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.programmersbox.dragswipe.Direction.NOTHING
@@ -60,6 +61,20 @@ open class DragSwipeManageAdapter<T, VH : RecyclerView.ViewHolder>(
     swipeDirs: Int
 ) : ItemTouchHelper.SimpleCallback(dragDirs, swipeDirs) {
 
+    constructor(
+        dragSwipeAdapter: DragSwipeAdapter<T, VH>,
+        dragDirs: Iterable<Direction> = listOf(NOTHING),
+        swipeDirs: Iterable<Direction> = listOf(NOTHING)
+    ) : this(
+        dragSwipeAdapter,
+        dragDirs.drop(1).fold(dragDirs.first().value) { acc, d -> acc + d },
+        swipeDirs.drop(1).fold(swipeDirs.first().value) { acc, s -> acc + s }
+    )
+
+    constructor(
+        dragSwipeAdapter: DragSwipeAdapter<T, VH>, dragDirs: Direction = NOTHING, swipeDirs: Direction = NOTHING
+    ) : this(dragSwipeAdapter, dragDirs.value, swipeDirs.value)
+
     /**
      * These are the actions for [DragSwipeActions.onMove] and [DragSwipeActions.onSwiped] and [DragSwipeActions.getMovementFlags]
      */
@@ -78,6 +93,29 @@ open class DragSwipeManageAdapter<T, VH : RecyclerView.ViewHolder>(
 
     override fun isLongPressDragEnabled(): Boolean = dragSwipeActions.isLongPressDragEnabled()
     override fun isItemViewSwipeEnabled(): Boolean = dragSwipeActions.isItemViewSwipeEnabled()
+
+    override fun onChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: RecyclerView.ViewHolder,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) {
+        onCustomChildDraw(c, recyclerView, viewHolder as VH, dX, dY, actionState, isCurrentlyActive)
+    }
+
+    open fun onCustomChildDraw(
+        c: Canvas,
+        recyclerView: RecyclerView,
+        viewHolder: VH,
+        dX: Float,
+        dY: Float,
+        actionState: Int,
+        isCurrentlyActive: Boolean
+    ) = super<ItemTouchHelper.SimpleCallback>.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive)
+
 }
 
 /**
