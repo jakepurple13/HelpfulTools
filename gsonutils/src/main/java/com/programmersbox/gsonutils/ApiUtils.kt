@@ -16,3 +16,6 @@ fun getApi(url: String, builder: okhttp3.Request.Builder.() -> Unit = {}): Strin
 
 @WorkerThread
 inline fun <reified T> getJsonApi(url: String, noinline builder: okhttp3.Request.Builder.() -> Unit = {}) = getApi(url, builder).fromJson<T>()
+
+fun okhttp3.Request.Builder.header(pair: Pair<String, String>) = header(pair.first, pair.second)
+fun okhttp3.Request.Builder.header(vararg pair: Pair<String, String>) = apply { pair.forEach { header(it.first, it.second) } }
