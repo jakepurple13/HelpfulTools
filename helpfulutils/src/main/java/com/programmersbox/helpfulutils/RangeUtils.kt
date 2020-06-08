@@ -55,6 +55,7 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
                 value < 0 -> if (loop) itemList.lastIndex else 0
                 else -> value
             }
+            onChange(field, item)
         }
 
     /**
@@ -84,6 +85,7 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
     operator fun iterator() = itemList.iterator()
     operator fun invoke() = item
     operator fun get(index: Int) = itemList[index]
+    protected open fun onChange(current: Int, item: T) = Unit
 }
 
 /**

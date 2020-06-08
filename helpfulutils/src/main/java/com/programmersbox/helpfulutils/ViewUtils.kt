@@ -64,16 +64,9 @@ fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition()
 @RequiresApi(Build.VERSION_CODES.KITKAT)
 class ConstraintRange(private val layout: ConstraintLayout, vararg items: ConstraintSet, loop: Boolean = true) :
     ItemRange<ConstraintSet>(*items, loop = loop) {
-    override operator fun inc(): ConstraintRange {
-        super.inc()
-        layout.animateChildren { item.applyTo(this) }
-        return this
-    }
 
-    override operator fun dec(): ConstraintRange {
-        super.dec()
+    override fun onChange(current: Int, item: ConstraintSet) {
         layout.animateChildren { item.applyTo(this) }
-        return this
     }
 }
 
