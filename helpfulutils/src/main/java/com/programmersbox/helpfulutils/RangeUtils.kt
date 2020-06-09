@@ -10,12 +10,12 @@ infix fun Int.through(that: Int): IntProgression = this..that
  * loop around if [loop] is true
  * remain at the range ends if [loop] is false
  */
-class NumberRange(range: IntProgression, loop: Boolean = true) : ItemRange<Int>(*range.toList().toTypedArray(), loop = loop) {
-    private val step = range.step
-    operator fun plusAssign(n: Int) = run { current += n }
-    operator fun minusAssign(n: Int) = run { current -= n }
+class NumberRange(override val itemList: List<Int>, private val step: Int) : Range<Int>() {
+    constructor(range: IntProgression) : this(range.toList(), range.step)
+
     override operator fun inc() = apply { current += step }
     override operator fun dec() = apply { current -= step }
+    override fun onChange(current: Int, item: Int) = Unit
 }
 
 /**
@@ -23,11 +23,38 @@ class NumberRange(range: IntProgression, loop: Boolean = true) : ItemRange<Int>(
  * loop around if [loop] is true
  * remain at the range ends if [loop] is false
  */
-open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
+class MutableItemRange<T>(override val itemList: MutableList<T>) : Range<T>(), MutableList<T> by itemList {
+    constructor(vararg items: T) : this(items.toMutableList())
+
+    override fun onChange(current: Int, item: T) = Unit
+}
+
+/**
+ * Use this when you want to stay within a set of items. You can add or remove items from the list
+ * loop around if [loop] is true
+ * remain at the range ends if [loop] is false
+ */
+class ItemRange<T>(override val itemList: List<T>) : Range<T>(), List<T> by itemList {
+    constructor(vararg items: T) : this(items.toList())
+
+    override fun onChange(current: Int, item: T) = Unit
+}
+
+/**
+ * Use this when you want to stay within a set of items.
+ */
+abstract class Range<T> {
+
     /**
      * The list of items
      */
-    val itemList = items.toMutableList()
+    abstract val itemList: List<T>
+
+    /**
+     * loop around if [loop] is true
+     * remain at the range ends if [loop] is false
+     */
+    var loop: Boolean = true
 
     /**
      * Previous item
@@ -80,20 +107,38 @@ open class ItemRange<T>(vararg items: T, var loop: Boolean = true) {
             else -> current - 1
         }
 
+    /**
+     * Call [onChange] for any actions that you want to call now
+     */
+    fun applyNow() = onChange(current, item)
+
     open operator fun inc() = apply { current += 1 }
     open operator fun dec() = apply { current -= 1 }
-    operator fun iterator() = itemList.iterator()
+    open operator fun plusAssign(amount: Int) = run { current += amount }
+    open operator fun minusAssign(amount: Int) = run { current -= amount }
     operator fun invoke() = item
-    operator fun get(index: Int) = itemList[index]
-    protected open fun onChange(current: Int, item: T) = Unit
+    operator fun next() = run { current += 1 }
+    operator fun hasNext() = current + 1 > itemList.lastIndex
+    protected abstract fun onChange(current: Int, item: T)
+    override fun toString(): String = itemList.toString()
 }
+
+/**
+ * Creates a [MutableItemRange] from [item]
+ */
+fun <T> mutableItemRangeOf(vararg item: T) = MutableItemRange(*item)
+
+/**
+ * Creates an [ItemRange] from [item]
+ */
+fun <T> itemRangeOf(vararg item: T) = ItemRange(*item)
 
 /**
  * Changes this [Iterable] to an [ItemRange]
  */
-inline fun <reified T> Iterable<T>.toItemRange(loop: Boolean = true) = ItemRange(*toList().toTypedArray(), loop = loop)
+inline fun <reified T> Iterable<T>.toItemRange() = ItemRange(*toList().toTypedArray())
 
 /**
  * Changes this [String] to an [ItemRange]
  */
-fun String.toItemRange(loop: Boolean = true) = toList().toItemRange(loop)
+fun String.toItemRange() = toList().toItemRange()

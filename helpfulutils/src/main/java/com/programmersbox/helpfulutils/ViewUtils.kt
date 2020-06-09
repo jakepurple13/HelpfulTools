@@ -62,12 +62,13 @@ fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition()
  * This will take care of [ConstraintSet.applyTo] for you
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
-class ConstraintRange(private val layout: ConstraintLayout, vararg items: ConstraintSet, loop: Boolean = true) :
-    ItemRange<ConstraintSet>(*items, loop = loop) {
+class ConstraintRange(
+    private val layout: ConstraintLayout,
+    override val itemList: List<ConstraintSet>
+) : Range<ConstraintSet>(), List<ConstraintSet> by itemList {
+    constructor(layout: ConstraintLayout, vararg items: ConstraintSet) : this(layout, items.toList())
 
-    override fun onChange(current: Int, item: ConstraintSet) {
-        layout.animateChildren { item.applyTo(this) }
-    }
+    override fun onChange(current: Int, item: ConstraintSet) = layout.animateChildren { item.applyTo(this) }
 }
 
 /**

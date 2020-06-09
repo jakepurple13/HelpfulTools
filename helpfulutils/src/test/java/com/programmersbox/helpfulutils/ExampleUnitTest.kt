@@ -15,6 +15,7 @@ class ExampleUnitTest {
 
     @Test
     fun whatIfTest() {
+        val f = 0 through 5
         val intValue = if (Random.nextBoolean()) Random.nextInt(0, 20) else null
         val util = UtilObject("Hello", intValue)
         println(util)
@@ -86,7 +87,7 @@ class ExampleUnitTest {
     @Test
     fun rangeTest() {
         println("Item Loop = true --------")
-        var f = ItemRange(1, 2, 3, 4, 5)
+        var f: Range<Int> = ItemRange(1, 2, 3, 4, 5)
         for (i in 0..10) {
             println(f())
             f++
@@ -110,7 +111,8 @@ class ExampleUnitTest {
             n--
         }
         println("Item Loop = false--------")
-        var f1 = ItemRange(1, 2, 3, 4, 5, loop = false)
+        var f1: Range<Int> = ItemRange(1, 2, 3, 4, 5)
+        f1.loop = false
         for (i in 0..10) {
             println(f1())
             f1++
@@ -121,7 +123,8 @@ class ExampleUnitTest {
             f1--
         }
         println("Number Loop = false--------")
-        var n1 = NumberRange(1..5, false)
+        var n1 = NumberRange(1..5)
+        n1.loop = false
         for (i in 0..10) {
             println(n1())
             n1++
@@ -131,6 +134,25 @@ class ExampleUnitTest {
             println(n1())
             n1--
         }
+
+        val mut = mutableItemRangeOf(1, 2, 3, 4, 5)
+        val item = itemRangeOf(1, 2, 3, 4, 5)
+
+        println(mut)
+        println(item)
+        println(n)
+        println(n1)
+        println(f)
+        println(f1)
+
+        for (i in item) {
+            println(i)
+        }
+
+        item.forEach { println(it) }
+
+        val group = item.groupBy { it % 2 == 0 }
+        println(group)
     }
 
 }
