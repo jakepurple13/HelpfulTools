@@ -37,6 +37,12 @@ dependencies {
     implementation 'com.airbnb.android:lottie:3.4.1'
     implementation 'com.github.bumptech.glide:glide:4.11.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+    implementation("com.github.bumptech.glide:recyclerview-integration:4.11.0") {
+        // Excludes the support library because it's already included by Glide.
+        transitive = false
+    }
+    implementation 'androidx.recyclerview:recyclerview:1.1.0'
+    implementation project(":dragswipe")
 }
 
 // build a jar with source files
