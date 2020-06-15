@@ -145,13 +145,13 @@ class DownloadDslManager internal constructor(private val context: Context) {
         .setAllowedOverRoaming(allowOverRoaming)
         .setAllowedOverMetered(allowOverMetered)
         .also { r -> headers.forEach { r.addRequestHeader(it.key, it.value) } }
-        .whatIfNotNull(title, DownloadManager.Request::setTitle)
-        .whatIfNotNull(description, DownloadManager.Request::setDescription)
+        .whatIfNotNull(title) { setTitle(it) }
+        .whatIfNotNull(description) { setDescription(it) }
         .also { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) it.setRequiresDeviceIdle(requiresDeviceIdle) }
         .also { if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) it.setRequiresCharging(requiresCharging) }
-        .whatIfNotNull(mimeType, DownloadManager.Request::setMimeType)
+        .whatIfNotNull(mimeType) { setMimeType(it) }
         .setNotificationVisibility(visibility.value)
-        .whatIfNotNull(destinationUri, DownloadManager.Request::setDestinationUri)
+        .whatIfNotNull(destinationUri) { setDestinationUri(it) }
         .whatIfNotNull(destinationInExternalFilesDir) { setDestinationInExternalFilesDir(context, it.first, it.second) }
         .whatIfNotNull(destinationInExternalPublicDir) { setDestinationInExternalPublicDir(it.first, it.second) }
 
