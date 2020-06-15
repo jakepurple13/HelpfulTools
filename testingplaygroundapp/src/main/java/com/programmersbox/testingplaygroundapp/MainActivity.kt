@@ -100,7 +100,31 @@ class MainActivity : AppCompatActivity() {
             }
 
         addButton.longClicks()
-            .collectOnUi { startActivity(Intent(this@MainActivity, BindingActivity::class.java)) }
+            .collectOnUi {
+
+                requestPermissions(Manifest.permission.INTERNET) {
+                    if (it.isGranted) {
+                        /*val request = downloadManager.enqueue(
+                            DownloadManager.Request(
+                                Uri.parse("http://ocw.mit.edu/courses" + "/aeronautics-and-astronautics/16-100-aerodynamics-fall-2005" + "/lecture-notes/16100lectre1_kvm.pdf")
+                            )
+                        )
+                        DownloadManagerListener(this@MainActivity) {
+                            addId(request)
+                            addStatus(DownloadManagerListener.DownloadStatus.RUNNING)
+                            addStatus(DownloadManagerListener.DownloadStatus.SUCCESSFUL)
+                            addStatus(DownloadManagerListener.DownloadStatus.FAILED)
+                            addStatus(DownloadManagerListener.DownloadStatus.PENDING)
+                            addStatus(DownloadManagerListener.DownloadStatus.PAUSED)
+
+                            listener {
+                                println(it)
+                            }
+                        }*/
+                    }
+                }
+                startActivity(Intent(this@MainActivity, BindingActivity::class.java))
+            }
 
         gotoGames
             .clicks()

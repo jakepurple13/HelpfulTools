@@ -2,10 +2,15 @@ package com.programmersbox.helpfulutils
 
 import android.app.DownloadManager
 import android.content.Context
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.core.database.getIntOrNull
+import androidx.core.database.getLongOrNull
+import androidx.core.database.getStringOrNull
 import kotlin.properties.Delegates
+
 
 fun DownloadManager.enqueue(context: Context, block: DownloadDslManager.() -> Unit) = enqueue(DownloadDslManager(context, block))
 
@@ -161,49 +166,144 @@ class DownloadDslManager internal constructor(private val context: Context) {
     }
 }
 
-/*
-
+@DownloadListener
 class DownloadManagerListener internal constructor(private val context: Context) {
 
     private val downloadManager = context.downloadManager
 
     private val filterByIds = mutableListOf<Long>()
 
+    fun addId(id: Long) = filterByIds.add(id)
+
     enum class DownloadStatus(internal val value: Int) {
         FAILED(DownloadManager.STATUS_FAILED),
         PAUSED(DownloadManager.STATUS_PAUSED),
         PENDING(DownloadManager.STATUS_PENDING),
         RUNNING(DownloadManager.STATUS_RUNNING),
-        SUCCESSFUL(DownloadManager.STATUS_SUCCESSFUL)
+        SUCCESSFUL(DownloadManager.STATUS_SUCCESSFUL);
+
+        companion object {
+            internal fun getStatusFromValue(id: Int) = values().find { it.value == id }
+        }
+    }
+
+    enum class DownloadReason(internal val value: Int) {
+        QUEUED_FOR_WIFI(DownloadManager.PAUSED_QUEUED_FOR_WIFI),
+        WAITING_FOR_NETWORK(DownloadManager.PAUSED_WAITING_FOR_NETWORK),
+        WAITING_TO_RETRY(DownloadManager.PAUSED_WAITING_TO_RETRY),
+        UNKNOWN(DownloadManager.PAUSED_UNKNOWN);
+
+        companion object {
+            internal fun getReasonFromValue(id: Int) = values().find { it.value == id }
+        }
     }
 
     private val filterByStatus = mutableListOf<DownloadStatus>()
 
+    fun addStatus(status: DownloadStatus) = filterByStatus.add(status)
+
+    private var listener: (DownloadInfo) -> Unit = {}
+
+    fun listener(block: (DownloadInfo) -> Unit) = run { listener = block }
+
+    var updateInterval: Long = 500L
+
+    data class DownloadInfo(
+        val status: DownloadStatus,
+        val title: String,
+        val id: Long,
+        val description: String,
+        val localUri: String?,
+        val uri: String?,
+        val reason: DownloadReason?,
+        val lastModifiedTimestamp: Long,
+        val mimeType: String,
+        val downloadedSoFar: Int,
+        val totalSize: Int
+    ) {
+        val progress: Long get() = (downloadedSoFar * 100L) / totalSize
+        val uriAsUri: Uri get() = Uri.parse(uri)
+        val localUriAsUri: Uri get() = Uri.parse(localUri)
+    }
+
     private fun build() {
+
+        DownloadManager.ACTION_DOWNLOAD_COMPLETE
+        DownloadManager.ACTION_VIEW_DOWNLOADS
+        DownloadManager.ACTION_NOTIFICATION_CLICKED
+
         val c = downloadManager.query(
             DownloadManager.Query()
                 .setFilterById(*filterByIds.toLongArray())
                 .also {
                     try {
                         it.setFilterByStatus(
-                            filterByStatus.drop(1).fold(filterByStatus[0].value) { acc, downloadStatus -> acc or downloadStatus.value })
+                            filterByStatus.drop(1).fold(filterByStatus[0].value) { acc, downloadStatus -> acc or downloadStatus.value }
+                        )
                     } catch (e: Exception) {
                     }
                 }
         )
 
-        DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
-        DownloadManager.COLUMN_DESCRIPTION
-        DownloadManager.COLUMN_ID
-        DownloadManager.COLUMN_LAST_MODIFIED_TIMESTAMP
-        DownloadManager.COLUMN_LOCAL_URI
-        DownloadManager.COLUMN_MEDIAPROVIDER_URI
-        DownloadManager.COLUMN_MEDIA_TYPE
-        DownloadManager.COLUMN_REASON
-        DownloadManager.COLUMN_STATUS
-        DownloadManager.COLUMN_TITLE
-        DownloadManager.COLUMN_TOTAL_SIZE_BYTES
-        DownloadManager.COLUMN_URI
+        //DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR
+        //DownloadManager.COLUMN_DESCRIPTION
+        //DownloadManager.COLUMN_ID
+        //DownloadManager.COLUMN_LAST_MODIFIED_TIMESTAMP
+        //DownloadManager.COLUMN_LOCAL_URI
+        //DownloadManager.COLUMN_MEDIAPROVIDER_URI
+        //DownloadManager.COLUMN_MEDIA_TYPE
+        //DownloadManager.COLUMN_REASON
+        //DownloadManager.COLUMN_STATUS
+        //DownloadManager.COLUMN_TITLE
+        //DownloadManager.COLUMN_TOTAL_SIZE_BYTES
+        //DownloadManager.COLUMN_URI
 
+        val rows = c.count
+        var counter = 0
+
+        fun Cursor.longValue(column: String) = getLong(getColumnIndex(column))
+        fun Cursor.stringValue(column: String) = getString(getColumnIndex(column))
+        fun Cursor.intValue(column: String) = getInt(getColumnIndex(column))
+
+        fun Cursor.longValueOrNull(column: String) = getLongOrNull(getColumnIndex(column))
+        fun Cursor.stringValueOrNull(column: String) = getStringOrNull(getColumnIndex(column))
+        fun Cursor.intValueOrNull(column: String) = getIntOrNull(getColumnIndex(column))
+
+        Thread(Runnable {
+            while (true) {
+                if (c != null) {
+                    while (c.moveToNext()) {
+                        val info = DownloadInfo(
+                            status = DownloadStatus.getStatusFromValue(c.intValue(DownloadManager.COLUMN_STATUS)) ?: DownloadStatus.FAILED,
+                            title = c.stringValue(DownloadManager.COLUMN_TITLE),
+                            id = c.longValue(DownloadManager.COLUMN_ID),
+                            description = c.stringValue(DownloadManager.COLUMN_DESCRIPTION),
+                            lastModifiedTimestamp = c.longValue(DownloadManager.COLUMN_LAST_MODIFIED_TIMESTAMP),
+                            localUri = c.stringValueOrNull(DownloadManager.COLUMN_LOCAL_URI),
+                            uri = c.stringValueOrNull(DownloadManager.COLUMN_URI),
+                            mimeType = c.stringValue(DownloadManager.COLUMN_MEDIA_TYPE),
+                            reason = DownloadReason.getReasonFromValue(c.intValue(DownloadManager.COLUMN_REASON)),
+                            downloadedSoFar = c.intValue(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR),
+                            totalSize = c.intValue(DownloadManager.COLUMN_TOTAL_SIZE_BYTES)
+                        )
+                        listener(info)
+                        if (info.status == DownloadStatus.SUCCESSFUL || info.status == DownloadStatus.FAILED) counter++
+                        //Thread.sleep(updateInterval)
+                    }
+                }
+                println("Counter: $counter and Rows: $rows")
+                if (counter >= rows) break
+                Thread.sleep(updateInterval)
+            }
+            c.close()
+        }).start()
     }
-}*/
+
+    companion object {
+        @DownloadListener
+        operator fun invoke(context: Context, block: DownloadManagerListener.() -> Unit) = DownloadManagerListener(context).apply(block).build()
+    }
+}
+
+@RequiresOptIn
+annotation class DownloadListener

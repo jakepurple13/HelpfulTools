@@ -1,5 +1,6 @@
 package com.programmersbox.helpfulutils
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.content.DialogInterface
 import android.graphics.Color
@@ -92,6 +93,10 @@ fun View.visible() = run { visibility = View.VISIBLE }
 fun Drawable.changeDrawableColor(color: Int) {
     mutate().colorFilter = PorterDuffColorFilter(color, PorterDuff.Mode.MULTIPLY)
 }
+
+fun IntProgression.toValueAnimator() = ValueAnimator.ofInt(first, last)
+
+fun ClosedFloatingPointRange<Float>.toValueAnimator() = ValueAnimator.ofFloat(start, endInclusive)
 
 /**
  * hides the keyboard

@@ -14,6 +14,7 @@ import org.junit.runner.RunWith
 import java.util.concurrent.Executors
 import kotlin.random.Random
 
+
 /**
  * Instrumented test, which will execute on an Android device.
  *
@@ -22,9 +23,9 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 class ExampleInstrumentedTest {
 
-    val timer = EasyCountDownTimer(1000) {
+    /*val timer = EasyCountDownTimer(1000) {
         println("Done")
-    }
+    }*/
 
     @Test
     fun useAppContext() {
@@ -182,5 +183,42 @@ class ExampleInstrumentedTest {
         appContext.displayManager
         appContext.userManager
     }
+
+    @Test
+    fun query_shouldReturnAll() {
+        val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        /*val request =
+            appContext.downloadManager.enqueue(
+                DownloadManager.Request(
+                    Uri.parse("http://ocw.mit.edu/courses" + "/aeronautics-and-astronautics/16-100-aerodynamics-fall-2005" + "/lecture-notes/16100lectre1_kvm.pdf")
+                )
+            )
+        DownloadManagerListener(appContext) {
+            addId(request)
+            addStatus(DownloadManagerListener.DownloadStatus.RUNNING)
+            addStatus(DownloadManagerListener.DownloadStatus.SUCCESSFUL)
+            addStatus(DownloadManagerListener.DownloadStatus.FAILED)
+            addStatus(DownloadManagerListener.DownloadStatus.PENDING)
+            addStatus(DownloadManagerListener.DownloadStatus.PAUSED)
+
+            listener {
+                println(it)
+            }
+        }*/
+        /*val manager = ShadowDownloadManager()
+        val firstId: Long = manager.enqueue(request.setDestinationUri(destination))
+        val secondUri: Uri = Uri.parse("http://example.com/foo2.mp4")
+        val secondDestination: Uri = Uri.parse("file:///storage/foo2.mp4")
+        val secondRequest = Request(secondUri)
+        val secondId: Long = manager.enqueue(secondRequest.setDestinationUri(secondDestination))
+        val cursor: Cursor = manager.query(DownloadManager.Query())
+        cursor.moveToNext()
+        assertThat(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))).isEqualTo(uri.toString())
+        assertThat(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))).isEqualTo(destination.toString())
+        cursor.moveToNext()
+        assertThat(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))).isEqualTo(secondUri.toString())
+        assertThat(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))).isEqualTo(secondDestination.toString())*/
+    }
+
 
 }
