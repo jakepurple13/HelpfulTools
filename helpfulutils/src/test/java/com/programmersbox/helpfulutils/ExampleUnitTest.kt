@@ -181,6 +181,10 @@ class ExampleUnitTest {
         println(list3)
 
         val list4 = fixedListOf<Int>(10, 1, 2, 3, 4, 5)
+
+        listOf(1, 2, 3).toFixedList(5).toFixedSet(10)
+        fixedSetOf(5, 1, 2, 3)
+        fixedMapOf(5, 1 to 4, 2 to 5)
     }
 
 }

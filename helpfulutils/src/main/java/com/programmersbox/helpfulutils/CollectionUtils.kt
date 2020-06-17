@@ -48,6 +48,9 @@ fun <T> sizedListOf(amount: Int = 1, item: (Int) -> T) = mutableListOf<T>().appl
  */
 val <T> List<T>.lastWithIndex: Pair<Int, T> get() = lastIndex to last()
 
+fun <T> Iterable<T>.toFixedList(size: Int) = FixedList(size, c = toMutableList())
+fun <T> Iterable<T>.toFixedSet(size: Int) = FixedSet(size, c = toMutableSet())
+
 enum class FixedListLocation {
     /**
      * Remove from the start
