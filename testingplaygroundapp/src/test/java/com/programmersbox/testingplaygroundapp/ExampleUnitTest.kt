@@ -3,6 +3,10 @@ package com.programmersbox.testingplaygroundapp
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Deck
 import com.programmersbox.funutils.cards.Suit
+import com.programmersbox.gsonutils.fromJson
+import com.programmersbox.gsonutils.toJson
+import com.programmersbox.helpfulutils.FixedList
+import com.programmersbox.helpfulutils.fixedListOf
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
 import com.programmersbox.testingplayground.color
@@ -137,6 +141,17 @@ class ExampleUnitTest {
     @Test
     fun other80() {
         Loged::class.toClassInfo().printClassInfoInBox<String>()
+    }
+
+    @Test
+    fun jsonTest() {
+        val f = fixedListOf(5, 1, 2, 3, 4, 5)
+        println(f)
+        val s = f.toJson()
+        println(s)
+        println("Now from json")
+        val f1 = s.fromJson<FixedList<Int>>()
+        println(f1)
     }
 
     @Test
