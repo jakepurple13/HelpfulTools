@@ -155,4 +155,32 @@ class ExampleUnitTest {
         println(group)
     }
 
+    @Test
+    fun fixedLengthTest() {
+        val list = FixedList<Int>(10)
+        list.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+        println(list)
+        list += 12
+        println(list)
+        list.add(0, 13)
+        println(list)
+        list.fixedSize = 5
+        println(list)
+        val list1 = FixedList<Int>(1, initialCapacity = 2)
+        val list2 = FixedList(1, c = mutableListOf(1, 2, 3))
+
+        val list3 = FixedList<Int>(10)
+        list3.removeFrom = FixedListLocation.START
+        list3.addAll(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
+        println(list3)
+        list3 += 12
+        println(list3)
+        list.add(0, 13)
+        println(list3)
+        list3.fixedSize = 5
+        println(list3)
+
+        val list4 = fixedListOf<Int>(10, 1, 2, 3, 4, 5)
+    }
+
 }
