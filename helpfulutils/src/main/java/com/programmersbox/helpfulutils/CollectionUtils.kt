@@ -75,7 +75,7 @@ open class FixedList<T> : ArrayList<T> {
     var fixedSize: Int
         set(value) {
             field = value
-            if (size > value) removeRange(value, size)
+            multipleSizeCheck()
         }
 
     /**
