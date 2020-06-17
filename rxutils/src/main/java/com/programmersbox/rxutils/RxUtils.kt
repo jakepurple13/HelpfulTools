@@ -1,9 +1,6 @@
 package com.programmersbox.rxutils
 
-import io.reactivex.BackpressureStrategy
-import io.reactivex.Flowable
-import io.reactivex.Observable
-import io.reactivex.Observer
+import io.reactivex.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -20,6 +17,20 @@ operator fun <T> Observer<T>.invoke(item: T) = onNext(item)
 operator fun <T> Observer<T>.invoke(throwable: Throwable) = onError(throwable)
 operator fun <T> Observer<T>.invoke(d: Disposable) = onSubscribe(d)
 operator fun <T> Observer<T>.invoke() = onComplete()
+
+operator fun <T> Emitter<T>.invoke(item: T) = onNext(item)
+operator fun <T> Emitter<T>.invoke(throwable: Throwable) = onError(throwable)
+operator fun <T> Emitter<T>.invoke() = onComplete()
+
+operator fun <T> SingleEmitter<T>.invoke(item: T) = onSuccess(item)
+operator fun <T> SingleEmitter<T>.invoke(throwable: Throwable) = onError(throwable)
+
+operator fun <T> MaybeEmitter<T>.invoke(item: T) = onSuccess(item)
+operator fun <T> MaybeEmitter<T>.invoke(throwable: Throwable) = onError(throwable)
+operator fun <T> MaybeEmitter<T>.invoke() = onComplete()
+
+operator fun CompletableEmitter.invoke(throwable: Throwable) = onError(throwable)
+operator fun CompletableEmitter.invoke() = onComplete()
 
 /**
  * Does a [map]ping function with [apply] to modify the new element
