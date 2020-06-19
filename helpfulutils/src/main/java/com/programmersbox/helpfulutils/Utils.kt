@@ -95,12 +95,6 @@ object EasyCountDownTimer {
 }
 
 /**
- * If you want to group a list by a condition
- */
-fun <T, R> List<T>.groupByCondition(key: (T) -> R, predicate: (key: T, element: T) -> Boolean): List<Pair<R, List<T>>> =
-    map { name -> key(name) to filter { s -> predicate(name, s) } }.distinctBy(Pair<R, List<T>>::second)
-
-/**
  * Calculates the similarity (a number within 0.0 and 1.0) between two strings.
  */
 fun String.similarity(s2: String): Double {

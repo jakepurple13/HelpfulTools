@@ -120,8 +120,13 @@ abstract class Range<T> {
     operator fun next() = run { current += 1 }
     operator fun hasNext() = current + 1 > itemList.lastIndex
     protected abstract fun onChange(current: Int, item: T)
-    override fun toString(): String = itemList.toString()
+    override fun toString(): String = "Loop: $loop, Current: $current, $itemList"
+
+    fun toItemRange() = ItemRange(itemList).apply { this@apply.loop = this@Range.loop }
+    fun toMutableItemRange() = MutableItemRange(itemList).apply { this@apply.loop = this@Range.loop }
 }
+
+fun Range<Int>.toNumberRange() = NumberRange(itemList, 1).apply { this.loop = this@toNumberRange.loop }
 
 /**
  * Creates a [MutableItemRange] from [item]

@@ -38,6 +38,12 @@ fun <T> MutableList<T>.randomRemove(predicate: (T) -> Boolean): T = removeAt(ind
 fun <T> Iterable<T>.random(predicate: (T) -> Boolean) = filter(predicate).random()
 
 /**
+ * If you want to group a list by a condition
+ */
+fun <T, R> List<T>.groupByCondition(key: (T) -> R, predicate: (key: T, element: T) -> Boolean): List<Pair<R, List<T>>> =
+    map { name -> key(name) to filter { s -> predicate(name, s) } }.distinctBy(Pair<R, List<T>>::second)
+
+/**
  * Creates a list of [amount] size
  * Useful for random information
  */
@@ -65,7 +71,7 @@ enum class FixedListLocation {
     END
 }
 
-fun <T> fixedListOf(size: Int, vararg elements: T): FixedList<T> = FixedList(size, c = elements.toMutableList())
+fun <T> fixedListOf(size: Int, vararg elements: T): FixedList<T> = FixedList(size, c = elements.toList())
 
 open class FixedList<T> : ArrayList<T> {
 
@@ -74,6 +80,7 @@ open class FixedList<T> : ArrayList<T> {
      */
     var fixedSize: Int
         set(value) {
+            require(value > 0) { "FixedSize must be greater than 0" }
             field = value
             multipleSizeCheck()
         }
@@ -89,7 +96,7 @@ open class FixedList<T> : ArrayList<T> {
         this.removeFrom = location
     }
 
-    constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: MutableCollection<out T>) : super(c) {
+    constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: Collection<T>) : super(c.toMutableList()) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
@@ -137,6 +144,8 @@ open class FixedList<T> : ArrayList<T> {
         return addition
     }
 
+    override fun toString(): String = "FixedSize=$fixedSize, RemoveFrom=$removeFrom, ${super.toString()}"
+
 }
 
 fun <K, V> fixedMapOf(size: Int, vararg elements: Pair<K, V>): FixedMap<K, V> = FixedMap<K, V>(size).apply { putAll(elements) }
@@ -161,7 +170,7 @@ open class FixedMap<K, V> : LinkedHashMap<K, V> {
         this.removeFrom = location
     }
 
-    constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: MutableMap<out K, out V>?) : super(c) {
+    constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: Map<out K, V>?) : super(c?.toMutableMap()) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
@@ -182,6 +191,7 @@ open class FixedMap<K, V> : LinkedHashMap<K, V> {
      */
     var fixedSize: Int = 0
         set(value) {
+            require(value > 0) { "FixedSize must be greater than 0" }
             field = value
             multipleSizeCheck()
         }
@@ -224,11 +234,13 @@ open class FixedMap<K, V> : LinkedHashMap<K, V> {
         return putting
     }
 
+    override fun toString(): String = "FixedSize=$fixedSize, RemoveFrom=$removeFrom, ${super.toString()}"
+
 }
 
 fun <T> fixedSetOf(size: Int, vararg elements: T): FixedSet<T> = FixedSet(size, c = elements.toMutableSet())
 
-open class FixedSet<T> : LinkedHashSet<T> {
+open class FixedSet<T> : HashSet<T> {
 
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : super() {
         this.fixedSize = fixedSize
@@ -240,7 +252,7 @@ open class FixedSet<T> : LinkedHashSet<T> {
         this.removeFrom = location
     }
 
-    constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: MutableCollection<out T>) : super(c) {
+    constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: Collection<T>) : super(c.toMutableSet()) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
@@ -256,8 +268,9 @@ open class FixedSet<T> : LinkedHashSet<T> {
     /**
      * set the max size this list can hold
      */
-    var fixedSize: Int = 0
+    var fixedSize: Int
         set(value) {
+            require(value > 0) { "FixedSize must be greater than 0" }
             field = value
             multipleSizeCheck()
         }
@@ -275,11 +288,11 @@ open class FixedSet<T> : LinkedHashSet<T> {
         }
 
     protected fun singleSizeCheck() {
-        if (size > fixedSize) remove(removeIndex)
+        if (size > fixedSize && fixedSize != 0) remove(removeIndex)
     }
 
     protected fun multipleSizeCheck() {
-        while (size > fixedSize) remove(removeIndex)
+        while (size > fixedSize && fixedSize != 0) remove(removeIndex)
     }
 
     override fun add(element: T): Boolean {
@@ -293,5 +306,7 @@ open class FixedSet<T> : LinkedHashSet<T> {
         multipleSizeCheck()
         return adding
     }
+
+    override fun toString(): String = "FixedSize=$fixedSize, RemoveFrom=$removeFrom, ${super.toString()}"
 
 }
