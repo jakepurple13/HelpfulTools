@@ -7,6 +7,9 @@ import com.programmersbox.helpfulutils.*
 
 /**
  * This was made was for any custom classes in [HelpfulUtils](https://github.com/jakepurple13/HelpfulTools/tree/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils)
+ * Supported classes are
+ *
+ * [FixedList], [FixedSet], [FixedMap], [ItemRange], [MutableItemRange]
  * @see fromJson
  */
 inline fun <reified T> String?.fromJsonToHelpful(): T? = fromJson(
@@ -19,6 +22,9 @@ inline fun <reified T> String?.fromJsonToHelpful(): T? = fromJson(
 
 /**
  * This was made was for any custom classes in [HelpfulUtils](https://github.com/jakepurple13/HelpfulTools/tree/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils)
+ * Supported classes are
+ *
+ * [FixedList], [FixedSet], [FixedMap], [ItemRange], [MutableItemRange]
  * @see toJson
  */
 fun Any?.toHelpfulJson() = toJson(

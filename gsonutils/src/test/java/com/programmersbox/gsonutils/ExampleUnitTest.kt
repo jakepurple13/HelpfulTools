@@ -77,6 +77,10 @@ class ExampleUnitTest {
         val f1 = s.fromJsonToHelpful<FixedList<Int>>()
         println(f1)
 
+        println()
+        println(f1?.toMutableList())
+        println()
+
         f1?.forEach { println(it) }
         f1?.forEach { println(it is Int) }
         println(f1)
