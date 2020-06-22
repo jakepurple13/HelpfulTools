@@ -30,6 +30,7 @@ class ExampleUnitTest {
             .doOnError { println(it) }
             .subscribe { println(it) }
         var item: String? by behaviorDelegate(publish)
+        var item2: String? by publish.toDelegate()
         println(item)
         item = "Hello"
         item = "World"

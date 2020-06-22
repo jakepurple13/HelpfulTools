@@ -48,6 +48,11 @@ class BehaviorDelegate<T> internal constructor(private val subject: BehaviorSubj
 fun <T> behaviorDelegate(subject: BehaviorSubject<T>) = BehaviorDelegate(subject)
 
 /**
+ * Use this to link a variable to a [BehaviorSubject]
+ */
+fun <T> BehaviorSubject<T>.toDelegate() = behaviorDelegate(this)
+
+/**
  * An easy way to transform a list
  * calls
  * ```kotlin
