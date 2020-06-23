@@ -816,15 +816,18 @@ abstract class NotificationStyle {
 
         class Message {
             @NotificationStyleMarker
-            val message: String by Delegates.notNull()
+            var message: String by Delegates.notNull()
 
             @NotificationStyleMarker
-            val timestamp: Long = System.currentTimeMillis()
+            var timestamp: Long = System.currentTimeMillis()
 
             internal var person: NotificationPerson by Delegates.notNull()
 
             @NotificationStyleMarker
             fun setPerson(block: NotificationPerson.() -> Unit) = run { person = NotificationPerson().apply(block) }
+
+            @NotificationStyleMarker
+            fun setPerson(person: NotificationPerson) = run { this.person = person }
         }
 
         private var person: NotificationPerson by Delegates.notNull()
