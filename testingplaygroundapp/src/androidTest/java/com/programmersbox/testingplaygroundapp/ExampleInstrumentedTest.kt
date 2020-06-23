@@ -1,8 +1,10 @@
 package com.programmersbox.testingplaygroundapp
 
 import android.content.Context
+import androidx.core.app.TaskStackBuilder
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.programmersbox.gsonutils.toJson
 import com.programmersbox.helpfulutils.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -50,6 +52,14 @@ class ExampleInstrumentedTest {
     @Test
     fun nextTry() {
         appContext.powerManager.addThermalStatusListener { }
+    }
+
+    @Test
+    fun gsonTaskTest() {
+        val f = TaskStackBuilder.create(appContext)
+            //.addNextIntent(Intent(appContext, MainActivity::class.java))
+            .toJson()
+        println(f)
     }
 
 }

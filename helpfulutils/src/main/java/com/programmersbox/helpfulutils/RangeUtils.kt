@@ -10,12 +10,14 @@ infix fun Int.through(that: Int): IntProgression = this..that
  * loop around if [loop] is true
  * remain at the range ends if [loop] is false
  */
-class NumberRange(override val itemList: List<Int>, private val step: Int) : Range<Int>() {
+class NumberRange(override val itemList: List<Int>, val step: Int) : Range<Int>() {
     constructor(range: IntProgression) : this(range.toList(), range.step)
 
     override operator fun inc() = apply { current += step }
     override operator fun dec() = apply { current -= step }
     override fun onChange(current: Int, item: Int) = Unit
+
+    override fun toString(): String = "Step: $step, ${super.toString()}"
 }
 
 /**

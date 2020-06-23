@@ -1,9 +1,8 @@
 package com.programmersbox.gsonutils
 
-import com.google.gson.JsonDeserializer
-import com.google.gson.JsonObject
-import com.google.gson.JsonSerializer
+import com.google.gson.*
 import com.programmersbox.helpfulutils.*
+import java.lang.reflect.Type
 
 /**
  * This was made was for any custom classes in [HelpfulUtils](https://github.com/jakepurple13/HelpfulTools/tree/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils)
@@ -13,9 +12,9 @@ import com.programmersbox.helpfulutils.*
  * @see fromJson
  */
 inline fun <reified T> String?.fromJsonToHelpful(): T? = fromJson(
-    fixedListFromAdapter<T>(),
-    fixedSetFromAdapter<T>(),
-    fixedMapFromAdapter(),
+    FixedList::class.java to FixedListAdapter(),
+    FixedSet::class.java to FixedSetAdapter(),
+    FixedMap::class.java to FixedMapAdapter(),
     itemRangeFromAdapter<T>(),
     mutableItemRangeFromAdapter<T>()
 )
@@ -28,12 +27,11 @@ inline fun <reified T> String?.fromJsonToHelpful(): T? = fromJson(
  * @see toJson
  */
 fun Any?.toHelpfulJson() = toJson(
-    fixedListToAdapter(),
-    fixedSetToAdapter(),
-    fixedMapToAdapter(),
+    FixedList::class.java to FixedListAdapter(),
+    FixedSet::class.java to FixedSetAdapter(),
+    FixedMap::class.java to FixedMapAdapter(),
     rangeToAdapter<ItemRange<*>>(),
-    rangeToAdapter<MutableItemRange<*>>(),
-    rangeToAdapter<NumberRange>()
+    rangeToAdapter<MutableItemRange<*>>()
 )
 
 @PublishedApi
@@ -57,61 +55,71 @@ internal inline fun <reified T> itemRangeFromAdapter() = ItemRange::class.java t
 internal inline fun <reified T : Range<*>> rangeToAdapter() = T::class.java to JsonSerializer<T> { src, _, _ ->
     JsonObject().apply {
         addProperty("loop", src.loop)
-        addProperty("list", src.toJson())
         addProperty("current", src.current)
+        addProperty("list", src.toJson())
+        if (src is NumberRange) addProperty("step", src.step)
     }
 }
 
 @PublishedApi
-internal inline fun <reified T> fixedListFromAdapter() = FixedList::class.java to JsonDeserializer<FixedList<T>> { j, _, _ ->
-    val obj = j.asJsonObject
-    FixedList(
-        obj["maxSize"].asInt,
-        obj["removeFrom"].asString.fromJson<FixedListLocation>() ?: FixedListLocation.END,
-        obj["list"].asString.fromJson<List<T>>().orEmpty()
-    )
-}
+internal class FixedListAdapter : JsonSerializer<FixedList<*>>, JsonDeserializer<FixedList<*>> {
 
-internal fun fixedListToAdapter() = FixedList::class.java to JsonSerializer<FixedList<*>> { src, _, _ ->
-    JsonObject().apply {
+    override fun serialize(src: FixedList<*>, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonObject().apply {
         addProperty("maxSize", src.fixedSize)
-        addProperty("removeFrom", src.removeFrom.toJson())
+        addProperty("removeFrom", src.removeFrom.name)
         addProperty("list", src.toJson())
+    }
+
+    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): FixedList<*> {
+        val obj = json.asJsonObject
+        return FixedList(
+            obj["maxSize"].asInt,
+            obj.getFixedLocation(),
+            obj["list"].asString.fromJson<List<*>>().orEmpty()
+        )
     }
 }
 
 @PublishedApi
-internal inline fun <reified T> fixedSetFromAdapter() = FixedSet::class.java to JsonDeserializer<FixedSet<T>> { j, _, _ ->
-    val obj = j.asJsonObject
-    FixedSet(
-        obj["maxSize"].asInt,
-        obj["removeFrom"].asString.fromJson<FixedListLocation>() ?: FixedListLocation.END,
-        obj["list"].asString.fromJson<Set<T>>().orEmpty()
-    )
-}
+internal class FixedSetAdapter : JsonSerializer<FixedSet<*>>, JsonDeserializer<FixedSet<*>> {
 
-internal fun fixedSetToAdapter() = FixedSet::class.java to JsonSerializer<FixedSet<*>> { src, _, _ ->
-    JsonObject().apply {
+    override fun serialize(src: FixedSet<*>, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonObject().apply {
         addProperty("maxSize", src.fixedSize)
-        addProperty("removeFrom", src.removeFrom.toJson())
+        addProperty("removeFrom", src.removeFrom.name)
         addProperty("list", src.toJson())
     }
+
+    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): FixedSet<*> {
+        val obj = json.asJsonObject
+        return FixedSet(
+            obj["maxSize"].asInt,
+            obj.getFixedLocation(),
+            obj["list"].asString.fromJson<Set<*>>().orEmpty()
+        )
+    }
+
 }
 
 @PublishedApi
-internal fun fixedMapFromAdapter() = FixedMap::class.java to JsonDeserializer<FixedMap<*, *>> { j, _, _ ->
-    val obj = j.asJsonObject
-    FixedMap(
-        obj["maxSize"].asInt,
-        obj["removeFrom"].asString.fromJson<FixedListLocation>() ?: FixedListLocation.END,
-        obj["list"].asString.fromJson<Map<*, *>>().orEmpty()
-    )
-}
+internal class FixedMapAdapter : JsonSerializer<FixedMap<*, *>>, JsonDeserializer<FixedMap<*, *>> {
+    override fun deserialize(json: JsonElement, typeOfT: Type?, context: JsonDeserializationContext?): FixedMap<*, *> {
+        val obj = json.asJsonObject
+        return FixedMap(
+            obj["maxSize"].asInt,
+            obj.getFixedLocation(),
+            obj["list"].asString.fromJson<Map<*, *>>().orEmpty()
+        )
+    }
 
-internal fun fixedMapToAdapter() = FixedMap::class.java to JsonSerializer<FixedMap<*, *>> { src, _, _ ->
-    JsonObject().apply {
+    override fun serialize(src: FixedMap<*, *>, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement = JsonObject().apply {
         addProperty("maxSize", src.fixedSize)
-        addProperty("removeFrom", src.removeFrom.toJson())
+        addProperty("removeFrom", src.removeFrom.name)
         addProperty("list", src.toJson())
     }
+}
+
+internal fun JsonObject.getFixedLocation() = try {
+    FixedListLocation.valueOf(this["removeFrom"].asString)
+} catch (e: Exception) {
+    FixedListLocation.END
 }

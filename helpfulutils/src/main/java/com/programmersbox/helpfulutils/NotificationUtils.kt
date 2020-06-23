@@ -1313,7 +1313,7 @@ enum class NotificationCategory(internal val info: String) {
     REMINDER("reminder")
 }
 
-class NotificationPerson() {
+class NotificationPerson {
 
     @NotificationPersonBuilder
     var isBot: Boolean = false
