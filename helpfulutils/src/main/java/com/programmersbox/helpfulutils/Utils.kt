@@ -8,6 +8,7 @@ import androidx.annotation.RequiresApi
 import java.time.Duration
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
+import java.util.*
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -168,3 +169,12 @@ fun timeToNextHourOrHalf(): Long {
     val durationMinute = Duration.between(start, minute).toMillis()
     return if (durationHour <= durationMinute) durationHour else durationMinute
 }
+
+val Calendar.timeToNextHourOrHalf
+    @RequiresApi(Build.VERSION_CODES.O)
+    get() = timeToNextHourOrHalf()
+
+val Calendar.timeToNextHour
+    @RequiresApi(Build.VERSION_CODES.O)
+    get() = timeToNextHour()
+
