@@ -4,6 +4,10 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Build
 import android.os.CountDownTimer
+import androidx.annotation.RequiresApi
+import java.time.Duration
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 import kotlin.math.min
 import kotlin.random.Random
 
@@ -138,4 +142,29 @@ private fun editDistance(s1: String, s2: String): Int {
         if (i > 0) costs[s2.length] = lastValue
     }
     return costs[s2.length]
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun timeToNextHour(): Long {
+    val start = ZonedDateTime.now()
+    // Hour + 1, set Minute and Second to 00
+    val end = start.plusHours(1).truncatedTo(ChronoUnit.HOURS)
+
+    // Get Duration
+    val duration = Duration.between(start, end)
+    return duration.toMillis()
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun timeToNextHourOrHalf(): Long {
+    val start = ZonedDateTime.now()
+    // Hour + 1, set Minute and Second to 00
+    val hour = start.plusHours(1).truncatedTo(ChronoUnit.HOURS)
+    val minute = start.plusHours(0).truncatedTo(ChronoUnit.HOURS)
+        .plusMinutes(30).truncatedTo(ChronoUnit.MINUTES).plusSeconds(1)
+
+    // Get Duration
+    val durationHour = Duration.between(start, hour).toMillis()
+    val durationMinute = Duration.between(start, minute).toMillis()
+    return if (durationHour <= durationMinute) durationHour else durationMinute
 }

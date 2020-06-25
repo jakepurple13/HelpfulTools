@@ -20,7 +20,6 @@ import java.util.*
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
-
 private var sharedPrefName: String = "HelpfulUtils"
 
 /**
