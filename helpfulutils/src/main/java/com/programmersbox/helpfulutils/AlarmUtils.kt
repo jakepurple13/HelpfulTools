@@ -15,16 +15,20 @@ object AlarmUtils {
 
     @RequiresApi(Build.VERSION_CODES.M)
     fun addAlarm(context: Context, intent: Intent?, notificationId: Int, calendar: Calendar) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        context.alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, pendingIntent)
+        saveAlarmId(context, notificationId)
+    }
+
+    fun addRepeatingAlarm(context: Context, intent: Intent?, notificationId: Int, calendar: Calendar, interval: Long) {
+        val pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
+        context.alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.timeInMillis, interval, pendingIntent)
         saveAlarmId(context, notificationId)
     }
 
     fun cancelAlarm(context: Context, intent: Intent?, notificationId: Int) {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val pendingIntent = PendingIntent.getBroadcast(context, notificationId, intent, PendingIntent.FLAG_CANCEL_CURRENT)
-        alarmManager.cancel(pendingIntent)
+        context.alarmManager.cancel(pendingIntent)
         pendingIntent.cancel()
         removeAlarmId(context, notificationId)
     }

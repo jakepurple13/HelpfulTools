@@ -56,6 +56,7 @@ val <T> List<T>.lastWithIndex: Pair<Int, T> get() = lastIndex to last()
 
 fun <T> Iterable<T>.toFixedList(size: Int) = FixedList(size, c = toMutableList())
 fun <T> Iterable<T>.toFixedSet(size: Int) = FixedSet(size, c = toMutableSet())
+fun <K, V> Map<out K, V>.toFixedMap(size: Int) = FixedMap(size, c = toMutableMap())
 
 enum class FixedListLocation {
     /**

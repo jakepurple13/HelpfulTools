@@ -10,6 +10,7 @@ class TestApp : Application() {
         super.onCreate()
         Loged.FILTER_BY_PACKAGE_NAME = "programmersbox"
         Loged.TAG = "TestApp"
+        Loged.logedInterceptor { _, _, _ -> }
         Loged.logedInterceptor = Interceptor()
     }
 }

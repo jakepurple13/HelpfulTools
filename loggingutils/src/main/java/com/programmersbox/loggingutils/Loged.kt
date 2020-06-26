@@ -65,6 +65,15 @@ object Loged {
     fun OTHER_CLASS_FILTER(block: (String) -> Boolean) = run { OTHER_CLASS_FILTER = block }
 
     /**
+     * If you want to add an interceptor to add the logs to a certain location, make a class that implements [LogedInterceptor]
+     */
+    fun logedInterceptor(block: (level: LogLevel, tag: String, msg: String) -> Unit) {
+        logedInterceptor = object : LogedInterceptor {
+            override fun log(level: LogLevel, tag: String, msg: String) = block(level, tag, msg)
+        }
+    }
+
+    /**
      * The show pretty method
      */
     private fun prettyLog(tag: String, msg: Any?, level: Int, threadName: Boolean) {

@@ -2,7 +2,14 @@ package com.programmersbox.helpfulutils
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.time.Duration
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
+import java.time.temporal.TemporalUnit
+import java.util.*
 import kotlin.random.Random
+import kotlin.time.ExperimentalTime
+import kotlin.time.minutes
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -185,6 +192,48 @@ class ExampleUnitTest {
         listOf(1, 2, 3).toFixedList(5).toFixedSet(10)
         fixedSetOf(5, 1, 2, 3)
         fixedMapOf(5, 1 to 4, 2 to 5)
+        mapOf(1 to 3).toFixedMap(10)
+    }
+
+    @ExperimentalTime
+    @Test
+    fun timeTest() {
+        val f = timeToNextHourOrHalf()
+        println(f)
+        val f2 = timeToNextHourOrHalf2()
+        println(f2)
+        println(15.minutes.inMilliseconds)
+        println(30.minutes.inMilliseconds)
+    }
+
+    private fun timeToNextHourOrHalf(): Long {
+        val start = ZonedDateTime.now()
+        // Hour + 1, set Minute and Second to 00
+        val hour = start.plusHours(1).truncatedTo(ChronoUnit.HOURS)
+        val minute = start.plusHours(0).truncatedTo(ChronoUnit.HOURS)
+            .plusMinutes(30).truncatedTo(ChronoUnit.MINUTES).plusSeconds(1)
+
+        // Get Duration
+        val durationHour = Duration.between(start, hour).toMillis()
+        val durationMinute = Duration.between(start, minute).toMillis()
+        return if (durationHour <= durationMinute) durationHour else durationMinute
+    }
+
+    private fun timeToNextHourOrHalf2(): Long {
+        val half = 1_800_000
+        return Date(half * ((System.currentTimeMillis() + (half / 2)/*450_000*/) / half)).time - System.currentTimeMillis()
+    }
+
+    private fun timeToNextHourOrHalf3(time: Long, timeUnit: TemporalUnit): Long {
+        val half = 1_800_000
+        return Date(half * ((System.currentTimeMillis() + (half / 2)/*450_000*/) / half)).time - System.currentTimeMillis()
+    }
+
+    @Test
+    fun numberTesting() {
+        val x: Number = 1.4
+        println(x)
+        println(x.toDouble())
     }
 
 }

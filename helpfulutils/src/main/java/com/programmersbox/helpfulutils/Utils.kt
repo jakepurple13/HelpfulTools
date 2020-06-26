@@ -170,6 +170,9 @@ fun timeToNextHourOrHalf(): Long {
     return if (durationHour <= durationMinute) durationHour else durationMinute
 }
 
+fun timeToNext(minuteInMs: Long = 1_800_000) =
+    Date(minuteInMs * ((System.currentTimeMillis() + (minuteInMs / 2)) / minuteInMs)).time - System.currentTimeMillis()
+
 val Calendar.timeToNextHourOrHalf
     @RequiresApi(Build.VERSION_CODES.O)
     get() = timeToNextHourOrHalf()
