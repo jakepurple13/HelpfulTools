@@ -181,3 +181,10 @@ val Calendar.timeToNextHour
     @RequiresApi(Build.VERSION_CODES.O)
     get() = timeToNextHour()
 
+fun Date.isBetween(min: Date, max: Date) = after(min) && before(max)
+
+fun Long.isDateBetween(min: Date, max: Date) = Date(this).isBetween(min, max)
+
+fun Date.isBetween(min: Long, max: Long) = isBetween(Date(min), Date(max))
+
+fun Long.isDateBetween(min: Long, max: Long) = Date(this).isBetween(min, max)

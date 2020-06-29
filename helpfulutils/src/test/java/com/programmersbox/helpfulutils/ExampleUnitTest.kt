@@ -9,6 +9,7 @@ import java.time.temporal.TemporalUnit
 import java.util.*
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
+import kotlin.time.days
 import kotlin.time.minutes
 
 /**
@@ -235,5 +236,30 @@ class ExampleUnitTest {
         println(x)
         println(x.toDouble())
     }
+
+    @ExperimentalTime
+    @Test
+    fun dateTest() {
+        val aWeekAgo = Date(System.currentTimeMillis()).apply { this.time -= 8.days.inMilliseconds.toInt() }
+        //val now = isDateBetween(aWeekAgo, Date(System.currentTimeMillis()))
+        val dates = mapOf(
+            "an hour ago" to 1593429272678,
+            "2 hours ago" to 1593429272677,
+            "7 days ago" to 1592831672677,
+            "9 days ago" to 1592658872677,
+            "15 days ago" to 1592140472676
+        )
+
+        println(dates.entries.joinToString("\n") { "$it | ${it.value.isDateBetween(aWeekAgo, Date(System.currentTimeMillis()))}" })
+
+    }
+
+    /*
+     an hour ago | 1593429272678
+ uploaded=2 hours ago, sources=MANGA_PARK) | 1593429272677
+uploaded=7 days ago, sources=MANGA_PARK) | 1592831672677
+uploaded=9 days ago, sources=MANGA_PARK) | 1592658872677
+uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
+     */
 
 }
