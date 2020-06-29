@@ -187,6 +187,13 @@ class ExampleInstrumentedTest {
     @Test
     fun query_shouldReturnAll() {
         val appContext = InstrumentationRegistry.getInstrumentation().targetContext
+        3.days.inDays
+        3.hours.inHours
+        3.minutes.inMinutes
+        3.seconds.inSeconds
+        3.milliseconds.inMilliseconds
+        3.microseconds.inMicroseconds
+        3.nanoseconds.inNanoseconds
         /*val request =
             appContext.downloadManager.enqueue(
                 DownloadManager.Request(
