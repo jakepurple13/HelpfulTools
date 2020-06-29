@@ -10,6 +10,7 @@ import java.util.*
 import kotlin.random.Random
 import kotlin.time.ExperimentalTime
 import kotlin.time.days
+import kotlin.time.hours
 import kotlin.time.minutes
 
 /**
@@ -261,5 +262,24 @@ uploaded=7 days ago, sources=MANGA_PARK) | 1592831672677
 uploaded=9 days ago, sources=MANGA_PARK) | 1592658872677
 uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
      */
+
+    @ExperimentalTime
+    @Test
+    fun unitTest() {
+
+        val unit = HelpfulUnit.MINUTES
+        val sevenMs = unit.convert(7, HelpfulUnit.MILLISECONDS)
+        println(sevenMs)
+        val sevenMs3 = 7.minutes.inMilliseconds
+        println(sevenMs3)
+        val twoHours = 2.hours.inMilliseconds
+        println(twoHours)
+        val twoHoursUnit = HelpfulUnit.MILLISECONDS.convert(7200000, HelpfulUnit.HOURS)
+        println(twoHoursUnit)
+        println(3.days.inMinutes)
+        val threeDays = 3.toHelpfulDuration(HelpfulUnit.DAYS)
+        println(threeDays.toUnit(HelpfulUnit.MINUTES))
+
+    }
 
 }
