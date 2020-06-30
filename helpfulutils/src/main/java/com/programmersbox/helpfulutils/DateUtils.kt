@@ -300,4 +300,6 @@ enum class HelpfulUnit(
             DAYS -> YEARS
             YEARS -> null
         }
+
+    fun toHelpfulString() = "$this(down=$downUnit, up=$upUnit)"
 }

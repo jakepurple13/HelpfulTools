@@ -267,6 +267,7 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
     @Test
     fun unitTest() {
 
+        println(HelpfulUnit.DAYS.toHelpfulString())
         println(Date(System.currentTimeMillis()).timeToNextHourOrHalf())
         println(timeToNextHour())
 
