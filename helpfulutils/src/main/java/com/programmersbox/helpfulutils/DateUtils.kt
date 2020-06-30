@@ -105,6 +105,12 @@ fun Long.isDateBetween(min: Long, max: Long) = Date(this).isBetween(min, max)
  */
 fun <T : Number> T.toHelpfulDuration(unit: HelpfulUnit) = HelpfulDuration(this, unit)
 
+/**
+ * @see Number.toHelpfulDuration
+ */
+fun <T : Number> HelpfulUnit.toDuration(number: T) = HelpfulDuration(number, this)
+
+//units that have an enum
 val <T : Number> T.years get() = toHelpfulDuration(HelpfulUnit.YEARS)
 val <T : Number> T.days get() = toHelpfulDuration(HelpfulUnit.DAYS)
 val <T : Number> T.hours get() = toHelpfulDuration(HelpfulUnit.HOURS)
@@ -118,6 +124,18 @@ val <T : Number> T.femptoseconds get() = toHelpfulDuration(HelpfulUnit.FEMTOSECO
 val <T : Number> T.attoseconds get() = toHelpfulDuration(HelpfulUnit.ATTOSECONDS)
 val <T : Number> T.zeptoseconds get() = toHelpfulDuration(HelpfulUnit.ZEPTOSECONDS)
 val <T : Number> T.yoctoseconds get() = toHelpfulDuration(HelpfulUnit.YOCTOSECONDS)
+
+//units that don't have an enum
+val <T : Number> T.weeks get() = (toDouble() * 7).toHelpfulDuration(HelpfulUnit.DAYS)
+val <T : Number> T.decades get() = (toDouble() * 10).toHelpfulDuration(HelpfulUnit.YEARS)
+val <T : Number> T.centuries get() = (toDouble() * 100).toHelpfulDuration(HelpfulUnit.YEARS)
+val <T : Number> T.millenniums get() = (toDouble() * 1000).toHelpfulDuration(HelpfulUnit.YEARS)
+
+//units that don't have an enum
+val <T : Number> HelpfulDuration<T>.inWeeks get() = inDays / 7
+val <T : Number> HelpfulDuration<T>.inDecades get() = inYears / 10
+val <T : Number> HelpfulDuration<T>.inCenturies get() = inYears / 100
+val <T : Number> HelpfulDuration<T>.inMillenniums get() = inYears / 1000
 
 data class HelpfulDuration<T : Number>(val number: T, val unit: HelpfulUnit) {
     fun toUnit(unit: HelpfulUnit) = this.unit.convert(number, unit)
@@ -302,4 +320,12 @@ enum class HelpfulUnit(
         }
 
     fun toHelpfulString() = "$this(down=$downUnit, up=$upUnit)"
+
+    companion object {
+        tailrec fun <T : Number> convertTo(number: T, fromUnit: HelpfulUnit, toUnit: HelpfulUnit): Double = if (fromUnit == toUnit) number.toDouble()
+        else convertTo(
+            if (fromUnit.priority >= toUnit.priority) fromUnit.downOne(number.toDouble()) else fromUnit.upOne(number.toDouble()),
+            if (fromUnit.priority >= toUnit.priority) fromUnit.downUnit!! else fromUnit.upUnit!!, toUnit
+        )
+    }
 }

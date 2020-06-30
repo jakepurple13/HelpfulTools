@@ -267,6 +267,19 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
     @Test
     fun unitTest() {
 
+        println(2.weeks.inDays)
+        println(2.weeks.inWeeks)
+        println(1.years.inWeeks)
+        println(1.decades.inYears)
+        println(1.decades.inDecades)
+        println(1.centuries.inCenturies)
+        println(1.centuries.inYears)
+        println(1.millenniums.inMillenniums)
+        println(1.millenniums.inYears)
+
+        println(HelpfulUnit.convertTo(5, HelpfulUnit.HOURS, HelpfulUnit.MINUTES))
+        println(HelpfulDuration(5, HelpfulUnit.HOURS).inMinutes)
+
         println(HelpfulUnit.DAYS.toHelpfulString())
         println(Date(System.currentTimeMillis()).timeToNextHourOrHalf())
         println(timeToNextHour())
@@ -275,6 +288,7 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
         println(730.days.inHours)
 
         val unit = HelpfulUnit.MINUTES
+        println(unit.toDuration(5))
         val sevenMs = unit.convert(7.0, HelpfulUnit.MILLISECONDS)
         println(sevenMs)
         val sevenMs3 = 7.minutes.inMilliseconds
