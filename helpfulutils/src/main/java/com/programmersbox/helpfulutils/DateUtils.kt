@@ -154,6 +154,10 @@ data class HelpfulDuration<T : Number>(val number: T, val unit: HelpfulUnit) {
     val inYoctoseconds get() = toUnit(HelpfulUnit.YOCTOSECONDS)
 }
 
+/**
+ * Custom version of [kotlin.time.Duration] that is not experimental
+ * [HelpfulUnit] is about ~4 ms slower than [kotlin.time.Duration]
+ */
 enum class HelpfulUnit(
     private val downOne: (Double) -> Double = { it },
     private val upOne: (Double) -> Double = { it }

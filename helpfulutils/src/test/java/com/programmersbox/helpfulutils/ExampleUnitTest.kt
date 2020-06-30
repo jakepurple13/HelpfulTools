@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
 import java.util.*
 import kotlin.random.Random
+import kotlin.system.measureTimeMillis
 import kotlin.time.ExperimentalTime
 import kotlin.time.days
 import kotlin.time.hours
@@ -265,7 +266,25 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
 
     @ExperimentalTime
     @Test
+    fun timingTest() {
+        val kotlin = measureTimeMillis { println(1.days.inNanoseconds) }
+
+        println("Kotlin: $kotlin")
+
+        val helpful = measureTimeMillis { println(HelpfulUnit.DAYS.convert(1, HelpfulUnit.NANOSECONDS)) }
+
+        println("Helpful: $helpful")
+
+        val manual = measureTimeMillis { println(1L * 24 * 60 * 60 * 1000 * 1000 * 1000) }
+
+        println("Manual: $manual")
+    }
+
+    @ExperimentalTime
+    @Test
     fun unitTest() {
+
+        //TODO: Time custom duration to kotlin's duration to manually doing it
 
         println(2.weeks.inDays)
         println(2.weeks.inWeeks)
