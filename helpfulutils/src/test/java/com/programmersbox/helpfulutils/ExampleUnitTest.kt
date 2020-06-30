@@ -267,19 +267,64 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
     @Test
     fun unitTest() {
 
+        println(2.years.inHours)
+        println(730.days.inHours)
+
         val unit = HelpfulUnit.MINUTES
-        val sevenMs = unit.convert(7, HelpfulUnit.MILLISECONDS)
+        val sevenMs = unit.convert(7.0, HelpfulUnit.MILLISECONDS)
         println(sevenMs)
         val sevenMs3 = 7.minutes.inMilliseconds
         println(sevenMs3)
         val twoHours = 2.hours.inMilliseconds
         println(twoHours)
-        val twoHoursUnit = HelpfulUnit.MILLISECONDS.convert(7200000, HelpfulUnit.HOURS)
+        val twoHoursUnit = HelpfulUnit.MILLISECONDS.convert(7200000.0, HelpfulUnit.HOURS)
         println(twoHoursUnit)
         println(3.days.inMinutes)
         val threeDays = 3.toHelpfulDuration(HelpfulUnit.DAYS)
         println(threeDays.toUnit(HelpfulUnit.MINUTES))
 
+        val oneDay = 1.toHelpfulDuration(HelpfulUnit.DAYS)
+        println(oneDay)
+        println(oneDay.inYears)
+        println(oneDay.inDays)
+        println(oneDay.inHours)
+        println(oneDay.inMinutes)
+        println(oneDay.inSeconds)
+        println(oneDay.inMilliseconds)
+        println(oneDay.inMicroseconds)
+        println(oneDay.inNanoseconds)
+        val oneDayInNs = oneDay.inNanoseconds.toHelpfulDuration(HelpfulUnit.NANOSECONDS)
+        println(oneDayInNs)
+        println(oneDayInNs.inNanoseconds)
+        println(oneDayInNs.inMicroseconds)
+        println(oneDayInNs.inMilliseconds)
+        println(oneDayInNs.inSeconds)
+        println(oneDayInNs.inMinutes)
+        println(oneDayInNs.inHours)
+        println(oneDayInNs.inDays)
+        println(oneDayInNs.inYears)
+        helpfulDurationInfo(1.seconds)
+        println("-".repeat(50))
+        println(HelpfulUnit.YEARS.convert(10, HelpfulUnit.DAYS, true))
+        println(4 + 5)
+        println((4.inv() + 5.inv()))
+    }
+
+    private fun <T : Number> helpfulDurationInfo(unit: HelpfulDuration<T>) {
+        println(unit)
+        println(unit.inYears)
+        println(unit.inDays)
+        println(unit.inHours)
+        println(unit.inMinutes)
+        println(unit.inSeconds)
+        println(unit.inMilliseconds)
+        println(unit.inMicroseconds)
+        println(unit.inNanoseconds)
+        println(unit.inPicoseconds)
+        println(unit.inFemptoseconds)
+        println(unit.inAttoseconds)
+        println(unit.inZeptoseconds)
+        println(unit.inYoctoseconds)
     }
 
 }
