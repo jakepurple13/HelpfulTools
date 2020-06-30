@@ -284,8 +284,6 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
     @Test
     fun unitTest() {
 
-        //TODO: Time custom duration to kotlin's duration to manually doing it
-
         println(2.weeks.inDays)
         println(2.weeks.inWeeks)
         println(1.years.inWeeks)
