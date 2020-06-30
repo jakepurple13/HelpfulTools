@@ -267,6 +267,9 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
     @Test
     fun unitTest() {
 
+        println(Date(System.currentTimeMillis()).timeToNextHourOrHalf())
+        println(timeToNextHour())
+
         println(2.years.inHours)
         println(730.days.inHours)
 
@@ -306,8 +309,6 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
         helpfulDurationInfo(1.seconds)
         println("-".repeat(50))
         println(HelpfulUnit.YEARS.convert(10, HelpfulUnit.DAYS, true))
-        println(4 + 5)
-        println((4.inv() + 5.inv()))
     }
 
     private fun <T : Number> helpfulDurationInfo(unit: HelpfulDuration<T>) {

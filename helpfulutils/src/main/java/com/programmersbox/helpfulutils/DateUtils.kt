@@ -3,10 +3,14 @@ package com.programmersbox.helpfulutils
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.time.Duration
+import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
 
+/**
+ * Get how much time there is until the next hour in milliseconds
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 fun timeToNextHour(): Long {
     val start = ZonedDateTime.now()
@@ -18,6 +22,9 @@ fun timeToNextHour(): Long {
     return duration.toMillis()
 }
 
+/**
+ * Get how much time there is until the next hour or half hour in milliseconds
+ */
 @RequiresApi(Build.VERSION_CODES.O)
 fun timeToNextHourOrHalf(): Long {
     val start = ZonedDateTime.now()
@@ -32,17 +39,70 @@ fun timeToNextHourOrHalf(): Long {
     return if (durationHour <= durationMinute) durationHour else durationMinute
 }
 
-fun timeToNext(minuteInMs: Long = 1_800_000) =
-    Date(minuteInMs * ((System.currentTimeMillis() + (minuteInMs / 2)) / minuteInMs)).time - System.currentTimeMillis()
+/**
+ * Get how much time there is until the next [minuteInMs] in milliseconds
+ * e.g. 1,800,000 = 30 minutes, so this will return how many minutes until xx:30 or xx:00
+ */
+@JvmOverloads
+fun timeToNext(minuteInMs: Long = 1_800_000, currentTime: Long = System.currentTimeMillis()) =
+    Date(minuteInMs * ((currentTime + (minuteInMs / 2)) / minuteInMs)).time - currentTime
 
+/**
+ * @see timeToNextHourOrHalf
+ * @see timeToNext
+ */
+fun Date.timeToNextHourOrHalf(): Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    dateCalTimeToNextHourOrHalf(ZonedDateTime.ofInstant(toInstant(), ZoneId.systemDefault()))
+} else {
+    timeToNext(currentTime = time)
+}
+
+/**
+ * @see timeToNextHourOrHalf
+ * @see timeToNext
+ */
+fun Calendar.timeToNextHourOrHalf(): Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    dateCalTimeToNextHourOrHalf(ZonedDateTime.ofInstant(toInstant(), ZoneId.systemDefault()))
+} else {
+    timeToNext(currentTime = timeInMillis)
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+private fun dateCalTimeToNextHourOrHalf(start: ZonedDateTime): Long {
+    // Hour + 1, set Minute and Second to 00
+    val hour = start.plusHours(1).truncatedTo(ChronoUnit.HOURS)
+    val minute = start.plusHours(0).truncatedTo(ChronoUnit.HOURS)
+        .plusMinutes(30).truncatedTo(ChronoUnit.MINUTES).plusSeconds(1)
+
+    // Get Duration
+    val durationHour = Duration.between(start, hour).toMillis()
+    val durationMinute = Duration.between(start, minute).toMillis()
+    return if (durationHour <= durationMinute) durationHour else durationMinute
+}
+
+/**
+ * Check if a date is between [min] and [max]
+ */
 fun Date.isBetween(min: Date, max: Date) = after(min) && before(max)
 
+/**
+ * Check if a date is between [min] and [max]
+ */
 fun Long.isDateBetween(min: Date, max: Date) = Date(this).isBetween(min, max)
 
+/**
+ * Check if a date is between [min] and [max]
+ */
 fun Date.isBetween(min: Long, max: Long) = isBetween(Date(min), Date(max))
 
+/**
+ * Check if a date is between [min] and [max]
+ */
 fun Long.isDateBetween(min: Long, max: Long) = Date(this).isBetween(min, max)
 
+/**
+ * Converts [this] into a helpful duration
+ */
 fun <T : Number> T.toHelpfulDuration(unit: HelpfulUnit) = HelpfulDuration(this, unit)
 
 val <T : Number> T.years get() = toHelpfulDuration(HelpfulUnit.YEARS)
@@ -201,6 +261,7 @@ enum class HelpfulUnit(
 
     /**
      * If you are dealing with [YEARS] and want to include leap years
+     * @see convert
      */
     open fun <T : Number> convert(number: T, unit: HelpfulUnit, includeLeapYears: Boolean): Double = convert(number, unit)
 
