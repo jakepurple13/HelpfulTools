@@ -176,6 +176,18 @@ data class HelpfulDuration<T : Number>(val number: T, val unit: HelpfulUnit) {
     operator fun rangeTo(other: HelpfulDuration<Int>) = number.toInt()..other.toUnit(unit).toInt()
     operator fun rangeTo(other: HelpfulDuration<Long>) = number.toLong()..other.toUnit(unit).toLong()
 
+    operator fun compareTo(other: HelpfulDuration<T>): Int {
+        val num = number.toDouble()
+        val otherNum = other.toUnit(unit)
+        return when {
+            num > otherNum -> 1
+            num < otherNum -> -1
+            num >= otherNum -> 1
+            num <= otherNum -> -1
+            else -> 0
+        }
+    }
+
     override operator fun equals(other: Any?): Boolean =
         if (other is HelpfulDuration<*>) number.toDouble() == other.toUnit(unit) else super.equals(other)
 

@@ -272,14 +272,18 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
         println(g)
         println(f.inHours)
         println(g.inDays)
+        println("-".repeat(50))
         val p = f + g
         println(p)
         val p1 = g + f
         println(p1)
+        println(p1.inDays)
         val m = f - g
         println(m)
         val m1 = g - f
         println(m1)
+        println(m1.inDays)
+        println("-".repeat(50))
         println(f[HelpfulUnit.HOURS])
         var f1 = HelpfulDuration(5, HelpfulUnit.DAYS)
         println(f1)
@@ -294,6 +298,11 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
         println(y.inDays)
         println(d.inYears)
         println(y == d)
+
+        println(f > g)
+        println(f < g)
+
+        println(1.years.inWeeks)
     }
 
     @ExperimentalTime
