@@ -152,6 +152,38 @@ data class HelpfulDuration<T : Number>(val number: T, val unit: HelpfulUnit) {
     val inAttoseconds get() = toUnit(HelpfulUnit.ATTOSECONDS)
     val inZeptoseconds get() = toUnit(HelpfulUnit.ZEPTOSECONDS)
     val inYoctoseconds get() = toUnit(HelpfulUnit.YOCTOSECONDS)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun plus(other: HelpfulDuration<T>) = HelpfulDuration((number.toDouble() + other.toUnit(unit)) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun minus(other: HelpfulDuration<T>) = HelpfulDuration((number.toDouble() - other.toUnit(unit)) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun div(other: HelpfulDuration<T>) = HelpfulDuration((number.toDouble() / other.toUnit(unit)) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun times(other: HelpfulDuration<T>) = HelpfulDuration((number.toDouble() * other.toUnit(unit)) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun inc() = HelpfulDuration((number.toInt() + 1) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun dec() = HelpfulDuration((number.toInt() - 1) as T, unit)
+
+    operator fun get(unit: HelpfulUnit) = toUnit(unit)
+
+    operator fun rangeTo(other: HelpfulDuration<Int>) = number.toInt()..other.toUnit(unit).toInt()
+    operator fun rangeTo(other: HelpfulDuration<Long>) = number.toLong()..other.toUnit(unit).toLong()
+
+    override operator fun equals(other: Any?): Boolean =
+        if (other is HelpfulDuration<*>) number.toDouble() == other.toUnit(unit) else super.equals(other)
+
+    override fun hashCode(): Int {
+        var result = number.hashCode()
+        result = 31 * result + unit.hashCode()
+        return result
+    }
 }
 
 /**

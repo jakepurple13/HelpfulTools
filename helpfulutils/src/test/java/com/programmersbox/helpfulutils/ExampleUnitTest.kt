@@ -264,6 +264,38 @@ uploaded=9 days ago, sources=MANGA_PARK) | 1592658872677
 uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
      */
 
+    @Test
+    fun operatorHelpfulDuration() {
+        val f = HelpfulDuration(5, HelpfulUnit.DAYS)
+        val g = HelpfulDuration(5, HelpfulUnit.HOURS)
+        println(f)
+        println(g)
+        println(f.inHours)
+        println(g.inDays)
+        val p = f + g
+        println(p)
+        val p1 = g + f
+        println(p1)
+        val m = f - g
+        println(m)
+        val m1 = g - f
+        println(m1)
+        println(f[HelpfulUnit.HOURS])
+        var f1 = HelpfulDuration(5, HelpfulUnit.DAYS)
+        println(f1)
+        f1++
+        println(f1)
+
+        val y = 1.years
+        val d = HelpfulDuration(365, HelpfulUnit.DAYS)
+
+        println(y)
+        println(d)
+        println(y.inDays)
+        println(d.inYears)
+        println(y == d)
+    }
+
     @ExperimentalTime
     @Test
     fun timingTest() {
@@ -283,6 +315,42 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
     @ExperimentalTime
     @Test
     fun unitTest() {
+
+        val each = 1
+            .years
+            .inDays
+            .toHelpfulDuration(HelpfulUnit.DAYS)
+            .inHours
+            .toHelpfulDuration(HelpfulUnit.HOURS)
+            .inMinutes
+            .toHelpfulDuration(HelpfulUnit.MINUTES)
+            .inSeconds
+            .seconds
+            .inMilliseconds
+            .milliseconds
+            .inMicroseconds
+            .microseconds
+            .inNanoseconds
+            .nanoseconds
+            .inPicoseconds
+            .picoseconds
+            .inFemptoseconds
+            .femptoseconds
+            .inAttoseconds
+            .attoseconds
+            .inZeptoseconds
+            .zeptoseconds
+            .inYoctoseconds
+
+        println(each)
+
+        val straight = 1.years.inYoctoseconds
+
+        println(straight)
+
+        if (each == straight) println("$each == $straight")
+
+        println("Top to bottom = ${1.millenniums.inYoctoseconds.toLong()}")
 
         println(2.weeks.inDays)
         println(2.weeks.inWeeks)

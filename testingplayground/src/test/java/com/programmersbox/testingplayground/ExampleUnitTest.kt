@@ -32,6 +32,60 @@ class ExampleUnitTest {
         Loged.FILTER_BY_PACKAGE_NAME = "programmersbox"
     }
 
+    @Test
+    fun wordCountTest() {
+        println("olly olly in come free".wordCount())
+    }
+
+    private fun String.wordCount() = split(" ").groupBy { it }.map { it.key to it.value.size }.toMap()
+
+    @Test
+    fun scrabble() {
+        println("cabbage".scrabbleScore())
+        println("cabbage".scrabbleScore2())
+        println("cabbage".scrabbleScore3())
+    }
+
+    private fun String.scrabbleScore(): Int {
+        val map = mapOf(
+            1 to listOf("A", "E", "I", "O", "U", "L", "N", "R", "S", "T"),
+            2 to listOf("D", "G"),
+            3 to listOf("B", "C", "M", "P"),
+            4 to listOf("F", "H", "V", "W", "Y"),
+            5 to listOf("K"),
+            8 to listOf("J", "X"),
+            10 to listOf("Q", "Z")
+        )
+        return fold(0) { acc, n -> acc + map.entries.find { n.toString().toUpperCase() in it.value }!!.key }
+    }
+
+    private fun String.scrabbleScore2(): Int {
+        val map = mapOf(
+            1 to "AEIOULNRST",
+            2 to "DG",
+            3 to "BCMP",
+            4 to "FHVWY",
+            5 to "K",
+            8 to "JX",
+            10 to "QZ"
+        )
+        return fold(0) { acc, n -> acc + map.entries.find { n.toUpperCase() in it.value }!!.key }
+    }
+
+    private fun String.scrabbleScore3(): Int {
+        val map = mapOf(
+            1 to "AEIOULNRST",
+            2 to "DG",
+            3 to "BCMP",
+            4 to "FHVWY",
+            5 to "K",
+            8 to "JX",
+            10 to "QZ"
+        )
+
+        return sumBy { n -> map.entries.find { n.toUpperCase() in it.value }!!.key }
+    }
+
     data class TestClass(val s: String = 10.randomString(), val num: Int = 5)
 
     @Test
