@@ -302,7 +302,17 @@ uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
         println(f > g)
         println(f < g)
 
+        val y1 = 1.years + 1
+        println(y1)
         println(1.years.inWeeks)
+        println("-".repeat(50))
+        val rangeInt = HelpfulDuration(30, HelpfulUnit.MINUTES)..HelpfulDuration(1, HelpfulUnit.HOURS)
+        println(rangeInt)
+        val rangeInt2 = HelpfulDuration(1, HelpfulUnit.HOURS)..HelpfulDuration(30, HelpfulUnit.MINUTES)
+        println(rangeInt2)
+        for (i in rangeInt) println(i)
+        for (i in rangeInt2) println(i)
+        println("-".repeat(50))
     }
 
     @ExperimentalTime

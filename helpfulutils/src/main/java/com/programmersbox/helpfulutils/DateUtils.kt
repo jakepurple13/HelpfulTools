@@ -153,6 +153,19 @@ data class HelpfulDuration<T : Number>(val number: T, val unit: HelpfulUnit) {
     val inZeptoseconds get() = toUnit(HelpfulUnit.ZEPTOSECONDS)
     val inYoctoseconds get() = toUnit(HelpfulUnit.YOCTOSECONDS)
 
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun plus(other: T) = HelpfulDuration((number.toDouble() + other.toDouble()) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun minus(other: T) = HelpfulDuration((number.toDouble() - other.toDouble()) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun div(other: T) = HelpfulDuration((number.toDouble() / other.toDouble()) as T, unit)
+
+    @Suppress("UNCHECKED_CAST")
+    operator fun times(other: T) = HelpfulDuration((number.toDouble() * other.toDouble()) as T, unit)
+
     @Suppress("UNCHECKED_CAST")
     operator fun plus(other: HelpfulDuration<T>) = HelpfulDuration((number.toDouble() + other.toUnit(unit)) as T, unit)
 
