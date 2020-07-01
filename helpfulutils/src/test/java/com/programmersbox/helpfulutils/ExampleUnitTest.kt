@@ -256,14 +256,6 @@ class ExampleUnitTest {
 
     }
 
-    /*
-     an hour ago | 1593429272678
- uploaded=2 hours ago, sources=MANGA_PARK) | 1593429272677
-uploaded=7 days ago, sources=MANGA_PARK) | 1592831672677
-uploaded=9 days ago, sources=MANGA_PARK) | 1592658872677
-uploaded=15 days ago, sources=MANGA_PARK) | 1592140472676
-     */
-
     @Test
     fun operatorHelpfulDuration() {
         val f = HelpfulDuration(5, HelpfulUnit.DAYS)
