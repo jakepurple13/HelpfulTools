@@ -7,6 +7,9 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.util.*
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
+import kotlin.time.toDuration
 
 /**
  * Get how much time there is until the next hour in milliseconds
@@ -117,10 +120,44 @@ fun <T : Number> T.toHelpfulDuration(unit: HelpfulUnit) = HelpfulDuration(this, 
  */
 fun <T : Number> HelpfulUnit.toDuration(number: T) = HelpfulDuration(number, this)
 
+@ExperimentalTime
+fun kotlin.time.Duration.toHelpfulDuration() = HelpfulDuration(inMilliseconds, HelpfulUnit.MILLISECONDS)
+
+@ExperimentalTime
+fun <T : Number> HelpfulDuration<T>.toDuration(): kotlin.time.Duration = when (unit) {
+    HelpfulUnit.NANOSECONDS -> DurationUnit.NANOSECONDS
+    HelpfulUnit.MICROSECONDS -> DurationUnit.MICROSECONDS
+    HelpfulUnit.MILLISECONDS -> DurationUnit.MILLISECONDS
+    HelpfulUnit.SECONDS -> DurationUnit.SECONDS
+    HelpfulUnit.MINUTES -> DurationUnit.MINUTES
+    HelpfulUnit.HOURS -> DurationUnit.HOURS
+    HelpfulUnit.YEARS, HelpfulUnit.DAYS -> DurationUnit.DAYS
+    else -> DurationUnit.NANOSECONDS
+}.let {
+    when (unit) {
+        HelpfulUnit.YOCTOSECONDS, HelpfulUnit.ZEPTOSECONDS, HelpfulUnit.ATTOSECONDS, HelpfulUnit.FEMTOSECONDS, HelpfulUnit.PICOSECONDS ->
+            toUnit(HelpfulUnit.NANOSECONDS)
+        HelpfulUnit.YEARS -> toUnit(HelpfulUnit.DAYS)
+        else -> number
+    }.toLong().toDuration(it)
+}
+
 operator fun <T : Number> Number.minus(duration: HelpfulDuration<T>) = (toLong() - duration.inMilliseconds).toLong()
 operator fun <T : Number> Number.plus(duration: HelpfulDuration<T>) = (toLong() + duration.inMilliseconds).toLong()
 operator fun <T : Number> Number.div(duration: HelpfulDuration<T>) = (toLong() / duration.inMilliseconds).toLong()
 operator fun <T : Number> Number.times(duration: HelpfulDuration<T>) = (toLong() * duration.inMilliseconds).toLong()
+
+@ExperimentalTime
+operator fun Number.minus(duration: kotlin.time.Duration) = (toLong() - duration.inMilliseconds).toLong()
+
+@ExperimentalTime
+operator fun Number.plus(duration: kotlin.time.Duration) = (toLong() + duration.inMilliseconds).toLong()
+
+@ExperimentalTime
+operator fun Number.div(duration: kotlin.time.Duration) = (toLong() / duration.inMilliseconds).toLong()
+
+@ExperimentalTime
+operator fun Number.times(duration: kotlin.time.Duration) = (toLong() * duration.inMilliseconds).toLong()
 
 //units that have an enum
 val <T : Number> T.years get() = toHelpfulDuration(HelpfulUnit.YEARS)

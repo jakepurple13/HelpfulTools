@@ -241,24 +241,36 @@ class ExampleUnitTest {
 
     @ExperimentalTime
     @Test
+    fun durationConversion() {
+        var f1 = System.currentTimeMillis()
+        f1 -= 1.years
+        println(f1.toDate())
+
+        val f = 4.years.toDuration()
+        println(f.inMilliseconds.toLong())
+        println(HelpfulDuration(4, HelpfulUnit.YEARS).inMilliseconds.toLong())
+        val f2 = f.toHelpfulDuration()
+        println(f2)
+        println(3.minutes.toHelpfulDuration())
+        println(HelpfulDuration(3, HelpfulUnit.MINUTES).inNanoseconds)
+    }
+
+    @ExperimentalTime
+    @Test
     fun dateTest() {
         val now = System.currentTimeMillis()
-        val aWeekAgo = (now - 8.days.inMilliseconds).toDate()
+        val aWeekAgo = (now - 8.days).toDate()
         val dates = mapOf(
-            "an hour ago" to now - 1.hours.inMilliseconds.toLong(),
-            "2 hours ago" to now - 2.hours.inMilliseconds.toLong(),
+            "an hour ago" to now - 1.hours,
+            "2 hours ago" to now - 2.hours,
             "7 days ago" to now - 1.weeks,
-            "9 days ago" to now - 9.days.inMilliseconds.toLong(),
-            "15 days ago" to now - 15.days.inMilliseconds.toLong()
+            "9 days ago" to now - 9.days,
+            "15 days ago" to now - 15.days
         )
 
         println(now.toDate())
         println(aWeekAgo)
         println(dates.entries.joinToString("\n") { "$it | ${it.value.toDate()} | ${it.value.isDateBetween(aWeekAgo, now.toDate())}" })
-
-        var f1 = System.currentTimeMillis()
-        f1 -= 1.years
-        println(f1.toDate())
     }
 
     @Test
