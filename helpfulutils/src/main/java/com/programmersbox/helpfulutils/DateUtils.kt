@@ -117,6 +117,18 @@ fun <T : Number> T.toHelpfulDuration(unit: HelpfulUnit) = HelpfulDuration(this, 
  */
 fun <T : Number> HelpfulUnit.toDuration(number: T) = HelpfulDuration(number, this)
 
+@Suppress("UNCHECKED_CAST")
+operator fun <T : Number> Long.minus(duration: HelpfulDuration<T>) = (this - duration.inMilliseconds).toLong()
+
+@Suppress("UNCHECKED_CAST")
+operator fun <T : Number> Long.plus(duration: HelpfulDuration<T>) = (this + duration.inMilliseconds).toLong()
+
+@Suppress("UNCHECKED_CAST")
+operator fun <T : Number> Long.div(duration: HelpfulDuration<T>) = (this / duration.inMilliseconds).toLong()
+
+@Suppress("UNCHECKED_CAST")
+operator fun <T : Number> Long.times(duration: HelpfulDuration<T>) = (this * duration.inMilliseconds).toLong()
+
 //units that have an enum
 val <T : Number> T.years get() = toHelpfulDuration(HelpfulUnit.YEARS)
 val <T : Number> T.days get() = toHelpfulDuration(HelpfulUnit.DAYS)

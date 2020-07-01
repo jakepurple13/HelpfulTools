@@ -247,7 +247,7 @@ class ExampleUnitTest {
         val dates = mapOf(
             "an hour ago" to now - 1.hours.inMilliseconds.toLong(),
             "2 hours ago" to now - 2.hours.inMilliseconds.toLong(),
-            "7 days ago" to now - 1.weeks.inMilliseconds.toLong(),
+            "7 days ago" to now - 1.weeks,
             "9 days ago" to now - 9.days.inMilliseconds.toLong(),
             "15 days ago" to now - 15.days.inMilliseconds.toLong()
         )
@@ -256,6 +256,9 @@ class ExampleUnitTest {
         println(aWeekAgo)
         println(dates.entries.joinToString("\n") { "$it | ${it.value.toDate()} | ${it.value.isDateBetween(aWeekAgo, now.toDate())}" })
 
+        var f1 = System.currentTimeMillis()
+        f1 -= 1.years
+        println(f1.toDate())
     }
 
     @Test
