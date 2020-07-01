@@ -242,17 +242,19 @@ class ExampleUnitTest {
     @ExperimentalTime
     @Test
     fun dateTest() {
-        val aWeekAgo = Date(System.currentTimeMillis()).apply { this.time -= 8.days.inMilliseconds.toInt() }
-        //val now = isDateBetween(aWeekAgo, Date(System.currentTimeMillis()))
+        val now = System.currentTimeMillis()
+        val aWeekAgo = (now - 8.days.inMilliseconds).toDate()
         val dates = mapOf(
-            "an hour ago" to 1593429272678,
-            "2 hours ago" to 1593429272677,
-            "7 days ago" to 1592831672677,
-            "9 days ago" to 1592658872677,
-            "15 days ago" to 1592140472676
+            "an hour ago" to now - 1.hours.inMilliseconds.toLong(),
+            "2 hours ago" to now - 2.hours.inMilliseconds.toLong(),
+            "7 days ago" to now - 1.weeks.inMilliseconds.toLong(),
+            "9 days ago" to now - 9.days.inMilliseconds.toLong(),
+            "15 days ago" to now - 15.days.inMilliseconds.toLong()
         )
 
-        println(dates.entries.joinToString("\n") { "$it | ${it.value.isDateBetween(aWeekAgo, Date(System.currentTimeMillis()))}" })
+        println(now.toDate())
+        println(aWeekAgo)
+        println(dates.entries.joinToString("\n") { "$it | ${it.value.toDate()} | ${it.value.isDateBetween(aWeekAgo, now.toDate())}" })
 
     }
 
