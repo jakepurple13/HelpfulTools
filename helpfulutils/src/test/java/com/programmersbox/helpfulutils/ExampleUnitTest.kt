@@ -3,6 +3,7 @@ package com.programmersbox.helpfulutils
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.Duration
+import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
@@ -239,12 +240,27 @@ class ExampleUnitTest {
         println(x.toDouble())
     }
 
+    enum class DayOfWeek { SUNDAY, MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY }
+
+    private fun dayOfWeek(d: Int, m: Int, y: Int): DayOfWeek {
+        var y = y
+        val t = intArrayOf(0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4)
+        y -= if (m < 3) 1 else 0
+        return DayOfWeek.values()[(y + y / 4 - y / 100 + y / 400 + t[m - 1] + d) % 7]
+    }
+
     @ExperimentalTime
     @Test
     fun durationConversion() {
         var f1 = System.currentTimeMillis()
+        println(f1.toDate())
         f1 -= 1.years
         println(f1.toDate())
+        f1 += 1.years
+        f1 += 1.days
+        println(f1.toDate())
+        val f3 = System.currentTimeMillis() - 24.years - 31.days - 30.days - 31.days - 30.days - 31.days - 29.days - 31.days + 14.hours
+        println(f3.toDate())
 
         val f = 4.years.toDuration()
         println(f.inMilliseconds.toLong())
@@ -253,6 +269,36 @@ class ExampleUnitTest {
         println(f2)
         println(3.minutes.toHelpfulDuration())
         println(HelpfulDuration(3, HelpfulUnit.MINUTES).inNanoseconds)
+
+        println(dayOfWeek(31, 12, 1995))
+        println(dayOfWeek(4, 4, 1996))
+        println(dayOfWeek(31, 12, 2020))
+        println(dayOfWeek(4, 4, 2020))
+        val jB = Date().apply { time = 0 }.time + 1995.years
+        println(jB.toDate())
+        println(24.years.inMilliseconds.toLong())
+        println(1995.years.inMilliseconds.toLong())
+        println(1995.years.inMilliseconds.toLong() - Instant.EPOCH.epochSecond)
+        println(Instant.EPOCH.epochSecond)
+        println(Instant.MIN.epochSecond + 1995.years)
+        println(System.currentTimeMillis() - 24.years)
+        println(System.currentTimeMillis())
+        println(Instant.EPOCH)
+        println(1995.years.toDate())
+
+        val jb2 = 1996.years - HelpfulDuration(1, HelpfulUnit.DAYS)
+
+        println(jb2.inMilliseconds.toLong().toDate())
+        println(jb2.toDate())
+        println(System.currentTimeMillis().milliseconds.toDate())
+        /*println(System.currentTimeMillis().milliseconds.toDate().toHelpfulDuration())
+        println(System.currentTimeMillis().milliseconds.toDate().toHelpfulDuration().inYears.toLong())*/
+    }
+
+    private fun <T : Number> HelpfulDuration<T>.toDate(): Date {
+        val year = inMilliseconds
+
+        return Date(Date(year.toLong()).time)// - Date().time)
     }
 
     @ExperimentalTime

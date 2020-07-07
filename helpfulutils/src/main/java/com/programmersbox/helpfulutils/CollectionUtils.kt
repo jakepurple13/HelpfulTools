@@ -40,8 +40,8 @@ fun <T> Iterable<T>.random(predicate: (T) -> Boolean) = filter(predicate).random
 /**
  * If you want to group a list by a condition
  */
-fun <T, R> List<T>.groupByCondition(key: (T) -> R, predicate: (key: T, element: T) -> Boolean): List<Pair<R, List<T>>> =
-    map { name -> key(name) to filter { s -> predicate(name, s) } }.distinctBy(Pair<R, List<T>>::second)
+fun <T, R> List<T>.groupByCondition(key: (T) -> R, predicate: (key: T, element: T) -> Boolean): Map<R, List<T>> =
+    map { name -> key(name) to filter { s -> predicate(name, s) } }.distinctBy(Pair<R, List<T>>::second).toMap()
 
 /**
  * Creates a list of [amount] size
