@@ -9,10 +9,12 @@ import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
 import java.util.*
 import kotlin.random.Random
+import kotlin.system.measureNanoTime
 import kotlin.system.measureTimeMillis
 import kotlin.time.ExperimentalTime
 import kotlin.time.days
 import kotlin.time.hours
+import kotlin.time.measureTime
 import kotlin.time.minutes
 
 /**
@@ -164,6 +166,66 @@ class ExampleUnitTest {
 
         val group = item.groupBy { it % 2 == 0 }
         println(group)
+
+        val group2 = item.groupingBy { it % 2 == 0 }
+        println(group2)
+
+        val group3 = item.groupByCondition({ it }) { o, l -> o % 2 == l % 2 }
+        println(group3)
+
+        val group4 = item.asSequence().groupByCondition({ it }) { o, l -> o % 2 == l % 2 }
+            .map { it.first to it.second.toList() }.toMap()
+
+        //.map { it.key to it.value.toList() }.toMap()
+        println(group4)
+    }
+
+    @ExperimentalTime
+    @Test
+    fun sequenceVsList() {
+
+        fun sequenceTry() {
+            val words = "The quick brown fox jumps over the lazy dog".split(" ")
+            //convert the List to a Sequence
+            val wordsSequence = words.asSequence()
+
+            val lengthsSequence = wordsSequence.filter { println("filter: $it"); it.length > 3 }
+                .map { println("length: ${it.length}"); it.length }
+                .take(4)
+
+            println("Lengths of first 4 words longer than 3 chars")
+            // terminal operation: obtaining the result as a List
+            println(lengthsSequence.toList())
+        }
+
+        fun listTry() {
+            val words = "The quick brown fox jumps over the lazy dog".split(" ")
+            val lengthsList = words.filter { println("filter: $it"); it.length > 3 }
+                .map { println("length: ${it.length}"); it.length }
+                .take(4)
+
+            println("Lengths of first 4 words longer than 3 chars:")
+            println(lengthsList)
+        }
+
+        val s = measureTimeMillis { sequenceTry() }
+        val l = measureTimeMillis { listTry() }
+
+        val s1 = measureNanoTime { sequenceTry() }
+        val l1 = measureNanoTime { listTry() }
+
+        val s2 = measureTime { sequenceTry() }
+        val l2 = measureTime { listTry() }
+
+        println(s)
+        println(l)
+        println(s1)
+        println(l1)
+        println(s2.inMilliseconds)
+        println(l2.inMilliseconds)
+        println(s2.inNanoseconds)
+        println(l2.inNanoseconds)
+
     }
 
     @Test

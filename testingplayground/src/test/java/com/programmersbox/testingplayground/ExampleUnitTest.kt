@@ -315,6 +315,53 @@ class ExampleUnitTest {
         println(f1.size)
     }
 
+    interface Person {
+        val name: String
+        val age: Int
+        val canBuyAlcohol: Boolean
+
+        fun helloText(): String
+
+        fun cheerText(person: Person): String
+    }
+
+    // * They both should implement Person
+    // * They both can buy alcohol only if over 21
+    // * Businessman says hello by “Good morning”, Student by “Hi”.
+    // * Businessman cheers by “Hello, my name is {his name}, nice to see you {cheered person name}”, Student by “Hey {cheered person name}, I am {his name}”.
+
+    class Businessman(override val name: String, override val age: Int) : Person {
+        override val canBuyAlcohol: Boolean = age >= 21
+        override fun helloText(): String = "Good morning"
+        override fun cheerText(person: Person): String = "Hello, my name is $name, nice to see you ${person.name}"
+    }
+
+    class Student(override val name: String, override val age: Int) : Person {
+        override val canBuyAlcohol: Boolean = age >= 21
+        override fun helloText(): String = "Hi"
+        override fun cheerText(person: Person): String = "Hey ${person.name}, I am $name"
+    }
+
+    @Test
+    fun exampleTestThing() {
+        val businessman: Person = Businessman("Johnny", 25)
+        val student: Person = Student("Jordan", 20)
+
+        println(businessman.helloText())
+        println(student.helloText())
+
+        println(businessman.cheerText(student))
+        println(student.cheerText(businessman))
+
+        fun sayIfCanBuyAlcohol(person: Person) {
+            val modal = if (person.canBuyAlcohol) "can" else "can't"
+            println("${person.name} $modal buy alcohol")
+        }
+
+        sayIfCanBuyAlcohol(businessman)
+        sayIfCanBuyAlcohol(student)
+    }
+
 }
 
 class FixedSizeList<T>(maxSize: Int = 1) : FixedList<T>(maxSize) {
