@@ -11,7 +11,6 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.jackson.JacksonConverterFactory
 import retrofit2.converter.moshi.MoshiConverterFactory
-import retrofit2.converter.protobuf.ProtoConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import retrofit2.converter.wire.WireConverterFactory
 
@@ -19,7 +18,6 @@ fun Retrofit.Builder.gsonConverter(): Retrofit.Builder = addConverterFactory(Gso
 fun Retrofit.Builder.moshiConverter(): Retrofit.Builder = addConverterFactory(MoshiConverterFactory.create())
 fun Retrofit.Builder.wireConverter(): Retrofit.Builder = addConverterFactory(WireConverterFactory.create())
 fun Retrofit.Builder.scalarsConverter(): Retrofit.Builder = addConverterFactory(ScalarsConverterFactory.create())
-fun Retrofit.Builder.protobufConverter(): Retrofit.Builder = addConverterFactory(ProtoConverterFactory.create())
 fun Retrofit.Builder.jacksonConverter(): Retrofit.Builder = addConverterFactory(JacksonConverterFactory.create())
 fun Retrofit.Builder.guavaConverter(): Retrofit.Builder = addConverterFactory(GuavaOptionalConverterFactory.create())
 
