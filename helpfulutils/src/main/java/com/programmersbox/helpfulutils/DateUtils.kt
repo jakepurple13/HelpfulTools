@@ -111,6 +111,12 @@ fun Date.isBetween(min: Long, max: Long) = isBetween(Date(min), Date(max))
 fun Long.isDateBetween(min: Long, max: Long) = Date(this).isBetween(min, max)
 
 /**
+ * Gives a time representation for this [HelpfulDuration].
+ * @see Number.stringForTime
+ */
+fun <T : Number> HelpfulDuration<T>.stringForTime(): String = inMilliseconds.toLong().stringForTime()
+
+/**
  * Converts [this] into a helpful duration
  */
 fun <T : Number> T.toHelpfulDuration(unit: HelpfulUnit) = HelpfulDuration(this, unit)
@@ -201,7 +207,6 @@ data class HelpfulDuration<T : Number>(val number: T, val unit: HelpfulUnit) {
     val inAttoseconds get() = toUnit(HelpfulUnit.ATTOSECONDS)
     val inZeptoseconds get() = toUnit(HelpfulUnit.ZEPTOSECONDS)
     val inYoctoseconds get() = toUnit(HelpfulUnit.YOCTOSECONDS)
-
 
     @Suppress("UNCHECKED_CAST")
     operator fun plus(other: T) = HelpfulDuration((number.toDouble() + other.toDouble()) as T, unit)

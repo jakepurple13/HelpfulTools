@@ -45,6 +45,16 @@ fun Random.nextColor(
 ): Int = Color.argb(alpha, red, green, blue)
 
 /**
+ * @return a random color
+ */
+fun Random.nextColor(
+    alpha: IntRange = 0..255,
+    red: IntRange = 0..255,
+    green: IntRange = 0..255,
+    blue: IntRange = 0..255
+): Int = Color.argb(alpha.random(this), red.random(this), green.random(this), blue.random(this))
+
+/**
  * @return a random string of [length]
  */
 fun Random.nextString(length: Int = 1) = StringBuilder().apply { repeat(length) { append((nextInt(96) + 32).toChar()) } }.toString()

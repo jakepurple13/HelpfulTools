@@ -24,20 +24,31 @@ internal const val RGB_MAX = 255
 
 sealed class Colors {
 
+    abstract fun toRGB(): RGB
+    abstract fun toCMYK(): CMYK
+    abstract fun toARGB(): ARGB
+    abstract fun toInt(): Int
+
     data class ARGB(val a: Int, val r: Int, val g: Int, val b: Int) : Colors() {
-        fun toRGB(): RGB = RGB(r, g, b)
-        fun toCMYK(): CMYK = toRGB().toCMYK()
-        fun toInt(): Int {
-            var col: Int = 0xff or 24 shl a
+        override fun toRGB(): RGB = RGB(r, g, b)
+        override fun toCMYK(): CMYK = toRGB().toCMYK()
+        override fun toARGB(): ARGB = this
+        override fun toInt(): Int {
+            /*var col: Int = 0xff or 24 shl a
             col = 0xff or 16 shl r and col
             col = 0xff or 8 shl g and col
             col = 0xff or b and col
+            return col*/
+            var col: Int = 24 shl a or 0xff
+            col = 16 shl r or 0xff and col
+            col = 8 shl g or 0xff and col
+            col = b or 0xff and col
             return col
         }
     }
 
     data class RGB(val r: Int, val g: Int, val b: Int) : Colors() {
-        fun toCMYK(): CMYK {
+        override fun toCMYK(): CMYK {
             var computedC = 1 - (r.toDouble() / RGB_MAX)
             var computedM = 1 - (g.toDouble() / RGB_MAX)
             var computedY = 1 - (b.toDouble() / RGB_MAX)
@@ -53,9 +64,9 @@ sealed class Colors {
             return CMYK(computedC, computedM, computedY, computedK)
         }
 
-        fun toARGB() = ARGB(255, r, g, b)
-
-        fun toInt(): Int {
+        override fun toRGB(): RGB = this
+        override fun toARGB() = ARGB(255, r, g, b)
+        override fun toInt(): Int {
             var col: Int = 0xff or 16 shl r
             col = 0xff or 8 shl g and col
             col = 0xff or b and col
@@ -64,7 +75,7 @@ sealed class Colors {
     }
 
     data class CMYK(val c: Double, val m: Double, val y: Double, val k: Double) : Colors() {
-        fun toRGB(): RGB {
+        override fun toRGB(): RGB {
             val c = this.c / 100.0
             val m = this.m / 100.0
             val y = this.y / 100.0
@@ -75,8 +86,9 @@ sealed class Colors {
             return RGB(r.roundToInt(), g.roundToInt(), b.roundToInt())
         }
 
-        fun toARGB(): ARGB = toRGB().toARGB()
-        fun toInt(): Int = toRGB().toInt()
+        override fun toCMYK(): CMYK = this
+        override fun toARGB(): ARGB = toRGB().toARGB()
+        override fun toInt(): Int = toRGB().toInt()
     }
 }
 
@@ -86,9 +98,7 @@ sealed class Colors {
  */
 fun Int.toARGB(): Colors.ARGB {
     val a = (this shr 24 and 0xff)// / 255.0f
-    val r = (this shr 16 and 0xff)// / 255.0f
-    val g = (this shr 8 and 0xff)// / 255.0f
-    val b = (this and 0xff)// / 255.0f
+    val (r, g, b) = valueOf()
     return Colors.ARGB(a, r, g, b)
 }
 
@@ -96,9 +106,7 @@ fun Int.toARGB(): Colors.ARGB {
  * Converts [this] to rgb values
  */
 fun Int.toRGB(): Colors.RGB {
-    val r = (this shr 16 and 0xff)// / 255.0f
-    val g = (this shr 8 and 0xff)// / 255.0f
-    val b = (this and 0xff)// / 255.0f
+    val (r, g, b) = valueOf()
     return Colors.RGB(r, g, b)
 }
 
@@ -106,9 +114,7 @@ fun Int.toRGB(): Colors.RGB {
  * Converts [this] to cmyk values
  */
 fun Int.toCMYK(): Colors.CMYK {
-    val r = (this shr 16 and 0xff)// / 255.0f
-    val g = (this shr 8 and 0xff)// / 255.0f
-    val b = (this and 0xff)// / 255.0f
+    val (r, g, b) = valueOf()
     var computedC = 1 - (r.toDouble() / RGB_MAX)
     var computedM = 1 - (g.toDouble() / RGB_MAX)
     var computedY = 1 - (b.toDouble() / RGB_MAX)

@@ -2,9 +2,7 @@ package com.programmersbox.testingplayground
 
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Deck
-import com.programmersbox.helpfulutils.FixedList
-import com.programmersbox.helpfulutils.intersect
-import com.programmersbox.helpfulutils.randomString
+import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.FrameType
 import com.programmersbox.loggingutils.Loged
 import com.programmersbox.loggingutils.f
@@ -17,6 +15,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
+import kotlin.random.Random
 
 
 /**
@@ -30,6 +29,88 @@ class ExampleUnitTest {
     fun setup() {
         Loged.UNIT_TESTING = true
         Loged.FILTER_BY_PACKAGE_NAME = "programmersbox"
+    }
+
+    private fun Random.nextColor(
+        red: Int = nextInt(0, 255),
+        green: Int = nextInt(0, 255),
+        blue: Int = nextInt(0, 255)
+    ): Int {
+        //ARGB(a=133, r=198, g=134, b=34) works
+        //ARGB(a=0, r=163, g=36, b=194)
+        return Colors.RGB(red, green, blue).also { println(it) }.toInt()
+    }
+
+    @Test
+    fun colorTesting() {
+
+        val blue = 0x0000ff
+        val red = 0xff0000
+        //#ffd600
+        println("Blue".color(blue))
+        println("Red".color(red))
+        println("Purple".color(blue + red))
+        println("Purple".color(0xff00ff))
+        println("Purple".color(blendARGB(blue, red, 0.5f)))
+        println("Purple".color(mergeColors(blue, red)))
+        /*repeat(10) {
+            val c = Random.nextColor()
+            println(c)
+            println("Random".color(c))
+        }*/
+        val y = 0xffd600
+        println("Yellow".color(y))
+        val c = y.toRGB()
+        println(c)
+        println(c.toInt())
+        println("Yellow".color(c.toInt()))
+        println(y.toARGB().toInt())
+        println("Yellow".color(y.toRGB()))
+
+        val now = 37850000L
+        println(now.stringForTime())
+        val now1 = 10.hours + 30.minutes + 50.seconds
+        println(now1.inMilliseconds.stringForTime())
+        println(now1.stringForTime())
+        println(now1.inMilliseconds.toLong())
+
+        println(now1[HelpfulUnit.MINUTES])
+
+    }
+
+    private fun String.color(color: Colors) = color.toRGB().let { c -> AnsiColor.colorText(this, c.r, c.g, c.b) }
+
+    private fun blendARGB(color1: Int, color2: Int, ratio: Float): Int {
+        val inverseRatio = 1 - ratio
+        val c = color1.toARGB()
+        val c2 = color2.toARGB()
+        val a = c.a * inverseRatio + c2.a * ratio
+        val r = c.r * inverseRatio + c2.r * ratio
+        val g = c.g * inverseRatio + c2.g * ratio
+        val b = c.b * inverseRatio + c2.b * ratio
+        return Colors.ARGB(a.toInt(), r.toInt(), g.toInt(), b.toInt()).toInt()
+        //Colors.ARGB(a, r, g, b).toInt()
+        //Color.argb(a.toInt(), r.toInt(), g.toInt(), b.toInt())
+    }
+
+    private fun mergeColors(backgroundColor: Int, foregroundColor: Int): Int {
+        val ALPHA_CHANNEL: Byte = 24
+        val RED_CHANNEL: Byte = 16
+        val GREEN_CHANNEL: Byte = 8
+        val BLUE_CHANNEL: Byte = 0
+        val ap1 = (backgroundColor shr ALPHA_CHANNEL.toInt() and 0xff).toDouble() / 255.0
+        val ap2 = (foregroundColor shr ALPHA_CHANNEL.toInt() and 0xff).toDouble() / 255.0
+        val ap = ap2 + ap1 * (1 - ap2)
+        val amount1 = ap1 * (1 - ap2) / ap
+        val amount2 = amount1 / ap
+        val a = (ap * 255.0).toInt() and 0xff
+        val r = ((backgroundColor shr RED_CHANNEL.toInt() and 0xff).toFloat() * amount1 +
+                (foregroundColor shr RED_CHANNEL.toInt() and 0xff).toFloat() * amount2).toInt() and 0xff
+        val g = ((backgroundColor shr GREEN_CHANNEL.toInt() and 0xff).toFloat() * amount1 +
+                (foregroundColor shr GREEN_CHANNEL.toInt() and 0xff).toFloat() * amount2).toInt() and 0xff
+        val b = ((backgroundColor and 0xff).toFloat() * amount1 +
+                (foregroundColor and 0xff).toFloat() * amount2).toInt() and 0xff
+        return a shl ALPHA_CHANNEL.toInt() or (r shl RED_CHANNEL.toInt()) or (g shl GREEN_CHANNEL.toInt()) or (b shl BLUE_CHANNEL.toInt())
     }
 
     @Test
