@@ -3,7 +3,6 @@
 ![GitHub license](https://img.shields.io/github/license/jakepurple13/HelpfulTools?style=for-the-badge)
 ![GitHub top language](https://img.shields.io/github/languages/top/jakepurple13/helpfultools?style=for-the-badge)
 ![JitPack](https://img.shields.io/jitpack/v/github/jakepurple13/HelpfulTools?style=for-the-badge)
-[![Dependabot Status](https://flat.badgen.net/dependabot/jakepurple13/HelpfulTools?icon=dependabot&scale=1.4)](https://dependabot.com)
 
 Just some small simple tools that I have found myself copying+pasting to almost all projects I do.
 
