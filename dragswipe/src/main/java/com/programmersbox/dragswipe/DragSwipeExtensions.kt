@@ -221,3 +221,42 @@ fun RecyclerView.enableDragSwipe(helper: DragSwipeHelper) = DragSwipeUtils.enabl
  * @see DragSwipeUtils.disableDragSwipe
  */
 fun RecyclerView.disableDragSwipe(helper: DragSwipeHelper) = DragSwipeUtils.disableDragSwipe(helper)
+
+/**
+ * Use this if you want to update certain items based off of another list
+ * e.g.
+ * You have a list of items loaded and are loading favorites. Once those are loaded, use this to update items that are favorited.
+ * This will only notify the index's that are favorited
+ * @param T the type of [DragSwipeAdapter]
+ * @param R a type to match with [T]. [R] can be [T]
+ */
+class CheckAdapter<T, R> private constructor(private val adapter: DragSwipeAdapter<T, *>) {
+    private val currentList: MutableList<R> = mutableListOf()
+    private val previousList: MutableList<R> = mutableListOf()
+
+    /**
+     * Update which items should have a change
+     * @param list the list that will show a change
+     * @param check check for the first index of the current data and new list
+     */
+    fun update(list: List<R>, check: (T, R) -> Boolean) {
+        val mapNotNull: (Int) -> Int? = { if (it == -1) null else it }
+        previousList.clear()
+        previousList.addAll(currentList)
+        list.map(previousList::indexOf).mapNotNull(mapNotNull).forEach(adapter::notifyItemChanged)
+        currentList.clear()
+        currentList.addAll(list)
+        list.map { r -> adapter.dataList.indexOfFirst { check(it, r) } }.mapNotNull(mapNotNull).forEach(adapter::notifyItemChanged)
+    }
+
+    companion object {
+        /**
+         * Attach [CheckAdapter] to a [DragSwipeAdapter]
+         * @param T the type of [DragSwipeAdapter]
+         * @param R a type to match with [T]. [R] can be [T]
+         * @see CheckAdapter
+         */
+        fun <T, R> attachTo(dragSwipeAdapter: DragSwipeAdapter<T, *>) = CheckAdapter<T, R>(dragSwipeAdapter)
+    }
+}
+
