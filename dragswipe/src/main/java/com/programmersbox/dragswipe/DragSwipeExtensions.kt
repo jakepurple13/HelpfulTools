@@ -222,6 +222,12 @@ fun RecyclerView.enableDragSwipe(helper: DragSwipeHelper) = DragSwipeUtils.enabl
  */
 fun RecyclerView.disableDragSwipe(helper: DragSwipeHelper) = DragSwipeUtils.disableDragSwipe(helper)
 
+interface CheckAdapterInterface<T, R> {
+    val currentList: MutableList<R>
+    val previousList: MutableList<R>
+    fun update(list: List<R>, check: (T, R) -> Boolean)
+}
+
 /**
  * Use this if you want to update certain items based off of another list
  * e.g.
@@ -230,16 +236,16 @@ fun RecyclerView.disableDragSwipe(helper: DragSwipeHelper) = DragSwipeUtils.disa
  * @param T the type of [DragSwipeAdapter]
  * @param R a type to match with [T]. [R] can be [T]
  */
-class CheckAdapter<T, R> private constructor(private val adapter: DragSwipeAdapter<T, *>) {
-    private val currentList: MutableList<R> = mutableListOf()
-    private val previousList: MutableList<R> = mutableListOf()
+class CheckAdapter<T, R> private constructor(private val adapter: DragSwipeAdapter<T, *>) : CheckAdapterInterface<T, R> {
+    override val currentList: MutableList<R> = mutableListOf()
+    override val previousList: MutableList<R> = mutableListOf()
 
     /**
      * Update which items should have a change
      * @param list the list that will show a change
      * @param check check for the first index of the current data and new list
      */
-    fun update(list: List<R>, check: (T, R) -> Boolean) {
+    override fun update(list: List<R>, check: (T, R) -> Boolean) {
         val mapNotNull: (Int) -> Int? = { if (it == -1) null else it }
         previousList.clear()
         previousList.addAll(currentList)
