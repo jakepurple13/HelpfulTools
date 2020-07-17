@@ -236,7 +236,8 @@ interface CheckAdapterInterface<T, R> {
  * @param T the type of [DragSwipeAdapter]
  * @param R a type to match with [T]. [R] can be [T]
  */
-class CheckAdapter<T, R> private constructor(private val adapter: DragSwipeAdapter<T, *>) : CheckAdapterInterface<T, R> {
+class CheckAdapter<T, R> : CheckAdapterInterface<T, R> {
+    lateinit var adapter: DragSwipeAdapter<T, *>
     override val currentList: MutableList<R> = mutableListOf()
     override val previousList: MutableList<R> = mutableListOf()
 
@@ -262,7 +263,6 @@ class CheckAdapter<T, R> private constructor(private val adapter: DragSwipeAdapt
          * @param R a type to match with [T]. [R] can be [T]
          * @see CheckAdapter
          */
-        fun <T, R> attachTo(dragSwipeAdapter: DragSwipeAdapter<T, *>) = CheckAdapter<T, R>(dragSwipeAdapter)
+        fun <T, R> attachTo(dragSwipeAdapter: DragSwipeAdapter<T, *>) = CheckAdapter<T, R>().apply { adapter = dragSwipeAdapter }
     }
 }
-

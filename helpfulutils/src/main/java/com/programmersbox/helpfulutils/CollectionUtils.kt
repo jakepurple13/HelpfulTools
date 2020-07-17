@@ -56,6 +56,18 @@ fun <T, R> Sequence<T>.groupByCondition(key: (T) -> R, predicate: (key: T, eleme
 fun <T> sizedListOf(amount: Int = 1, item: (Int) -> T) = mutableListOf<T>().apply { repeat(amount) { this += item(it) } }
 
 /**
+ * Creates a map of [amount] size
+ * Useful for random information
+ */
+fun <T, R> sizedMapOf(amount: Int = 1, item: (Int) -> Pair<T, R>) = mutableMapOf<T, R>().apply { repeat(amount) { this += item(it) } }
+
+/**
+ * Creates set of [amount] size
+ * Useful for random information
+ */
+fun <T> sizedSetOf(amount: Int = 1, item: (Int) -> T) = mutableSetOf<T>().apply { repeat(amount) { this += item(it) } }
+
+/**
  * pairs [List.lastIndex] with [List.last]
  */
 val <T> List<T>.lastWithIndex: Pair<Int, T> get() = lastIndex to last()

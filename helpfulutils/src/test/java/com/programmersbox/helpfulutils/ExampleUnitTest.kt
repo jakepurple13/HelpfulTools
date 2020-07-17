@@ -1,5 +1,6 @@
 package com.programmersbox.helpfulutils
 
+import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.time.Duration
@@ -95,6 +96,38 @@ class ExampleUnitTest {
         println(0x0000FF.toARGB().toCMYK())
         println(0x0000FF.toRGB().toCMYK())
         println(0x0000FF.toCMYK().toARGB())
+    }
+
+    @After
+    fun finished() {
+        Runtime.getRuntime().exec("say finished").waitFor()
+    }
+
+    class MultipleIterables<T, R, Y>(
+        private val list: MutableList<T> = mutableListOf(),
+        private val map: MutableMap<R, Y> = mutableMapOf()
+    ) : MutableList<T> by list, MutableMap<R, Y> by map {
+        override fun isEmpty(): Boolean = list.isEmpty() && map.isEmpty()
+        override val size: Int get() = list.size + map.size
+        override fun clear() {
+            list.clear()
+            map.clear()
+        }
+    }
+
+    @Test
+    fun iterableTesting() {
+        val m = MultipleIterables<String, Int, String>()
+        m.add("4")
+        m.addAll(sizedListOf(20) { it.toString() })
+        m.put(5, "4")
+        m.putAll(sizedMapOf(20) { it to it.toString() })
+        println(m)
+        println(m.size)
+        m.forEach { s: String -> println(s) }
+        m.forEach { t, u -> println("$t=$u") }
+
+        sizedSetOf(20) { it }.also(::println)
     }
 
     @Test
