@@ -47,7 +47,7 @@ fun Random.nextColor(
 /**
  * @return a random color
  */
-fun Random.nextColor(
+fun Random.nextRangeColor(
     alpha: IntRange = 0..255,
     red: IntRange = 0..255,
     green: IntRange = 0..255,
