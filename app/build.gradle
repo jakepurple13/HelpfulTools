@@ -53,7 +53,7 @@ dependencies {
     testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    def jakepurple13 = "10.1.7"
+    def jakepurple13 = "10.1.8"
     implementation "com.github.jakepurple13.HelpfulTools:flowutils:$jakepurple13"
     implementation "com.github.jakepurple13.HelpfulTools:gsonutils:$jakepurple13"
     implementation "com.github.jakepurple13.HelpfulTools:helpfulutils:$jakepurple13"
@@ -72,5 +72,4 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxandroid:2.1.1"
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.2.0'
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.2.0'
-
 }
