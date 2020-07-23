@@ -6,6 +6,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import io.reactivex.subjects.BehaviorSubject
 import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 /**
@@ -36,6 +37,19 @@ operator fun CompletableEmitter.invoke() = onComplete()
  * Does a [map]ping function with [apply] to modify the new element
  */
 fun <T> Observable<T>.modify(block: (T) -> Unit): Observable<T> = map { it.apply(block) }
+
+/**
+ * Filters and emits items that are of [T]
+ * @see Observable.filter
+ */
+@Suppress("UNCHECKED_CAST")
+inline fun <reified T> Observable<*>.filterIsInstance(): Observable<T> = filter { it is T } as Observable<T>
+
+/**
+ * Filters items that are of [T]
+ */
+@Suppress("UNCHECKED_CAST")
+fun <T : Any> Observable<*>.filterIsInstance(kClass: KClass<T>): Observable<T> = filter(kClass::isInstance) as Observable<T>
 
 class BehaviorDelegate<T> internal constructor(private val subject: BehaviorSubject<T>) : ReadWriteProperty<Any?, T?> {
     override operator fun getValue(thisRef: Any?, property: KProperty<*>): T? = subject.value

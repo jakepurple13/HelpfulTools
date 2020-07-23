@@ -60,6 +60,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val t = TimeCounter(this, 5, 5.minutes.inMilliseconds.toLong())
+        t.plusOne()
+        Loged.fa(t)
+
         println(info)
 
         keys = null

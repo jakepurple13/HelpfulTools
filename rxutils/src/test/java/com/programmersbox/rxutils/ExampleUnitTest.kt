@@ -11,6 +11,36 @@ import kotlin.random.Random
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
+    sealed class InstanceFilter {
+        object EmptyInstance : InstanceFilter()
+        object Filter : InstanceFilter()
+    }
+
+    @Test
+    fun instanceFilterTest() {
+        val publish = PublishSubject.create<InstanceFilter>()
+        publish
+            .filterIsInstance<InstanceFilter.EmptyInstance>()
+            //.filterIsInstance(InstanceFilter.EmptyInstance::class)
+            .doOnError { println(it) }
+            .subscribe { println(it) }
+
+        publish(InstanceFilter.EmptyInstance)
+        publish(InstanceFilter.Filter)
+
+        println("-----")
+
+        publish
+            //.filterIsInstance<InstanceFilter.EmptyInstance>()
+            .filterIsInstance(InstanceFilter.Filter::class)
+            .doOnError { println(it) }
+            .subscribe { println(it) }
+
+        publish(InstanceFilter.EmptyInstance)
+        publish(InstanceFilter.Filter)
+    }
+
     @Test
     fun addition_isCorrect() {
         val publish = PublishSubject.create<String>()
