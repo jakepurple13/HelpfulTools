@@ -60,6 +60,11 @@ fun <T, R> Sequence<T>.groupByCondition(key: (T) -> R, predicate: (key: T, eleme
     map { name -> key(name) to filter { s -> predicate(name, s) } }.distinctBy { it.second.toList() }.map { it.first to it.second.toList() }
 
 /**
+ * An easy way to map an [Iterable] to a [Map]
+ */
+fun <T, R, Y> Iterable<T>.toMap(pair: (T) -> Pair<Y, R>) = map(pair).toMap()
+
+/**
  * Creates a list of [amount] size
  * Useful for random information
  */

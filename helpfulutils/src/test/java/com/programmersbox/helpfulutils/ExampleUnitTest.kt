@@ -75,7 +75,8 @@ class ExampleUnitTest {
     @Test
     fun sizedListStuffTest() {
         println(sizedListOf(5) { Random.nextString(5) })
-        println(sizedListOf2(5) { Random.nextString(5) })
+        val map = listOf(1, 2, 3).toMap { it to 3 }
+        println(map)
     }
 
     @Test
