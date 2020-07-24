@@ -47,7 +47,7 @@ var Context.key3: Boolean? by sharedPrefDelegate(null)
 
 class MainActivity : AppCompatActivity() {
 
-    private val adapter = CustomAdapter(sizedListOf(50) { getRandomName() })
+    private val adapter = CustomAdapter(sizedListOf(50) { getRandomName() }.toMutableList())
 
     private var keys: String? by sharedPrefDelegate()
 

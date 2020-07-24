@@ -64,6 +64,18 @@ class ExampleUnitTest {
         val items = list.toItemRange()
         s.itemList
         s.previous
+        println("-----")
+        println(list)
+        println(list.randomN(5))
+        println(list)
+        println(list.randomNRemove(2))
+        println(list)
+    }
+
+    @Test
+    fun sizedListStuffTest() {
+        println(sizedListOf(5) { Random.nextString(5) })
+        println(sizedListOf2(5) { Random.nextString(5) })
     }
 
     @Test

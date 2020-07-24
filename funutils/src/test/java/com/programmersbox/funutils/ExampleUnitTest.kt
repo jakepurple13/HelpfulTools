@@ -1,6 +1,7 @@
 package com.programmersbox.funutils
 
-import org.junit.Assert.assertEquals
+import com.programmersbox.funutils.cards.Card
+import com.programmersbox.funutils.cards.Deck
 import org.junit.Test
 
 /**
@@ -11,6 +12,7 @@ import org.junit.Test
 class ExampleUnitTest {
     @Test
     fun addition_isCorrect() {
-        assertEquals(4, 2 + 2)
+        //assertEquals(4, 2 + 2)
+        val d = Deck(Card.RandomCard)
     }
 }

@@ -38,6 +38,16 @@ fun <T> MutableList<T>.randomRemove(predicate: (T) -> Boolean): T = removeAt(ind
 fun <T> Iterable<T>.random(predicate: (T) -> Boolean) = filter(predicate).random()
 
 /**
+ * randomly removes [n] items
+ */
+fun <T> MutableList<T>.randomNRemove(n: Int): List<T> = sizedListOf(n) { randomRemove() }
+
+/**
+ * randomly creates a list with [n] items
+ */
+fun <T> MutableList<T>.randomN(n: Int): List<T> = sizedListOf(n) { random() }
+
+/**
  * If you want to group a list by a condition
  */
 fun <T, R> Iterable<T>.groupByCondition(key: (T) -> R, predicate: (key: T, element: T) -> Boolean): Map<R, List<T>> =
@@ -53,19 +63,19 @@ fun <T, R> Sequence<T>.groupByCondition(key: (T) -> R, predicate: (key: T, eleme
  * Creates a list of [amount] size
  * Useful for random information
  */
-fun <T> sizedListOf(amount: Int = 1, item: (Int) -> T) = mutableListOf<T>().apply { repeat(amount) { this += item(it) } }
+fun <T> sizedListOf(amount: Int = 1, item: (Int) -> T): List<T> = mutableListOf<T>().apply { repeat(amount) { this += item(it) } }
 
 /**
  * Creates a map of [amount] size
  * Useful for random information
  */
-fun <T, R> sizedMapOf(amount: Int = 1, item: (Int) -> Pair<T, R>) = mutableMapOf<T, R>().apply { repeat(amount) { this += item(it) } }
+fun <T, R> sizedMapOf(amount: Int = 1, item: (Int) -> Pair<T, R>): Map<T, R> = mutableMapOf<T, R>().apply { repeat(amount) { this += item(it) } }
 
 /**
  * Creates set of [amount] size
  * Useful for random information
  */
-fun <T> sizedSetOf(amount: Int = 1, item: (Int) -> T) = mutableSetOf<T>().apply { repeat(amount) { this += item(it) } }
+fun <T> sizedSetOf(amount: Int = 1, item: (Int) -> T): Set<T> = mutableSetOf<T>().apply { repeat(amount) { this += item(it) } }
 
 /**
  * pairs [List.lastIndex] with [List.last]
