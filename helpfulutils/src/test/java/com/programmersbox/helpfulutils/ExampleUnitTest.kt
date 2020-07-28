@@ -338,6 +338,9 @@ class ExampleUnitTest {
         println(f1 % 60.minutes.toLongMilliseconds())
         println(f1 - (f1 % 60.minutes.toLongMilliseconds()) + 60.minutes.toLongMilliseconds())
         println(format.format(f1 - (f1 % 60.minutes.toLongMilliseconds()) + 60.minutes.toLongMilliseconds()))
+
+        formatPrint(nextTimeInMs(1.hours.toLongMilliseconds()))
+        formatPrint(nextTimeInMs(-1.hours.toLongMilliseconds()))
     }
 
     @ExperimentalTime
