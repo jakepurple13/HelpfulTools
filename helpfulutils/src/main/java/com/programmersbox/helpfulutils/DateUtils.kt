@@ -43,31 +43,37 @@ fun timeToNextHourOrHalf(): Long {
 }
 
 /**
- * Get how much time there is until the next [minuteInMs] in milliseconds
- * e.g. 1,800,000 = 30 minutes, so this will return how many minutes until xx:30 or xx:00
+ * Get how much time there is until the next [minutesInMs] in milliseconds
+ * e.g. 1,800,000 = 30 minutes, so this will return the time of the next xx:30 or xx:00 in ms
  */
 @JvmOverloads
-fun timeToNext(minuteInMs: Long = 1_800_000, currentTime: Long = System.currentTimeMillis()) =
-    Date(minuteInMs * ((currentTime + (minuteInMs / 2)) / minuteInMs)).time - currentTime
+fun nextTime(minutesInMs: Long, timeInMs: Long = System.currentTimeMillis()) = timeInMs - (timeInMs % minutesInMs) + minutesInMs
+
+/**
+ * Get how much time there is until the next [minutesInMs] in milliseconds
+ * e.g. 1,800,000 = 30 minutes, so this will return how many minutes until xx:30 or xx:00 in ms
+ */
+@JvmOverloads
+fun nextTimeInMs(minutesInMs: Long, timeInMs: Long = System.currentTimeMillis()) = nextTime(minutesInMs, timeInMs) - timeInMs
 
 /**
  * @see timeToNextHourOrHalf
- * @see timeToNext
+ * @see nextTimeInMs
  */
 fun Date.timeToNextHourOrHalf(): Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
     dateCalTimeToNextHourOrHalf(ZonedDateTime.ofInstant(toInstant(), ZoneId.systemDefault()))
 } else {
-    timeToNext(currentTime = time)
+    nextTimeInMs(1_800_000, timeInMs = time)
 }
 
 /**
  * @see timeToNextHourOrHalf
- * @see timeToNext
+ * @see nextTimeInMs
  */
 fun Calendar.timeToNextHourOrHalf(): Long = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
     dateCalTimeToNextHourOrHalf(ZonedDateTime.ofInstant(toInstant(), ZoneId.systemDefault()))
 } else {
-    timeToNext(currentTime = timeInMillis)
+    nextTimeInMs(1_800_000, timeInMs = timeInMillis)
 }
 
 @RequiresApi(Build.VERSION_CODES.O)

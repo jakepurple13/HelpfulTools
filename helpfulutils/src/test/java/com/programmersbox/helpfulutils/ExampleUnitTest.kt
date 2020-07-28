@@ -3,6 +3,7 @@ package com.programmersbox.helpfulutils
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.text.SimpleDateFormat
 import java.time.Duration
 import java.time.Instant
 import java.time.ZonedDateTime
@@ -305,6 +306,38 @@ class ExampleUnitTest {
         fixedSetOf(5, 1, 2, 3)
         fixedMapOf(5, 1 to 4, 2 to 5)
         mapOf(1 to 3).toFixedMap(10)
+    }
+
+    @ExperimentalTime
+    @Test
+    fun timeTest2() {
+        val format = SimpleDateFormat("MM/dd/yyyy hh:mm:ss a")
+
+        fun formatPrint(time: Long) {
+            println("$time = ${time.stringForTime()} = ${format.format(System.currentTimeMillis() + time)}")
+        }
+
+        formatPrint(0L)
+        formatPrint(timeToNextHourOrHalf())
+        formatPrint(nextTimeInMs(1.hours.toLongMilliseconds()) + 1.hours.toLongMilliseconds())
+        formatPrint(nextTimeInMs(2.hours.toLongMilliseconds()))
+        formatPrint(nextTimeInMs(30.minutes.toLongMilliseconds()))
+        formatPrint(nextTimeInMs(30.minutes.toLongMilliseconds()))
+        println()
+        formatPrint(nextTime(30.minutes.toLongMilliseconds(), System.currentTimeMillis()))
+        println(format.format(nextTime(30.minutes.toLongMilliseconds(), System.currentTimeMillis())))
+        println(nextTimeInMs(30.minutes.toLongMilliseconds(), System.currentTimeMillis()))
+        println(nextTime(30.minutes.toLongMilliseconds(), System.currentTimeMillis()) - System.currentTimeMillis())
+        val f = Random.nextInt(1, 100)
+        println(f)
+        println(f % 10)
+        println(f - (f % 10) + 10)
+
+        val f1 = System.currentTimeMillis()
+        println(f1)
+        println(f1 % 60.minutes.toLongMilliseconds())
+        println(f1 - (f1 % 60.minutes.toLongMilliseconds()) + 60.minutes.toLongMilliseconds())
+        println(format.format(f1 - (f1 % 60.minutes.toLongMilliseconds()) + 60.minutes.toLongMilliseconds()))
     }
 
     @ExperimentalTime
