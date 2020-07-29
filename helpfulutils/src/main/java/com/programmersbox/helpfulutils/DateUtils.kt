@@ -2,6 +2,7 @@ package com.programmersbox.helpfulutils
 
 import android.os.Build
 import androidx.annotation.RequiresApi
+import java.text.DateFormat
 import java.time.Duration
 import java.time.ZoneId
 import java.time.ZonedDateTime
@@ -10,6 +11,9 @@ import java.util.*
 import kotlin.time.DurationUnit
 import kotlin.time.ExperimentalTime
 import kotlin.time.toDuration
+
+operator fun DateFormat.invoke(date: Any): String = format(date)
+operator fun DateFormat.invoke(date: Date): String = format(date)
 
 /**
  * Get how much time there is until the next hour in milliseconds

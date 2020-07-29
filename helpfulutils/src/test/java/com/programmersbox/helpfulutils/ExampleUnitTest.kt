@@ -4,9 +4,7 @@ import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.text.SimpleDateFormat
-import java.time.Duration
-import java.time.Instant
-import java.time.ZonedDateTime
+import java.time.*
 import java.time.temporal.ChronoUnit
 import java.time.temporal.TemporalUnit
 import java.util.*
@@ -341,6 +339,90 @@ class ExampleUnitTest {
 
         formatPrint(nextTimeInMs(1.hours.toLongMilliseconds()))
         formatPrint(nextTimeInMs(-1.hours.toLongMilliseconds()))
+    }
+
+    @ExperimentalTime
+    @Test
+    fun quickTimeTest() {
+        val format = SimpleDateFormat("MM/dd/yyyy hh:mm:ss a")
+        val f = nextTime(30.minutes.inMilliseconds.toLong())
+        println(format.format(f))
+        println(format(f))
+        println(format(nextTime(1.5.hours.inMilliseconds.toLong())))
+        println(format(nextTime(12.hours.inMilliseconds.toLong())))
+        println(1.days.inMilliseconds.toLong())
+        println(nextTimeInMs(1.days.inMilliseconds.toLong()))
+        println(format(nextTime(1.days.inMilliseconds.toLong())))
+        println(format(nextTime(3.days.inMilliseconds.toLong())))
+
+        println()
+
+        val now = System.currentTimeMillis()
+
+        println(now)
+
+        println(now % 1.years.inMilliseconds.toLong())
+        println(30.years.inMilliseconds.toLong())
+
+        val h = HelpfulTime()
+            .add(2020, HelpfulUnit.YEARS)
+            .setMonth(6)
+            .add(12, HelpfulUnit.DAYS)
+            .minus(5, HelpfulUnit.HOURS)
+
+        println(format(h.time))
+        println(h.time)
+    }
+
+    class HelpfulTime {
+        val time get() = actions.foldRight(-1970.years.inMilliseconds.toLong()) { acc, t -> acc(t) }
+        private val actions = mutableListOf<(Long) -> Long>()
+        private fun MutableList<(Long) -> Long>.addToActions(time: Long) = this@HelpfulTime.apply { this@addToActions.add { it + time } }
+
+        fun add(timeInMs: Long) = actions.addToActions(timeInMs)
+        fun add(duration: HelpfulDuration<*>) = actions.addToActions(duration.inMilliseconds.toLong())
+        fun add(time: Long, unit: HelpfulUnit) = actions.addToActions(HelpfulDuration(time, unit).inMilliseconds.toLong())
+
+        fun minus(timeInMs: Long) = actions.addToActions(-timeInMs)
+        fun minus(duration: HelpfulDuration<*>) = actions.addToActions(-duration.inMilliseconds.toLong())
+        fun minus(time: Long, unit: HelpfulUnit) = actions.addToActions(-HelpfulDuration(time, unit).inMilliseconds.toLong())
+
+        fun setMonth(monthCode: Int) = apply {
+            val days = (0..monthCode).map { Month.of(monthCode).length(false) }.sum()
+            add(days.toLong(), HelpfulUnit.DAYS)
+        }
+
+        operator fun plusAssign(timeInMs: Long) {
+            add(timeInMs)
+        }
+
+        operator fun plusAssign(duration: HelpfulDuration<*>) {
+            add(duration)
+        }
+
+        operator fun minusAssign(timeInMs: Long) {
+            minus(timeInMs)
+        }
+
+        operator fun minusAssign(duration: HelpfulDuration<*>) {
+            minus(duration)
+        }
+    }
+
+    data class Numbers(val f: Int)
+
+    object NumberChecker : SingletonObject<Numbers>() {
+        override fun create(kv: Map<String, Any>): Numbers = Numbers(kv["value"] as Int)
+    }
+
+    @Test
+    fun singletonTest() {
+        val f = NumberChecker.getInstance("value" to 5)
+        println(f)
+        val f1 = NumberChecker.getInstance()
+        println(f1)
+        val f2 = NumberChecker.getInstance("value" to 6)
+        println(f2)
     }
 
     @ExperimentalTime

@@ -149,3 +149,19 @@ private fun editDistance(s1: String, s2: String): Int {
     }
     return costs[s2.length]
 }
+
+/**
+ * An easy way to create a Singleton Object
+ * Try to only extend Objects with this. It won't really do anything with normal classes
+ */
+abstract class SingletonObject<T> {
+    @Volatile
+    private var instance: T? = null
+
+    /**
+     * Get instance of [T]
+     */
+    fun getInstance(vararg kv: Pair<String, Any>): T = instance ?: synchronized(this) { instance ?: create(kv.toMap()).also { instance = it } }
+
+    protected abstract fun create(kv: Map<String, Any>): T
+}
