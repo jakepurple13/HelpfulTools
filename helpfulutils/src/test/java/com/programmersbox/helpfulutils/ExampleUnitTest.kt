@@ -425,6 +425,21 @@ class ExampleUnitTest {
         println(f2)
     }
 
+    @Test
+    fun singletonTestTwo() {
+        NumberChecker.getInstance("value" to 15)
+        singletonTester()
+        singletonTester2()
+    }
+
+    private fun singletonTester() {
+        println(NumberChecker.getInstance())
+    }
+
+    private fun singletonTester2() {
+        println(NumberChecker.getInstance())
+    }
+
     @ExperimentalTime
     @Test
     fun timeTest() {
