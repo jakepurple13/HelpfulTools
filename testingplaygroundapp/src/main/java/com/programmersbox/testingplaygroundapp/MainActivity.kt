@@ -461,7 +461,7 @@ class FlowItemBuilder<T> {
 
     @DslField("collectOnUi")
     var collection: (T) -> Unit = {}
-        set(value) = _item.collectOnUI(value).let { Unit }
+        set(value) = _item.collectOnUI(action = value).let { Unit }
 
     private fun build() = _item
 

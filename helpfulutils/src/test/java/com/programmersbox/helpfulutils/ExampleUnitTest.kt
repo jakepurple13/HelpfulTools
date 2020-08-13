@@ -747,17 +747,17 @@ class ExampleUnitTest {
     }
 
     open class Read {
-        protected open val value: StringBuilder = StringBuilder("Hello...")
+        protected open val value: String = "Hello..."
         open fun append(string: String) = Unit
-        override fun toString(): String = value.toString()
+        override fun toString(): String = value
     }
 
     class WriteProtected : Read() {
-        override var value: StringBuilder = super.value
+        override var value: String = super.value
             private set
 
         override fun append(string: String) {
-            value += string
+            value = string
         }
     }
 
