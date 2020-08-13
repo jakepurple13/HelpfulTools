@@ -143,6 +143,15 @@ class ExampleUnitTest {
         m.forEach { t, u -> println("$t=$u") }
 
         sizedSetOf(20) { it }.also(::println)
+
+        val l = listOf(1, 2, 3, 4, 5).foldEverything(Int::toInt) { acc: Int, i: Int -> acc + i }
+        println(l)
+        val f = FixedMap<Int, Int>(5, FixedListLocation.END, 5)
+        val f1 = FixedMap<Int, Int>(5, FixedListLocation.END, 5, 3f)
+        val f2 = FixedMap<Int, Int>(5, FixedListLocation.END, 5, 3f, true)
+        val s = FixedSet<Int>(5, FixedListLocation.END)
+        val s1 = FixedSet<Int>(5, FixedListLocation.END, 5)
+        val s2 = FixedSet<Int>(5, FixedListLocation.END, 5, 3f)
     }
 
     @Test

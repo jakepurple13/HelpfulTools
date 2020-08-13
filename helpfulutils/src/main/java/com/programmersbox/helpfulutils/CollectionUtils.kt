@@ -60,6 +60,12 @@ fun <T, R> Sequence<T>.groupByCondition(key: (T) -> R, predicate: (key: T, eleme
     map { name -> key(name) to filter { s -> predicate(name, s) } }.distinctBy { it.second.toList() }.map { it.first to it.second.toList() }
 
 /**
+ * A way to fold everything starting with the first element
+ * @throws IndexOutOfBoundsException if there is no elements in [Iterable]
+ */
+fun <T, R> Iterable<T>.foldEverything(map: T.() -> R, operation: (acc: R, T) -> R) = drop(1).fold(first().map(), operation)
+
+/**
  * An easy way to map an [Iterable] to a [Map]
  */
 fun <T, R, Y> Iterable<T>.toMap(pair: (T) -> Pair<Y, R>) = map(pair).toMap()
