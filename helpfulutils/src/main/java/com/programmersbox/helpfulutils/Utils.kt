@@ -165,3 +165,7 @@ abstract class SingletonObject<T> {
 
     protected abstract fun create(kv: Map<String, Any>): T
 }
+
+operator fun StringBuilder.plusAssign(s: Any?) {
+    append(s)
+}

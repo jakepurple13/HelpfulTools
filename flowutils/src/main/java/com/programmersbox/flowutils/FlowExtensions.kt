@@ -1,16 +1,13 @@
 package com.programmersbox.flowutils
 
 import android.view.View
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.ObsoleteCoroutinesApi
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.launch
 
 /**
  * Creates a timer via flow
@@ -22,12 +19,14 @@ fun timerFlow(delayMillis: Long, startInMs: Long = delayMillis, action: suspend 
 /**
  * Collect on the ui thread
  */
-fun <T> Flow<T>.collectOnUi(action: (value: T) -> Unit) = GlobalScope.launch { collect { GlobalScope.launch(Dispatchers.Main) { action(it) } } }
+fun <T> Flow<T>.collectOnUi(scope: CoroutineScope = GlobalScope, action: (value: T) -> Unit) =
+    scope.launch { collect { scope.launch(Dispatchers.Main) { action(it) } } }
 
 /**
  * collect from the flow on the ui loop
  */
-fun <T> FlowItem<T>.collectOnUI(action: (value: T) -> Unit) = collect { GlobalScope.launch(Dispatchers.Main) { action(it) } }
+fun <T> FlowItem<T>.collectOnUI(scope: CoroutineScope = GlobalScope, action: (value: T) -> Unit) =
+    collect { scope.launch(Dispatchers.Main) { action(it) } }
 
 /**
  * Bind the flow to a view

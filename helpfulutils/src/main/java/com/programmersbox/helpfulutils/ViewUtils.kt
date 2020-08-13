@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.TextView
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -220,3 +221,10 @@ private fun constructSetAndAnimate(context: Context, layoutId: Int, root: Constr
     TransitionManager.beginDelayedTransition(root, transition)
     set.applyTo(root)
 }
+
+/**
+ * Get/Set the text of the [EditText] without needing to call [EditText.getText].toString()
+ */
+var EditText.currentText: CharSequence
+    get() = text
+    set(value) = setText(value)

@@ -69,6 +69,9 @@ class ExampleUnitTest {
         println(list)
         println(list.randomNRemove(2))
         println(list)
+        val z = itemRangeOf(1, 2, 3).toMutableItemRange()
+        val c = listOf(1, 2, 3).toMutableItemRange()
+        val n = items.toNumberRange()
     }
 
     @Test
@@ -741,6 +744,30 @@ class ExampleUnitTest {
         println(unit.inAttoseconds)
         println(unit.inZeptoseconds)
         println(unit.inYoctoseconds)
+    }
+
+    open class Read {
+        protected open val value: StringBuilder = StringBuilder("Hello...")
+        open fun append(string: String) = Unit
+        override fun toString(): String = value.toString()
+    }
+
+    class WriteProtected : Read() {
+        override var value: StringBuilder = super.value
+            private set
+
+        override fun append(string: String) {
+            value += string
+        }
+    }
+
+    @Test
+    fun overridenVal() {
+        val f: Read = WriteProtected()
+        println(f)
+        f.append("asdf")
+        f.append("World")
+        println(f)
     }
 
 }

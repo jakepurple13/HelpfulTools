@@ -125,7 +125,7 @@ abstract class Range<T> {
     override fun toString(): String = "Loop: $loop, Current: $current, $itemList"
 
     fun toItemRange() = ItemRange(itemList).apply { this@apply.loop = this@Range.loop }
-    fun toMutableItemRange() = MutableItemRange(itemList).apply { this@apply.loop = this@Range.loop }
+    fun toMutableItemRange() = MutableItemRange(itemList.toMutableList()).apply { this@apply.loop = this@Range.loop }
 }
 
 fun Range<Int>.toNumberRange() = NumberRange(itemList, 1).apply { this.loop = this@toNumberRange.loop }
@@ -144,6 +144,11 @@ fun <T> itemRangeOf(vararg item: T) = ItemRange(*item)
  * Changes this [Iterable] to an [ItemRange]
  */
 inline fun <reified T> Iterable<T>.toItemRange() = ItemRange(*toList().toTypedArray())
+
+/**
+ * Changes this [Iterable] to a [MutableItemRange]
+ */
+inline fun <reified T> Iterable<T>.toMutableItemRange() = MutableItemRange(*toList().toTypedArray())
 
 /**
  * Changes this [String] to an [ItemRange]
