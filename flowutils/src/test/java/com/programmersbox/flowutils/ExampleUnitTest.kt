@@ -1,13 +1,14 @@
 package com.programmersbox.flowutils
 
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
 import org.junit.Test
+import kotlin.random.Random
 import kotlin.system.measureTimeMillis
 
 /**
@@ -162,4 +163,135 @@ class ExampleUnitTest {
         delay(1000)
     }
 
+    @Test
+    fun jobTesting() = runBlocking {
+        var loadMarkersJob by JobReset()
+
+        for (i in 0..10) {
+            println("Before Get/Set")
+            try {
+                loadMarkersJob = methodReturningJob()
+            } catch (e: Exception) {
+                continue
+            }
+            println("Start Loop Delay")
+            val f = Random.nextInt(1, 10) * 1000L
+            println("Delay: $f")
+            delay(f)
+            println("End Loop Delay")
+        }
+        loadMarkersJob?.cancel()
+
+        Unit
+    }
+
+    private fun methodReturningJob() = GlobalScope.launch {
+        println("Before Delay")
+        delay(5000)
+        println("After Delay")
+        throw Exception("Finished")
+    }
+
+    @Test
+    fun coroutineSelect() = runBlocking {
+
+        fun CoroutineScope.fizz() = produce<String> {
+            while (true) { // sends "Fizz" every 300 ms
+                delay(300)
+                send("Fizz")
+            }
+        }
+
+        fun CoroutineScope.buzz() = produce<String> {
+            while (true) { // sends "Buzz!" every 500 ms
+                delay(500)
+                send("Buzz!")
+            }
+        }
+
+        suspend fun selectFizzBuzz(fizz: ReceiveChannel<String>, buzz: ReceiveChannel<String>) = select<Unit> {
+            // <Unit> means that this select expression does not produce any result
+            fizz.onReceive { value ->  // this is the first select clause
+                println("fizz -> '$value'")
+            }
+            buzz.onReceive { value ->  // this is the second select clause
+                println("buzz -> '$value'")
+            }
+        }
+
+        val fizz = fizz()
+        val buzz = buzz()
+        repeat(7) {
+            selectFizzBuzz(fizz, buzz)
+        }
+        coroutineContext.cancelChildren() // cancel fizz & buzz coroutines
+
+        /*println("-".repeat(50))
+
+        val flow1 = flow<String> {
+            while (true) { // sends "Fizz" every 300 ms
+                delay(300)
+                emit("Fizz")
+            }
+        }
+
+        val flow2 = flow<String> {
+            while (true) { // sends "Buzz!" every 500 ms
+                delay(500)
+                emit("Buzz!")
+            }
+        }
+
+        repeat(7) {
+            selectFairChannel(
+                flow1 to { c -> println(c) },
+                flow2 to { c -> println(c) }
+            )
+        }
+
+        coroutineContext.cancelChildren()*/
+
+        /*fun CoroutineScope.switchMapDeferreds(input: ReceiveChannel<Deferred<String>>) = produce<String> {
+            var current = input.receive() // start with first received deferred value
+            while (isActive) { // loop while not cancelled/closed
+                val next = select<Deferred<String>?> { // return next deferred value from this select or null
+                    input.onReceiveOrNull { update ->
+                        update // replaces next value to wait
+                    }
+                    current.onAwait { value ->
+                        send(value) // send value that current deferred has produced
+                        input.receiveOrNull() // and use the next deferred from the input channel
+                    }
+                }
+                if (next == null) {
+                    println("Channel was closed")
+                    break // out of loop
+                } else {
+                    current = next
+                }
+            }
+        }
+
+        fun CoroutineScope.asyncString(str: String, time: Long) = async {
+            delay(time)
+            str
+        }
+
+        val chan = Channel<Deferred<String>>() // the channel for test
+        launch { // launch printing coroutine
+            for (s in switchMapDeferreds(chan))
+                println(s) // print each received string
+        }
+        chan.send(asyncString("BEGIN", 100))
+        delay(200) // enough time for "BEGIN" to be produced
+        chan.send(asyncString("Slow", 500))
+        delay(100) // not enough time to produce slow
+        chan.send(asyncString("Replace", 100))
+        delay(500) // give it time before the last one
+        chan.send(asyncString("END", 500))
+        delay(1000) // give it time to process
+        chan.close() // close the channel ...
+        delay(500) // and wait some time to let it finish*/
+
+    }
 }

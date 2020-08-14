@@ -443,6 +443,31 @@ class ExampleUnitTest {
         sayIfCanBuyAlcohol(student)
     }
 
+    data class Human(val name: String, val age: Int)
+
+    data class People(val human: Human)
+
+    @Test
+    fun randomDataTest() {
+        val a = randomData<People>(People::class.java)
+        println(a)
+    }
+
+    private fun <T> randomData(clazz: Class<*>): Any {
+        val constructor = clazz.constructors.random()
+        val params = constructor.parameterCount
+        val paramTypes = constructor.parameterTypes
+        println(paramTypes.map { it.name })
+        val check = params == 0 || params == 1 && paramTypes.getOrNull(0) is Number || paramTypes.getOrNull(0) == String::class.java
+        println(check)
+        return if (check) {
+            when (paramTypes[0]) {
+                is Number -> Random.nextInt(0, 100)
+                else -> Random.nextString(50)
+            }
+        } else constructor.newInstance(paramTypes.map { randomData<Any>(it) })
+    }
+
 }
 
 class FixedSizeList<T>(maxSize: Int = 1) : FixedList<T>(maxSize) {

@@ -775,6 +775,7 @@ class ExampleUnitTest {
         val f: Read = WriteProtected()
         println(f)
         f.append("asdf")
+        println(f)
         f.append("World")
         println(f)
     }
