@@ -2,6 +2,7 @@ package com.programmersbox.helpfultools
 
 import com.programmersbox.flowutils.FlowItem
 import com.programmersbox.gsonutils.getJsonApi
+import com.programmersbox.helpfultools.ExampleUnitTest.AirMedia
 import com.programmersbox.helpfulutils.stringForTime
 import com.programmersbox.helpfulutils.toHexString
 import com.programmersbox.loggingutils.FrameType
@@ -40,5 +41,28 @@ class ExampleUnitTest {
             println(it.key)
             println(it.value.frame(FrameType.BOX.copy(top = "Letter: ${it.key}")))
         }
+    }
+
+    fun interface AirMedia {
+        fun asdf()
+    }
+
+    data class Pheonix(val name: String)
+
+    fun asdf() {
+        val f = Pheonix("asdf")
+
+        val a = object : AirMedia {
+            override fun asdf() {
+
+            }
+        }
+
+        val airmedia = AirMedia {
+
+        }
+
+        airmedia.asdf()
+
     }
 }

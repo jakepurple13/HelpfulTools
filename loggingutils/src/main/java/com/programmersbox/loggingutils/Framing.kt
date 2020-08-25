@@ -232,7 +232,7 @@ fun <T> Iterable<T>.frame(
     topFillIn: String = "", bottomFillIn: String = "",
     rtl: Boolean = false, transform: (T) -> String = { it.toString() }
 ): String {
-    val fullLength = mutableListOf(top, bottom).apply { addAll(this@frame.map(transform)) }.maxBy { it.length }!!.length + 2
+    val fullLength = mutableListOf(top, bottom).apply { addAll(this@frame.map(transform)) }.maxByOrNull { it.length }!!.length + 2
     val space: (String) -> String = { " ".repeat(fullLength - it.length - 1) }
     val mid = map(transform).joinToString(separator = "\n") { "$left${if (rtl) space(it) else " "}$it${if (rtl) " " else space(it)}$right" }
     val space2: (String, Boolean) -> String = { spacing, b -> (if (b) topFillIn else bottomFillIn).repeat((fullLength - spacing.length) / 2) }

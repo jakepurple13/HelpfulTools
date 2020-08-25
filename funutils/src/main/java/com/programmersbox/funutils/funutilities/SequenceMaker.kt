@@ -15,8 +15,8 @@ open class SequenceMaker<T>(private val sequence: List<T>, private val sequenceA
     operator fun plusAssign(order: T) = add(order)
     operator fun plusAssign(list: Iterable<T>) = add(list)
     operator fun plusAssign(items: Array<T>) = add(*items)
-    fun add(list: Iterable<T>) = list.forEach(::add)
-    fun add(vararg items: T) = items.forEach(::add)
+    fun add(list: Iterable<T>) = list.forEach(::addItem)
+    fun add(vararg items: T) = items.forEach(::addItem)
     open fun add(item: T) = addItem(item)
     private fun addItem(item: T) {
         currentSequence += item
