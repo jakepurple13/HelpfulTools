@@ -13,6 +13,7 @@ lintOptions {
 dependencies {
     // For a description of the below dependencies, see the main project README
     def lintVersion = '27.2.0-alpha08'
+    //compileOnly "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compileOnly "com.android.tools.lint:lint-api:$lintVersion"
     compileOnly "com.android.tools.lint:lint-checks:$lintVersion"
     testImplementation "junit:junit:4.13"

@@ -250,8 +250,9 @@ data class HelpfulDuration<T : Number>(val number: T, val unit: HelpfulUnit) {
 
     operator fun get(unit: HelpfulUnit) = toUnit(unit)
 
-    operator fun rangeTo(other: HelpfulDuration<Int>) = number.toInt()..other.toUnit(unit).toInt()
-    operator fun rangeTo(other: HelpfulDuration<Long>) = number.toLong()..other.toUnit(unit).toLong()
+    //operator fun rangeTo(other: HelpfulDuration<Int>) = number.toInt()..other.toUnit(unit).toInt()
+    //operator fun rangeTo(other: HelpfulDuration<Long>) = number.toLong()..other.toUnit(unit).toLong()
+    operator fun rangeTo(other: HelpfulDuration<T>) = number.toLong()..other.toUnit(unit).toLong()
 
     operator fun compareTo(other: HelpfulDuration<T>): Int {
         val num = number.toDouble()

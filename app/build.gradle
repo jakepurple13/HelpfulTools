@@ -62,7 +62,7 @@ dependencies {
     implementation "com.github.jakepurple13.HelpfulTools:dragswipe:$jakepurple13"
     implementation "com.github.jakepurple13.HelpfulTools:funutils:$jakepurple13"
     implementation "com.github.jakepurple13.HelpfulTools:dslannotations:$jakepurple13"
-    kapt "com.github.jakepurple13.HelpfulTools:dslprocessor:$jakepurple13"
+    //kapt "com.github.jakepurple13.HelpfulTools:dslprocessor:$jakepurple13"
     implementation "com.github.jakepurple13.HelpfulTools:thirdpartyutils:$jakepurple13"
     implementation project(':testingplayground')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"

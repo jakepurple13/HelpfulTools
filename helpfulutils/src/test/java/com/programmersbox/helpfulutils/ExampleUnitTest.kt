@@ -1,5 +1,8 @@
 package com.programmersbox.helpfulutils
 
+import androidx.core.graphics.component1
+import androidx.core.graphics.component2
+import androidx.core.graphics.component3
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -778,6 +781,11 @@ class ExampleUnitTest {
         println(f)
         f.append("World")
         println(f)
+    }
+
+    @Test
+    fun tipsAndTricks() {
+        val (r, g, b) = 0x23423f
     }
 
 }

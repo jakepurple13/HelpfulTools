@@ -1,19 +1,14 @@
 package com.programmersbox.dslprocessor
 
+//import com.programmersbox.dslprocessor.APUtils.getTypeMirrorFromAnnotationValue
+/*import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
+import me.eugeniomarletti.kotlin.metadata.kotlinMetadata
+import me.eugeniomarletti.kotlin.metadata.proto*/
 import com.google.auto.service.AutoService
 import com.programmersbox.dslannotations.DslField
-import com.programmersbox.dslannotations.DslFieldMarker
-import com.programmersbox.dslprocessor.APUtils.getTypeMirrorFromAnnotationValue
-import com.squareup.kotlinpoet.*
-import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
-import me.eugeniomarletti.kotlin.metadata.kotlinMetadata
-import me.eugeniomarletti.kotlin.metadata.proto
-import java.io.File
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
-import javax.lang.model.element.VariableElement
 
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -27,7 +22,7 @@ class DslFieldsProcessor : AbstractProcessor() {
     private val annotation = DslField::class.java
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        val functions = roundEnv.getElementsAnnotatedWith(annotation).mapNotNull { methodElement ->
+        /*val functions = roundEnv.getElementsAnnotatedWith(annotation).mapNotNull { methodElement ->
             //println("--------------------------------------------")
 
             if (methodElement.kind != ElementKind.FIELD) {
@@ -65,11 +60,11 @@ class DslFieldsProcessor : AbstractProcessor() {
                     //.also { println(it.toString()) }
                     .writeTo(file)
             }
-        }
+        }*/
         return false
     }
 
-    private fun generateNewMethod(variable: VariableElement): FunSpec {
+    /*private fun generateNewMethod(variable: VariableElement): FunSpec {
         val annotationInfo = variable.getAnnotation(annotation)
         return FunSpec
             .builder(annotationInfo.name)
@@ -109,7 +104,7 @@ class DslFieldsProcessor : AbstractProcessor() {
             }
             .addStatement("${variable.simpleName} = block")
             .build()
-    }
+    }*/
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(annotation.canonicalName)
 }

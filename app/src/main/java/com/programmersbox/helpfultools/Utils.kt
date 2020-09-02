@@ -1,8 +1,8 @@
 package com.programmersbox.helpfultools
 
 import android.content.Context
-import com.programmersbox.dslannotations.DslClass
-import com.programmersbox.dslannotations.DslField
+//import com.programmersbox.dslannotations.DslClass
+//import com.programmersbox.dslannotations.DslField
 import com.programmersbox.gsonutils.fromJson
 import com.programmersbox.helpfulutils.randomRemove
 import com.programmersbox.helpfulutils.sharedPrefDelegate
@@ -22,12 +22,12 @@ annotation class DslTestMarker
 @DslMarker
 annotation class DslTest2Marker
 
-@DslClass(dslMarker = DslTestMarker::class)
+//@DslClass(dslMarker = DslTestMarker::class)
 class NewDsl<T, R> {
-    @DslField("itemNumber")
+    //@DslField("itemNumber")
     var numberItem = 4
 
-    @DslField(name = "thingToTest", dslMarker = DslTest2Marker::class, comment = "This is a comment")
+    //@DslField(name = "thingToTest", dslMarker = DslTest2Marker::class, comment = "This is a comment")
     var testThing: () -> Unit = {}
     var runAction: () -> Unit = {}
     var paramOne: (Int, String) -> Unit = { _, _ -> }

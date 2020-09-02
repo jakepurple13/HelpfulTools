@@ -20,8 +20,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
-import com.programmersbox.dslannotations.DslClass
-import com.programmersbox.dslannotations.DslField
 import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
 import com.programmersbox.gsonutils.fromJson
@@ -253,9 +251,9 @@ class MainActivity : AppCompatActivity() {
             }
 
         val person = PersonBuilder.builder {
-            personName(getRandomName())
-            personAge(Random.nextInt(1, 50))
-            birthdayParty { it + 1 }
+            //personName(getRandomName())
+            //personAge(Random.nextInt(1, 50))
+            //birthdayParty { it + 1 }
         }
 
         val newAge: (Unit) -> Unit = {
@@ -265,9 +263,9 @@ class MainActivity : AppCompatActivity() {
         }
 
         val person2 = PersonBuilder2.builder {
-            name(getRandomName())
+            /*name(getRandomName())
             age(Random.nextInt(1, 50))
-            birthdayParty { it + 1 }
+            birthdayParty { it + 1 }*/
         }
 
         val newAge2: (Unit) -> Unit = {
@@ -304,7 +302,7 @@ class MainActivity : AppCompatActivity() {
         Log.w("Hello", "World")
         Log.e("Hello", "World")
 
-        PersonBuilder4.builder {
+        /*PersonBuilder4.builder {
 
         }
 
@@ -319,11 +317,11 @@ class MainActivity : AppCompatActivity() {
                 javaName("Java!")
                 num(5)
             }
-        }
+        }*/
 
         val flow = FlowItemBuilder.buildFlow<Int> {
             this.item = 5
-            collectOnUi { println(it) }
+            //collectOnUi { println(it) }
         }
         flow(70)
 
@@ -377,15 +375,15 @@ class MainActivity : AppCompatActivity() {
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView)
 }
 
-@DslClass
+//@DslClass
 class PersonBuilder4 {
-    @DslField("birthdayParty", comment = "Set what happens on his birthday party")
+    //@DslField("birthdayParty", comment = "Set what happens on his birthday party")
     var birthday: (Int) -> Int = { it }
 
-    @DslField("setName")
+    //@DslField("setName")
     var name: String? = ""
 
-    @DslField("setDayOfBirth")
+    //@DslField("setDayOfBirth")
     var dayOfBirth: (String?) -> Unit = {}
 
     var age = 0
@@ -408,12 +406,12 @@ annotation class DslTestMarker
 @DslMarker
 annotation class DslTest2Marker
 
-@DslClass(dslMarker = DslTestMarker::class)
+//@DslClass(dslMarker = DslTestMarker::class)
 class NewDsl<T, R> {
-    @DslField("itemNumber")
+    //@DslField("itemNumber")
     var numberItem = 4
 
-    @DslField(name = "thingToTest", dslMarker = DslTest2Marker::class, comment = "This is a comment")
+    //@DslField(name = "thingToTest", dslMarker = DslTest2Marker::class, comment = "This is a comment")
     var testThing: () -> Unit = {}
     var runAction: () -> Unit = {}
     var paramOne: (Int, String) -> Unit = { _, _ -> }
@@ -427,10 +425,10 @@ class NewDsl<T, R> {
     var checkingItem: (T?) -> Unit = {}
     var itemChecking: (R?) -> T? = { null }
 
-    @DslField(name = "checkItemIntoFlight", dslMarker = DslTest2Marker::class, comment = "This is a comment")
+    //@DslField(name = "checkItemIntoFlight", dslMarker = DslTest2Marker::class, comment = "This is a comment")
     var checkedItemIn: (R?) -> T? = { null }
 
-    @DslField("setName")
+    //@DslField("setName")
     var name: String? = ""
 
     private fun build() {
@@ -459,7 +457,7 @@ class FlowItemBuilder<T> {
             _item = FlowItem(value)
         }
 
-    @DslField("collectOnUi")
+    //@DslField("collectOnUi")
     var collection: (T) -> Unit = {}
         set(value) = _item.collectOnUI(action = value).let { Unit }
 

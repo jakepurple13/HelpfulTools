@@ -1,5 +1,7 @@
 package com.programmersbox.funutils.funutilities
 
+import androidx.annotation.CallSuper
+
 open class SequenceMaker<T>(private val sequence: List<T>, private val sequenceAchieved: () -> Unit) {
     constructor(vararg sequence: T, sequenceAchieved: () -> Unit) : this(sequence.toList(), sequenceAchieved)
 
@@ -15,16 +17,23 @@ open class SequenceMaker<T>(private val sequence: List<T>, private val sequenceA
     operator fun plusAssign(order: T) = add(order)
     operator fun plusAssign(list: Iterable<T>) = add(list)
     operator fun plusAssign(items: Array<T>) = add(*items)
-    fun add(list: Iterable<T>) = list.forEach(::addItem)
-    fun add(vararg items: T) = items.forEach(::addItem)
-    open fun add(item: T) = addItem(item)
+    fun add(list: Iterable<T>) = list.forEach(::addNewItem)
+    fun add(vararg items: T) = items.forEach(::addNewItem)
+
+    @CallSuper
+    protected open fun internalAchieved() = sequenceAchieved()
+
+    @CallSuper
+    open fun addNewItem(item: T) = addItem(item)
+
     private fun addItem(item: T) {
         currentSequence += item
         if (validateSequence()) {
+            nextItem(item)
             if (isAchieved()) {
-                sequenceAchieved()
+                internalAchieved()
                 resetSequence()
-            } else nextItem(item)
+            }
         } else resetSequence().also { sequenceFailed() }
     }
 }

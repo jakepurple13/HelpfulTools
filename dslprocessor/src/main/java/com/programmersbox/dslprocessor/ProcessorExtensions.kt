@@ -1,18 +1,12 @@
 package com.programmersbox.dslprocessor
 
-import com.squareup.kotlinpoet.*
-import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
-import me.eugeniomarletti.kotlin.metadata.shadow.metadata.ProtoBuf
+/*import me.eugeniomarletti.kotlin.metadata.shadow.metadata.ProtoBuf
 import me.eugeniomarletti.kotlin.metadata.shadow.metadata.deserialization.NameResolver
 import me.eugeniomarletti.kotlin.metadata.shadow.name.FqName
-import me.eugeniomarletti.kotlin.metadata.shadow.platform.JavaToKotlinClassMap
-import javax.annotation.processing.Messager
-import javax.lang.model.element.Element
-import javax.lang.model.type.MirroredTypeException
-import javax.lang.model.type.MirroredTypesException
-import javax.lang.model.type.TypeMirror
+import me.eugeniomarletti.kotlin.metadata.shadow.platform.JavaToKotlinClassMap*/
 
 
+/*
 object APUtils {
     fun getTypeMirrorFromAnnotationValue(c: GetClassValue): List<TypeMirror?>? {
         try {
@@ -103,6 +97,7 @@ internal fun ProtoBuf.TypeParameter.Variance.asKModifier(): KModifier? {
     }
 }
 
+*/
 /**
  * Returns the TypeName of this typeInfo as it would be seen in the source code, including nullability
  * and generic typeInfo parameters.
@@ -110,7 +105,8 @@ internal fun ProtoBuf.TypeParameter.Variance.asKModifier(): KModifier? {
  * @param [nameResolver] a [NameResolver] instance from the source proto
  * @param [getTypeParameter] a function that returns the typeInfo parameter for the given index. **Only
  *     called if [ProtoBuf.Type.hasTypeParameter] is true!**
- */
+ *//*
+
 internal fun ProtoBuf.Type.asTypeName(
     nameResolver: NameResolver,
     getTypeParameter: (index: Int) -> ProtoBuf.TypeParameter,
@@ -218,4 +214,4 @@ internal val ProtoBuf.TypeParameter.varianceModifier: KModifier?
                 it
             }
         }
-    }
+    }*/

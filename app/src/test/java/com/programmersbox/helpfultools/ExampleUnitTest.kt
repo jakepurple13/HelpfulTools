@@ -11,6 +11,8 @@ import com.programmersbox.loggingutils.f
 import com.programmersbox.loggingutils.frame
 import org.junit.Before
 import org.junit.Test
+import kotlin.math.cos
+import kotlin.system.measureNanoTime
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -65,4 +67,24 @@ class ExampleUnitTest {
         airmedia.asdf()
 
     }
+
+    fun <In, Out> cached(f: (In) -> Out): (In) -> Out {
+        val cache = mutableMapOf<In, Out>()
+
+        return { input: In ->
+            cache.computeIfAbsent(input, f)
+        }
+    }
+
+    @Test
+    fun pureFunction() {
+        val cachedCos = cached { x: Double -> cos(x) }
+
+        println(measureNanoTime { cachedCos(Math.PI * 2) }) // 329378 ns
+
+        /* value of cos for 2π is now cached */
+
+        println(measureNanoTime { cachedCos(Math.PI * 2) }) // 6286 ns
+    }
+
 }

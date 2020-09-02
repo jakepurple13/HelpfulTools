@@ -1,9 +1,5 @@
 package com.programmersbox.testingplaygroundapp
 
-import com.programmersbox.dslannotations.DslClass
-import com.programmersbox.dslannotations.DslField
-
-
 @DslMarker
 annotation class PersonMarker
 
@@ -18,13 +14,13 @@ data class Person(val name: String, var age: Int, private val birthday: (Int) ->
 
 class PersonBuilder {
 
-    @DslField("personName", PersonMarker::class)
+    //@DslField("personName", PersonMarker::class)
     var name: String = ""
 
-    @DslField("personAge", PersonMarker::class)
+    //@DslField("personAge", PersonMarker::class)
     var age = 0
 
-    @DslField("birthdayParty", PersonMarker::class)
+    //@DslField("birthdayParty", PersonMarker::class)
     var birthday: (Int) -> Int = { it }
 
     private fun build() = Person(name, age, birthday)
@@ -35,9 +31,9 @@ class PersonBuilder {
 
 }
 
-@DslClass(PersonMarker2::class)
+//@DslClass(PersonMarker2::class)
 class PersonBuilder2 {
-    @DslField("birthdayParty", comment = "Set what happens on his birthday party")
+    //@DslField("birthdayParty", comment = "Set what happens on his birthday party")
     var birthday: (Int) -> Int = { it }
     var name: String = ""
     var age = 0

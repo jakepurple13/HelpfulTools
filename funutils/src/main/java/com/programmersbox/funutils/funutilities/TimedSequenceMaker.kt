@@ -2,7 +2,7 @@ package com.programmersbox.funutils.funutilities
 
 import android.os.CountDownTimer
 
-class TimedSequenceMaker<T>(sequence: List<T>, private val timeout: Long = 5000, sequenceAchieved: () -> Unit) :
+open class TimedSequenceMaker<T>(sequence: List<T>, private val timeout: Long = 5000, sequenceAchieved: () -> Unit) :
     SequenceMaker<T>(sequence, sequenceAchieved) {
     constructor(vararg sequence: T, timeout: Long = 5000, sequenceAchieved: () -> Unit) : this(sequence.toList(), timeout, sequenceAchieved)
 
@@ -12,8 +12,8 @@ class TimedSequenceMaker<T>(sequence: List<T>, private val timeout: Long = 5000,
     }
 
     override fun nextItem(item: T) = timeoutTimer?.start().let { Unit }
-    override fun add(item: T) {
+    override fun addNewItem(item: T) {
         timeoutTimer?.cancel()
-        super.add(item)
+        super.addNewItem(item)
     }
 }

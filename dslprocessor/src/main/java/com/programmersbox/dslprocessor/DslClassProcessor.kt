@@ -1,21 +1,15 @@
 package com.programmersbox.dslprocessor
 
-import com.google.auto.service.AutoService
-import com.programmersbox.dslannotations.DslClass
-import com.programmersbox.dslannotations.DslField
-import com.programmersbox.dslannotations.DslFieldMarker
-import com.programmersbox.dslprocessor.APUtils.getTypeMirrorFromAnnotationValue
-import com.squareup.kotlinpoet.*
-import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
+//import com.programmersbox.dslprocessor.APUtils.getTypeMirrorFromAnnotationValue
+/*import me.eugeniomarletti.kotlin.metadata.KotlinClassMetadata
 import me.eugeniomarletti.kotlin.metadata.kotlinMetadata
 import me.eugeniomarletti.kotlin.metadata.proto
-import me.eugeniomarletti.kotlin.metadata.shadow.metadata.ProtoBuf
-import java.io.File
+import me.eugeniomarletti.kotlin.metadata.shadow.metadata.ProtoBuf*/
+import com.google.auto.service.AutoService
+import com.programmersbox.dslannotations.DslClass
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
-import javax.lang.model.element.ElementKind
 import javax.lang.model.element.TypeElement
-import javax.lang.model.element.VariableElement
 
 @AutoService(Processor::class)
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -27,7 +21,7 @@ class DslClassProcessor : AbstractProcessor() {
     }
 
     override fun process(annotations: MutableSet<out TypeElement>, roundEnv: RoundEnvironment): Boolean {
-        val functions = roundEnv.getElementsAnnotatedWith(DslClass::class.java).mapNotNull { methodElement ->
+        /*val functions = roundEnv.getElementsAnnotatedWith(DslClass::class.java).mapNotNull { methodElement ->
             //println("--------------------------------------------")
 
             if (methodElement.kind != ElementKind.CLASS) {
@@ -103,11 +97,11 @@ class DslClassProcessor : AbstractProcessor() {
                     //.also { println(it.toString()) }
                     .writeTo(file)
             }
-        }
+        }*/
         return false
     }
 
-    private fun generateNewMethod(
+    /*private fun generateNewMethod(
         variable: VariableElement,
         annotation: List<ClassName?>?,
         kotlinClass: KotlinClassMetadata? = null,
@@ -134,7 +128,7 @@ class DslClassProcessor : AbstractProcessor() {
             )
             .addStatement("${variable.simpleName} = block")
             .build()
-    }
+    }*/
 
     override fun getSupportedAnnotationTypes(): MutableSet<String> = mutableSetOf(DslClass::class.java.canonicalName)
 }

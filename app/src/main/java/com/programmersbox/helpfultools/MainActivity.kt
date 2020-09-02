@@ -15,7 +15,10 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.Direction
 import com.programmersbox.dragswipe.DragSwipeAdapter
 import com.programmersbox.dragswipe.DragSwipeUtils
-import com.programmersbox.flowutils.*
+import com.programmersbox.flowutils.FlowItem
+import com.programmersbox.flowutils.clicks
+import com.programmersbox.flowutils.collectOnUi
+import com.programmersbox.flowutils.longClicks
 import com.programmersbox.gsonutils.*
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
@@ -133,11 +136,11 @@ class MainActivity : AppCompatActivity() {
         colorInfo
             .clicks() //Flow Binding
             .map { Random.nextColor().also { println(it.toHexString()) } }
-            .collectOnUi(colorPublisher::onNext)
+            .collectOnUi(action = colorPublisher::onNext)
         colorInformation
             .longClicks() //Flow Binding
             .map { colorInformation.text }
-            .collectOnUi(::println)
+            .collectOnUi(action = ::println)
         //----------------------------------------------
         var showOrNot = true
         var location = NumberRange(0..3)
@@ -205,7 +208,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
         //----------------------------------------------
-        NewDsl.buildDsl<Int, String> {
+        /*NewDsl.buildDsl<Int, String> {
             itemNumber(Random.nextInt(1, 100))
             runAction { println("Hello") }
             thingToTest { println("Hello") }
@@ -225,7 +228,7 @@ class MainActivity : AppCompatActivity() {
                 javaName("Java!")
                 num(5)
             }
-        }
+        }*/
         //----------------------------------------------
         requestPermissions(
             Manifest.permission.READ_EXTERNAL_STORAGE,
