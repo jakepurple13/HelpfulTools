@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".CheckboxTestActivity">
+
+    <com.programmersbox.funutils.views.CheckBoxGroup
+        android:id="@+id/checkboxGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/activity_margin_vertical"
+        android:orientation="vertical"
+        app:checkGroupChildInnerMargin="@dimen/margin_inner_child"
+        app:checkGroupHeaderMaxLines="1"
+        app:checkGroupHeaderTextAppearance="?android:attr/textAppearanceLarge"
+        app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
+        app:checkGroupHeaderTitle="Hello World"
+        app:boxColor="@color/colorPrimary"
+        app:isCheckGroupHeaderEnabled="true"
+        tools:ignore="HardcodedText">
+
+        <CheckBox
+            style="@style/CheckBoxStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="asdf" />
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            style="@style/CheckBoxStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:useMaterialThemeColors="true"
+            android:text="asdf" />
+
+        <androidx.appcompat.widget.AppCompatCheckBox
+            style="@style/CheckBoxStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="asdf" />
+
+    </com.programmersbox.funutils.views.CheckBoxGroup>
+
+</LinearLayout>

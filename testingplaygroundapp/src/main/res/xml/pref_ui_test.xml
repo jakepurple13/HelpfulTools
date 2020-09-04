@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:title="Hello World">
+
+        <CheckBoxPreference
+            android:key="asdf"
+            android:title="asdf" />
+        <CheckBoxPreference
+            android:dependency="asdf"
+            android:title="zxdvc" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

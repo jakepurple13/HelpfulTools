@@ -30,4 +30,13 @@
         <item name="android:shadowRadius">1.6</item>
     </style>
 
+    <style name="CheckBoxStyle" parent="Widget.AppCompat.CompoundButton.CheckBox">
+        <!-- Customize your theme here. -->
+        <item name="android:layout_marginBottom">@dimen/margin_inner_child</item>
+        <item name="android:layout_marginEnd">@dimen/activity_margin_vertical</item>
+        <item name="android:layout_marginStart">@dimen/activity_margin_vertical</item>
+        <item name="android:layout_marginTop">@dimen/margin_inner_child</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceMedium</item>
+    </style>
+
 </resources>

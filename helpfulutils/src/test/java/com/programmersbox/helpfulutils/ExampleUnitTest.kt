@@ -786,6 +786,14 @@ class ExampleUnitTest {
     @Test
     fun tipsAndTricks() {
         val (r, g, b) = 0x23423f
+
+        fun asdf(z: Int, s: String = "asdl;fjk") = "$z$s"
+
+        val f = 3
+
+        val x = f.let(::asdf)
+
+        println(x)
     }
 
 }

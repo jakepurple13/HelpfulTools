@@ -233,6 +233,18 @@ class ExampleInstrumentedTest {
         cursor.moveToNext()
         assertThat(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_URI))).isEqualTo(secondUri.toString())
         assertThat(cursor.getString(cursor.getColumnIndex(DownloadManager.COLUMN_LOCAL_URI))).isEqualTo(secondDestination.toString())*/
+
+        appContext.speechToText("asd;lkfj") {
+            getResult { }
+            onBeginningOfSpeech { }
+            onBufferReceived { }
+            onEndOfSpeech { }
+            onError { }
+            onEvent { i, bundle -> }
+            onPartialResults { }
+            onReadyForSpeech { }
+            onRmsChanged { }
+        }
     }
 
 

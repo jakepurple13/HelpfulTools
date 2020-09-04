@@ -12,7 +12,6 @@ import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
 import android.speech.tts.TextToSpeech
-import android.speech.tts.TextToSpeech.OnInitListener
 import androidx.annotation.RequiresApi
 import androidx.annotation.RequiresPermission
 import java.io.Serializable
@@ -155,8 +154,8 @@ fun Intent.putExtras(vararg pairs: Pair<String, Serializable>) = apply { pairs.f
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 fun Context.textToSpeech(textToSpeak: String?, onError: () -> Unit = {}, modify: TextToSpeech.() -> Unit = {}) {
-    val tts = TextToSpeech(this, OnInitListener { }).apply(modify)
-    TextToSpeech(this, OnInitListener { status ->
+    val tts = TextToSpeech(this) { }.apply(modify)
+    TextToSpeech(this) { status ->
         if (status == TextToSpeech.SUCCESS) {
             val result = tts.setLanguage(Locale.getDefault())
             if (result == TextToSpeech.LANG_MISSING_DATA || result == TextToSpeech.LANG_NOT_SUPPORTED) {
@@ -165,7 +164,7 @@ fun Context.textToSpeech(textToSpeak: String?, onError: () -> Unit = {}, modify:
         } else {
             onError()
         }
-    })
+    }
 }
 
 /**
@@ -195,6 +194,13 @@ fun Context.speechToText(speechListener: SpeechListener, prompt: String = "Say y
     }.startListening(intent)
 }
 
+/**
+ * @see speechToText
+ */
+@RequiresPermission(Manifest.permission.RECORD_AUDIO)
+fun Context.speechToText(prompt: String = "Say your text...", speechListenerDsl: SpeechListenerDsl.() -> Unit) =
+    speechToText(SpeechListenerDsl.create(speechListenerDsl), prompt)
+
 interface SpeechListener {
     fun getResult(text: ArrayList<String>?)
     fun onReadyForSpeech(params: Bundle) {}
@@ -205,4 +211,73 @@ interface SpeechListener {
     fun onError(error: Int) {}
     fun onPartialResults(partialResults: Bundle) {}
     fun onEvent(eventType: Int, params: Bundle) {}
+}
+
+@DslMarker
+annotation class SpeechMarker
+
+class SpeechListenerDsl {
+
+    private var result: (ArrayList<String>?) -> Unit = {}
+
+    @SpeechMarker
+    fun getResult(block: (ArrayList<String>?) -> Unit) = apply { result = block }
+
+    private var readyForSpeech: (Bundle) -> Unit = {}
+
+    @SpeechMarker
+    fun onReadyForSpeech(block: (Bundle) -> Unit) = apply { readyForSpeech = block }
+
+    private var endOfSpeech: () -> Unit = {}
+
+    @SpeechMarker
+    fun onEndOfSpeech(block: () -> Unit) = apply { endOfSpeech = block }
+
+    private var beginningOfSpeech: () -> Unit = {}
+
+    @SpeechMarker
+    fun onBeginningOfSpeech(block: () -> Unit) = apply { beginningOfSpeech = block }
+
+    private var rmsChanged: (Float) -> Unit = {}
+
+    @SpeechMarker
+    fun onRmsChanged(block: (Float) -> Unit) = apply { rmsChanged = block }
+
+    private var bufferReceived: (ByteArray) -> Unit = {}
+
+    @SpeechMarker
+    fun onBufferReceived(block: (ByteArray) -> Unit) = apply { bufferReceived = block }
+
+    private var error: (Int) -> Unit = {}
+
+    @SpeechMarker
+    fun onError(block: (Int) -> Unit) = apply { error = block }
+
+    private var partialResults: (Bundle) -> Unit = {}
+
+    @SpeechMarker
+    fun onPartialResults(block: (Bundle) -> Unit) = apply { partialResults = block }
+
+    private var event: (Int, Bundle) -> Unit = { _, _ -> }
+
+    @SpeechMarker
+    fun onEvent(block: (Int, Bundle) -> Unit) = apply { event = block }
+
+    private fun build() = object : SpeechListener {
+        override fun getResult(text: ArrayList<String>?) = result(text)
+        override fun onReadyForSpeech(params: Bundle) = readyForSpeech(params)
+        override fun onEndOfSpeech() = endOfSpeech()
+        override fun onBeginningOfSpeech() = beginningOfSpeech()
+        override fun onRmsChanged(rmsdB: Float) = rmsChanged(rmsdB)
+        override fun onBufferReceived(buffer: ByteArray) = bufferReceived(buffer)
+        override fun onError(error: Int) = error(error)
+        override fun onPartialResults(partialResults: Bundle) = partialResults(partialResults)
+        override fun onEvent(eventType: Int, params: Bundle) = event(eventType, params)
+    }
+
+    companion object {
+        @SpeechMarker
+        fun create(block: SpeechListenerDsl.() -> Unit) = SpeechListenerDsl().apply(block).build()
+    }
+
 }

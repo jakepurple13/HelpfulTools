@@ -40,4 +40,15 @@
         <attr name="expanded_height_multiplier" format="float" />
         <attr name="text_size" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="CheckBoxGroup">
+        <attr name="isCheckGroupHeaderEnabled" format="boolean" />
+        <attr name="checkGroupHeaderTitle" format="string" />
+        <attr name="checkGroupHeaderTextColor" format="color" />
+        <attr name="checkGroupHeaderBackgroundColor" format="color" />
+        <attr name="checkGroupHeaderMaxLines" format="integer" />
+        <attr name="checkGroupChildInnerMargin" format="dimension" />
+        <attr name="checkGroupHeaderTextSize" format="dimension" />
+        <attr name="checkGroupHeaderTextAppearance" format="reference" />
+        <attr name="boxColor" format="color" />
+    </declare-styleable>
 </resources>
