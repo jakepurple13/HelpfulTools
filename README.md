@@ -29,6 +29,7 @@ implementation 'com.github.jakepurple13.HelpfulTools:funutils:{version}'
 implementation "com.github.jakepurple13.HelpfulTools:thirdpartyutils:{version}"
 ```
 
+These aren't working right now. Use version 10.2.3 if you want to use them
 For the dslprocessor module, also include:
 ```groovy
 //To allow kapt

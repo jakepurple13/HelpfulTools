@@ -20,7 +20,25 @@ class CheckboxTestActivity : AppCompatActivity() {
         checkboxGroup.clearCheck()
         checkboxGroup.check(-1)
         checkboxGroup.setOnCheckedChangeListener(CheckBoxGroup.OnCheckedChangeListener { group: CheckBoxGroup, checkedId: Int, isChecked: Boolean -> })
-        checkboxGroup.headerCheckBox
+        checkboxGroup.headerCheckBox?.text = "a;ksdlfj;alsdjf;laksdjf"
+
+        checkboxButton.setOnClickListener {
+            checkboxGroup.setIsCheckGroupHeaderEnabled(!checkboxGroup.isCheckGroupHeaderEnabled)
+        }
+
+        checkboxGroup.setOnCheckedChangeListener { group, checkedId, isChecked ->
+            when (checkedId) {
+                R.id.first -> println("First!")
+                R.id.second -> println("Second!")
+                R.id.third -> println("Third!")
+                group.headerCheckBox?.id -> {
+                    /*group.children.drop(1).forEach {
+                        it.isEnabled = isChecked
+                    }*/
+                }
+            }
+        }
+
 
     }
 }

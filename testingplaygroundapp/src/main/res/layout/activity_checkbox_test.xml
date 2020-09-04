@@ -20,16 +20,19 @@
         app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
         app:checkGroupHeaderTitle="Hello World"
         app:boxColor="@color/colorPrimary"
+        app:groupCheckType="ENABLE"
         app:isCheckGroupHeaderEnabled="true"
         tools:ignore="HardcodedText">
 
         <CheckBox
+            android:id="@+id/first"
             style="@style/CheckBoxStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="asdf" />
 
         <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/second"
             style="@style/CheckBoxStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -37,11 +40,18 @@
             android:text="asdf" />
 
         <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/third"
             style="@style/CheckBoxStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="asdf" />
 
     </com.programmersbox.funutils.views.CheckBoxGroup>
+
+    <Button
+        android:text="button"
+        android:id="@+id/checkboxButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </LinearLayout>

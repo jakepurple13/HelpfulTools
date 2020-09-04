@@ -5,13 +5,11 @@ import android.content.res.ColorStateList
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.util.AttributeSet
-import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.CheckBox
 import android.widget.CompoundButton
 import android.widget.LinearLayout
-import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
@@ -20,6 +18,8 @@ import androidx.core.view.children
 import androidx.core.widget.CompoundButtonCompat
 import com.programmersbox.funutils.R
 import com.programmersbox.funutils.views.CheckBoxGroup.OnCheckedChangeListener
+import com.programmersbox.helpfulutils.animateChildren
+import com.programmersbox.helpfulutils.colorFromTheme
 
 class CheckBoxGroup : LinearLayout {
 
@@ -30,7 +30,12 @@ class CheckBoxGroup : LinearLayout {
     private lateinit var mPassThroughListener: PassThroughHierarchyChangeListener
     private var mOnCheckedChangeListener: OnCheckedChangeListener? = null
 
-    private var isCheckGroupHeaderEnabled: Boolean = true
+    var isCheckGroupHeaderEnabled: Boolean = true
+        private set(value) {
+            field = value
+            if (::headCheckBox.isInitialized)
+                headCheckBox.visibility = if (isCheckGroupHeaderEnabled) View.VISIBLE else View.GONE
+        }
 
     private var checkGroupHeaderTitle: String? = null
 
@@ -52,7 +57,13 @@ class CheckBoxGroup : LinearLayout {
     @ColorInt
     private var checkGroupBoxColor: Int? = null
 
-    val headerCheckBox: CheckBox? get() = getChildAt(0) as? CheckBox
+    private var groupCheckAction: Int = 0
+
+    private var groupCustomAction: OnCustomGroupCheckListener? = null
+
+    val headerCheckBox: CheckBox? get() = headCheckBox//getChildAt(0) as? CheckBox
+
+    private lateinit var headCheckBox: CheckBox
 
     /**
      *
@@ -79,10 +90,8 @@ class CheckBoxGroup : LinearLayout {
         init(attrs)
     }
 
-
     private fun init(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CheckBoxGroup)
-        isCheckGroupHeaderEnabled = a.getBoolean(R.styleable.CheckBoxGroup_isCheckGroupHeaderEnabled, true)
         checkGroupHeaderTitle = a.getString(R.styleable.CheckBoxGroup_checkGroupHeaderTitle)
         checkGroupHeaderTitleColor = a.getColor(R.styleable.CheckBoxGroup_checkGroupHeaderTextColor, Color.BLACK)
         checkGroupHeaderBackgroundColor = a.getColor(R.styleable.CheckBoxGroup_checkGroupHeaderBackgroundColor, Color.TRANSPARENT)
@@ -91,14 +100,17 @@ class CheckBoxGroup : LinearLayout {
         checkGroupHeaderMaxLines = a.getInteger(R.styleable.CheckBoxGroup_checkGroupHeaderMaxLines, Int.MAX_VALUE)
         checkGroupBoxTextAppearance = a.getResourceId(R.styleable.CheckBoxGroup_checkGroupHeaderTextAppearance, -1)
         checkGroupBoxColor = a.getColor(R.styleable.CheckBoxGroup_boxColor, accentColor)
+        isCheckGroupHeaderEnabled = a.getBoolean(R.styleable.CheckBoxGroup_isCheckGroupHeaderEnabled, true)
+        groupCheckAction = a.getInt(R.styleable.CheckBoxGroup_groupCheckType, 0)
         a.recycle()
         mChildOnCheckedChangeListener = CheckedStateTracker()
         mPassThroughListener = PassThroughHierarchyChangeListener()
         super.setOnHierarchyChangeListener(mPassThroughListener)
-    }
-
-    private fun Context.colorFromTheme(@AttrRes colorAttr: Int, @ColorInt defaultColor: Int = Color.BLACK): Int = TypedValue().run typedValue@{
-        this@colorFromTheme.theme.resolveAttribute(colorAttr, this@typedValue, true).run { if (this) data else defaultColor }
+        headCheckBox = getTitleCheckBox()
+        if (groupCheckAction == GROUP_TYPE_ENABLE) {
+            headCheckBox.isActivated = false
+            headCheckBox.isChecked = true
+        }
     }
 
     private val accentColor by lazy { context.colorFromTheme(R.attr.colorAccent, Color.BLACK) }
@@ -117,34 +129,62 @@ class CheckBoxGroup : LinearLayout {
         setCheckedId(id, isChecked)
     }
 
-
     private fun setCheckedId(@IdRes id: Int, isChecked: Boolean) {
-        if (id == DEFAULT_HEADER_ID) {
-            children.drop(1).filterIsInstance<CheckBox>().forEach { it.isChecked = isChecked }
-        } else {
-            if (mCheckedIds.contains(id) && !isChecked)
-                mCheckedIds.remove(id)
-            else
-                mCheckedIds.add(id)
-        }
-        val headerCheckBox = this@CheckBoxGroup.getChildAt(0) as CheckBox
+        headCheckBox.setOnCheckedChangeListener(null)
 
-        when (checkedCheckboxButtonIds.size) {
-            0 -> {
-                headerCheckBox.isActivated = false
-                headerCheckBox.isChecked = false
+        if (id == DEFAULT_HEADER_ID) {
+            when (groupCheckAction) {
+                GROUP_TYPE_CHECK -> children.drop(1).filterIsInstance<CheckBox>().forEach { it.isChecked = isChecked }
+                GROUP_TYPE_ENABLE -> children.drop(1).filterIsInstance<CheckBox>().forEach { it.isEnabled = isChecked }
+                GROUP_TYPE_CUSTOM -> groupCustomAction?.onGroupCheckChanged(this, isChecked)
             }
-            childCount - 1 -> {
-                headerCheckBox.isActivated = false
-                headerCheckBox.isChecked = true
-            }
-            in 1..(childCount - 2) -> {
-                headerCheckBox.isActivated = true
-                CompoundButtonCompat.setButtonTintList(headerCheckBox, ColorStateList.valueOf(buttonColor))
+            headCheckBox.isChecked = isChecked
+        } else {
+            mCheckedIds.removeAll { it == -1 }
+            if (mCheckedIds.contains(id) && !isChecked) {
+                mCheckedIds.remove(id)
+            } else {
+                mCheckedIds.add(id)
             }
         }
+
+        when (groupCheckAction) {
+            GROUP_TYPE_CHECK -> defaultHeaderAction()
+            GROUP_TYPE_ENABLE -> if (groupCheckAction == GROUP_TYPE_ENABLE && id == DEFAULT_HEADER_ID) headCheckBox.isChecked = isChecked
+            GROUP_TYPE_CUSTOM -> groupCustomAction?.onGroupHeaderChange(this, headCheckBox) ?: defaultHeaderAction()
+        }
+
+        headCheckBox.setOnCheckedChangeListener(mChildOnCheckedChangeListener)
 
         mOnCheckedChangeListener?.onCheckedChanged(this, id, isChecked)
+    }
+
+    private fun defaultHeaderAction() {
+        when (checkedCheckboxButtonIds.size) {
+            0 -> {
+                headCheckBox.isActivated = false
+                headCheckBox.isChecked = false
+            }
+            childCount - 1 -> {
+                headCheckBox.isActivated = false
+                headCheckBox.isChecked = true
+            }
+            in 1..(childCount - 2) -> {
+                headCheckBox.isActivated = true
+            }
+        }
+    }
+
+    fun setOnCustomGroupCheckListener(listener: OnCustomGroupCheckListener?) {
+        if (groupCheckAction == GROUP_TYPE_CUSTOM) groupCustomAction = listener
+    }
+
+    fun setIsCheckGroupHeaderEnabled(visible: Boolean, animate: Boolean = true) {
+        if (animate) {
+            animateChildren { isCheckGroupHeaderEnabled = visible }
+        } else {
+            isCheckGroupHeaderEnabled = visible
+        }
     }
 
     private fun setCheckedStateForView(@IdRes viewId: Int, checked: Boolean) {
@@ -194,22 +234,22 @@ class CheckBoxGroup : LinearLayout {
     private fun addCheckBoxHeader(index: Int, params: ViewGroup.LayoutParams?) {
         params?.let {
             if (childCount == 0 && isCheckGroupHeaderEnabled) {
-                super.addView(
-                    CheckBox(context).apply {
-                        id = DEFAULT_HEADER_ID
-                        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-                        checkGroupHeaderTitleColor?.let(this::setTextColor)
-                        checkGroupHeaderBackgroundColor?.let(this::setBackgroundColor)
-                        text = checkGroupHeaderTitle
-                        maxLines = checkGroupHeaderMaxLines
-                        checkGroupBoxTextAppearance?.let(this::setTextAppearance)
-                        checkGroupBoxTextSize?.let { f -> if (f != -1f) textSize = f }
-                        buttonDrawable = ContextCompat.getDrawable(context, R.drawable.checkbox_selector)
-                        CompoundButtonCompat.setButtonTintList(this, ColorStateList.valueOf(buttonColor))
-                    }, index, it
-                )
+                super.addView(headCheckBox, index, it)
             }
         }
+    }
+
+    private fun getTitleCheckBox() = CheckBox(context).apply {
+        id = DEFAULT_HEADER_ID
+        layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        checkGroupHeaderTitleColor?.let(this::setTextColor)
+        checkGroupHeaderBackgroundColor?.let(this::setBackgroundColor)
+        text = checkGroupHeaderTitle
+        maxLines = checkGroupHeaderMaxLines
+        checkGroupBoxTextAppearance?.let(this::setTextAppearance)
+        checkGroupBoxTextSize?.let { f -> if (f != -1f) textSize = f }
+        buttonDrawable = ContextCompat.getDrawable(context, R.drawable.checkbox_selector)
+        CompoundButtonCompat.setButtonTintList(this, ColorStateList.valueOf(buttonColor))
     }
 
     /**
@@ -248,6 +288,21 @@ class CheckBoxGroup : LinearLayout {
          * @param checkedId the unique identifier of the newly checked checkbox button
          */
         fun onCheckedChanged(group: CheckBoxGroup, @IdRes checkedId: Int, isChecked: Boolean)
+    }
+
+    /**
+     * Use this if you set the [R.styleable.CheckBoxGroup_groupCheckType] to [GROUP_TYPE_CUSTOM]
+     */
+    fun interface OnCustomGroupCheckListener {
+        /**
+         * The action to do when the header is clicked
+         */
+        fun onGroupCheckChanged(group: CheckBoxGroup, isChecked: Boolean)
+
+        /**
+         * How to handle the [headerCheckBox] on changed
+         */
+        fun onGroupHeaderChange(group: CheckBoxGroup, headerCheckBox: CheckBox) = group.defaultHeaderAction()
     }
 
     /**
@@ -316,5 +371,8 @@ class CheckBoxGroup : LinearLayout {
 
     companion object {
         const val DEFAULT_HEADER_ID: Int = 1234
+        const val GROUP_TYPE_CHECK = 0
+        const val GROUP_TYPE_ENABLE = 1
+        const val GROUP_TYPE_CUSTOM = 2
     }
 }

@@ -50,5 +50,10 @@
         <attr name="checkGroupHeaderTextSize" format="dimension" />
         <attr name="checkGroupHeaderTextAppearance" format="reference" />
         <attr name="boxColor" format="color" />
+        <attr name="groupCheckType" format="enum">
+            <enum name="CHECK" value="0" />
+            <enum name="ENABLE" value="1" />
+            <enum name="CUSTOM" value="2" />
+        </attr>
     </declare-styleable>
 </resources>
