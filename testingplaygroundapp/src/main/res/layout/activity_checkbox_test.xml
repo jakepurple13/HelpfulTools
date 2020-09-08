@@ -69,8 +69,7 @@
             app:boxColor="@color/colorPrimary"
             app:checkGroupChildInnerMargin="@dimen/margin_inner_child"
             app:checkGroupHeaderMaxLines="1"
-            app:checkGroupHeaderTextAppearance="?android:attr/textAppearanceLarge"
-            app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
+            app:checkGroupHeaderTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             app:checkGroupHeaderTitle="Check"
             app:groupCheckType="CHECK"
             app:isCheckGroupHeaderEnabled="true">

@@ -14,6 +14,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.IdRes
 import androidx.annotation.StyleRes
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.getColorOrThrow
+import androidx.core.content.res.getResourceIdOrThrow
 import androidx.core.view.children
 import androidx.core.widget.CompoundButtonCompat
 import com.programmersbox.funutils.R
@@ -98,18 +100,24 @@ class CheckBoxGroup : LinearLayout {
         init(attrs)
     }
 
+    private fun <T> getOrThrow(block: () -> T) = try {
+        block()
+    } catch (e: Exception) {
+        null
+    }
+
     private fun init(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.CheckBoxGroup)
         checkGroupHeaderTitle = a.getString(R.styleable.CheckBoxGroup_checkGroupHeaderTitle)
-        checkGroupHeaderTitleColor = a.getColor(R.styleable.CheckBoxGroup_checkGroupHeaderTextColor, Color.BLACK)
+        checkGroupHeaderTitleColor = getOrThrow { a.getColorOrThrow(R.styleable.CheckBoxGroup_checkGroupHeaderTextColor) }
         checkGroupHeaderBackgroundColor = a.getColor(R.styleable.CheckBoxGroup_checkGroupHeaderBackgroundColor, Color.TRANSPARENT)
         innerMarginValue = a.getDimensionPixelOffset(R.styleable.CheckBoxGroup_checkGroupChildInnerMargin, 10)
         checkGroupBoxTextSize = a.getDimension(R.styleable.CheckBoxGroup_checkGroupHeaderTextSize, -1f)
         checkGroupHeaderMaxLines = a.getInteger(R.styleable.CheckBoxGroup_checkGroupHeaderMaxLines, Int.MAX_VALUE)
-        checkGroupBoxTextAppearance = a.getResourceId(R.styleable.CheckBoxGroup_checkGroupHeaderTextAppearance, -1)
+        checkGroupBoxTextAppearance = getOrThrow { a.getResourceIdOrThrow(R.styleable.CheckBoxGroup_checkGroupHeaderTextAppearance) }
         checkGroupBoxColor = a.getColor(R.styleable.CheckBoxGroup_boxColor, accentColor)
         isCheckGroupHeaderEnabled = a.getBoolean(R.styleable.CheckBoxGroup_isCheckGroupHeaderEnabled, true)
-        groupCheckAction = a.getInt(R.styleable.CheckBoxGroup_groupCheckType, 0)
+        groupCheckAction = a.getInt(R.styleable.CheckBoxGroup_groupCheckType, GROUP_TYPE_CHECK)
         a.recycle()
         mChildOnCheckedChangeListener = CheckedStateTracker()
         mPassThroughListener = PassThroughHierarchyChangeListener()
@@ -258,11 +266,11 @@ class CheckBoxGroup : LinearLayout {
     private fun getTitleCheckBox() = CheckBox(context).apply {
         id = DEFAULT_HEADER_ID
         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        checkGroupBoxTextAppearance?.let(this::setTextAppearance)
         checkGroupHeaderTitleColor?.let(this::setTextColor)
         checkGroupHeaderBackgroundColor?.let(this::setBackgroundColor)
         checkGroupHeaderTitle?.let(this::setText)
         maxLines = checkGroupHeaderMaxLines
-        checkGroupBoxTextAppearance?.let(this::setTextAppearance)
         checkGroupBoxTextSize?.let { f -> if (f != -1f) textSize = f }
         buttonDrawable = ContextCompat.getDrawable(context, R.drawable.checkbox_selector)
         CompoundButtonCompat.setButtonTintList(this, ColorStateList.valueOf(buttonColor))
