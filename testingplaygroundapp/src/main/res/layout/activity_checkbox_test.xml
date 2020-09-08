@@ -1,57 +1,142 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp"
-    tools:context=".CheckboxTestActivity">
+    tools:context=".CheckboxTestActivity"
+    tools:ignore="HardcodedText">
 
-    <com.programmersbox.funutils.views.CheckBoxGroup
-        android:id="@+id/checkboxGroup"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/activity_margin_vertical"
         android:orientation="vertical"
-        app:checkGroupChildInnerMargin="@dimen/margin_inner_child"
-        app:checkGroupHeaderMaxLines="1"
-        app:checkGroupHeaderTextAppearance="?android:attr/textAppearanceLarge"
-        app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
-        app:checkGroupHeaderTitle="Hello World"
-        app:boxColor="@color/colorPrimary"
-        app:groupCheckType="ENABLE"
-        app:isCheckGroupHeaderEnabled="true"
-        tools:ignore="HardcodedText">
+        android:padding="5dp">
 
-        <CheckBox
-            android:id="@+id/first"
-            style="@style/CheckBoxStyle"
+        <Button
+            android:id="@+id/checkboxButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="asdf" />
+            android:text="button" />
 
-        <com.google.android.material.checkbox.MaterialCheckBox
-            android:id="@+id/second"
-            style="@style/CheckBoxStyle"
-            android:layout_width="wrap_content"
+        <com.programmersbox.funutils.views.CheckBoxGroup
+            android:id="@+id/checkboxGroup"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:useMaterialThemeColors="true"
-            android:text="asdf" />
+            android:layout_margin="@dimen/activity_margin_vertical"
+            android:orientation="vertical"
+            app:boxColor="@color/colorPrimary"
+            app:checkGroupChildInnerMargin="@dimen/margin_inner_child"
+            app:checkGroupHeaderMaxLines="1"
+            app:checkGroupHeaderTextAppearance="?android:attr/textAppearanceLarge"
+            app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
+            app:checkGroupHeaderTitle="Hello World"
+            app:groupCheckType="ENABLE"
+            app:isCheckGroupHeaderEnabled="true">
 
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:id="@+id/third"
-            style="@style/CheckBoxStyle"
-            android:layout_width="wrap_content"
+            <CheckBox
+                android:id="@+id/first"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/second"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf"
+                app:useMaterialThemeColors="true" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/third"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf" />
+
+        </com.programmersbox.funutils.views.CheckBoxGroup>
+
+        <com.programmersbox.funutils.views.CheckBoxGroup
+            android:id="@+id/checkboxGroup2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="asdf" />
+            android:layout_margin="@dimen/activity_margin_vertical"
+            android:orientation="vertical"
+            app:boxColor="@color/colorPrimary"
+            app:checkGroupChildInnerMargin="@dimen/margin_inner_child"
+            app:checkGroupHeaderMaxLines="1"
+            app:checkGroupHeaderTextAppearance="?android:attr/textAppearanceLarge"
+            app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
+            app:checkGroupHeaderTitle="Check"
+            app:groupCheckType="CHECK"
+            app:isCheckGroupHeaderEnabled="true">
 
-    </com.programmersbox.funutils.views.CheckBoxGroup>
+            <CheckBox
+                android:id="@+id/first1"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf" />
 
-    <Button
-        android:text="button"
-        android:id="@+id/checkboxButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/second1"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf"
+                app:useMaterialThemeColors="true" />
 
-</LinearLayout>
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/third1"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf" />
+
+        </com.programmersbox.funutils.views.CheckBoxGroup>
+
+        <com.programmersbox.funutils.views.CheckBoxGroup
+            android:id="@+id/checkboxGroup3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_margin_vertical"
+            android:orientation="vertical"
+            app:boxColor="@color/colorPrimary"
+            app:checkGroupChildInnerMargin="@dimen/margin_inner_child"
+            app:checkGroupHeaderMaxLines="1"
+            app:checkGroupHeaderTextAppearance="?android:attr/textAppearanceLarge"
+            app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
+            app:checkGroupHeaderTitle="Custom"
+            app:groupCheckType="CUSTOM"
+            app:isCheckGroupHeaderEnabled="true">
+
+            <CheckBox
+                android:id="@+id/first2"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                android:id="@+id/second2"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf"
+                app:useMaterialThemeColors="true" />
+
+            <androidx.appcompat.widget.AppCompatCheckBox
+                android:id="@+id/third2"
+                style="@style/CheckBoxStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="asdf" />
+
+        </com.programmersbox.funutils.views.CheckBoxGroup>
+
+    </LinearLayout>
+</ScrollView>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <declare-styleable name="ExpandingSlider">
         <attr name="slider_colorBase" format="color" />
         <attr name="slider_colorMain" format="color" />
@@ -31,6 +32,7 @@
         <attr name="slider_bubbleTextColor" format="color" />
         <eat-comment />
     </declare-styleable>
+
     <declare-styleable name="SlideValuePicker">
         <attr name="radius" format="dimension" />
         <attr name="circle_color" format="color" />
@@ -40,7 +42,9 @@
         <attr name="expanded_height_multiplier" format="float" />
         <attr name="text_size" format="dimension" />
     </declare-styleable>
+
     <declare-styleable name="CheckBoxGroup">
+        <!--Shows or hides the Group Header-->
         <attr name="isCheckGroupHeaderEnabled" format="boolean" />
         <attr name="checkGroupHeaderTitle" format="string" />
         <attr name="checkGroupHeaderTextColor" format="color" />
@@ -51,9 +55,13 @@
         <attr name="checkGroupHeaderTextAppearance" format="reference" />
         <attr name="boxColor" format="color" />
         <attr name="groupCheckType" format="enum">
+            <!-- Will check/uncheck all child checkboxes when the header checkbox is checked/unchecked. -->
             <enum name="CHECK" value="0" />
+            <!-- Will enable/disable all child checkboxes when the header checked is checked/unchecked. -->
             <enum name="ENABLE" value="1" />
+            <!-- Allows custom action on checked/unchecked. Be sure to call {@link CheckBoxGroup.setOnCustomGroupCheckListener}. -->
             <enum name="CUSTOM" value="2" />
         </attr>
     </declare-styleable>
+
 </resources>

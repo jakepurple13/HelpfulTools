@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat
 import androidx.core.view.children
 import androidx.core.widget.CompoundButtonCompat
 import com.programmersbox.funutils.R
-import com.programmersbox.funutils.views.CheckBoxGroup.OnCheckedChangeListener
 import com.programmersbox.helpfulutils.animateChildren
 import com.programmersbox.helpfulutils.colorFromTheme
 
@@ -30,11 +29,17 @@ class CheckBoxGroup : LinearLayout {
     private lateinit var mPassThroughListener: PassThroughHierarchyChangeListener
     private var mOnCheckedChangeListener: OnCheckedChangeListener? = null
 
+    /**
+     * The visibility of the [headerCheckBox]
+     *
+     * Setting this will call [setIsCheckGroupHeaderEnabled] with animate == false
+     * @see setIsCheckGroupHeaderEnabled
+     */
     var isCheckGroupHeaderEnabled: Boolean = true
-        private set(value) {
+        set(value) {
             field = value
             if (::headCheckBox.isInitialized)
-                headCheckBox.visibility = if (isCheckGroupHeaderEnabled) View.VISIBLE else View.GONE
+                headCheckBox.visibility = if (value) View.VISIBLE else View.GONE
         }
 
     private var checkGroupHeaderTitle: String? = null
@@ -61,6 +66,9 @@ class CheckBoxGroup : LinearLayout {
 
     private var groupCustomAction: OnCustomGroupCheckListener? = null
 
+    /**
+     * This is the header check box
+     */
     val headerCheckBox: CheckBox? get() = headCheckBox//getChildAt(0) as? CheckBox
 
     private lateinit var headCheckBox: CheckBox
@@ -175,10 +183,18 @@ class CheckBoxGroup : LinearLayout {
         }
     }
 
-    fun setOnCustomGroupCheckListener(listener: OnCustomGroupCheckListener?) {
-        if (groupCheckAction == GROUP_TYPE_CUSTOM) groupCustomAction = listener
-    }
+    /**
+     * Add a [OnCustomGroupCheckListener] for when the GroupType is [GROUP_TYPE_CUSTOM]
+     *
+     * @see OnCustomGroupCheckListener
+     */
+    fun setOnCustomGroupCheckListener(listener: OnCustomGroupCheckListener?) = apply { groupCustomAction = listener }
 
+    /**
+     * Show or hide the Header Checkbox [headerCheckBox]
+     * @param visible true to show, false to hide
+     * @param animate true to animate the visibility change, false to not animate
+     */
     fun setIsCheckGroupHeaderEnabled(visible: Boolean, animate: Boolean = true) {
         if (animate) {
             animateChildren { isCheckGroupHeaderEnabled = visible }
@@ -231,7 +247,7 @@ class CheckBoxGroup : LinearLayout {
 
     private fun getInnerChildMargin(dpValue: Int): Int = (dpValue * context.resources.displayMetrics.density).toInt() // margin in pixels
 
-    private fun addCheckBoxHeader(index: Int, params: ViewGroup.LayoutParams?) {
+    private fun addCheckBoxHeader(@Suppress("SameParameterValue") index: Int, params: ViewGroup.LayoutParams?) {
         params?.let {
             if (childCount == 0 && isCheckGroupHeaderEnabled) {
                 super.addView(headCheckBox, index, it)
@@ -244,7 +260,7 @@ class CheckBoxGroup : LinearLayout {
         layoutParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         checkGroupHeaderTitleColor?.let(this::setTextColor)
         checkGroupHeaderBackgroundColor?.let(this::setBackgroundColor)
-        text = checkGroupHeaderTitle
+        checkGroupHeaderTitle?.let(this::setText)
         maxLines = checkGroupHeaderMaxLines
         checkGroupBoxTextAppearance?.let(this::setTextAppearance)
         checkGroupBoxTextSize?.let { f -> if (f != -1f) textSize = f }
@@ -265,13 +281,7 @@ class CheckBoxGroup : LinearLayout {
      *
      * @param listener the callback to call on checked state change
      */
-    fun setOnCheckedChangeListener(listener: OnCheckedChangeListener) {
-        mOnCheckedChangeListener = listener
-    }
-
-    fun setOnCheckedChangeListener(listener: (group: CheckBoxGroup, checkedId: Int, isChecked: Boolean) -> Unit) {
-        mOnCheckedChangeListener = OnCheckedChangeListener(listener)
-    }
+    fun setOnCheckedChangeListener(listener: OnCheckedChangeListener) = apply { mOnCheckedChangeListener = listener }
 
     /**
      *
