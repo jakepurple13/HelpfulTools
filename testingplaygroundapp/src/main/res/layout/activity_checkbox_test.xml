@@ -22,6 +22,21 @@
             android:text="button" />
 
         <com.programmersbox.funutils.views.CheckBoxGroup
+            android:id="@+id/checkboxGroup4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_margin_vertical"
+            android:orientation="vertical"
+            app:boxColor="@color/colorPrimary"
+            app:checkGroupChildInnerMargin="@dimen/margin_inner_child"
+            app:checkGroupHeaderMaxLines="1"
+            app:checkGroupHeaderTextAppearance="?android:attr/textAppearanceLarge"
+            app:checkGroupHeaderTextColor="@android:color/holo_red_dark"
+            app:checkGroupHeaderTitle="Hello World"
+            app:groupCheckType="CUSTOM"
+            app:isCheckGroupHeaderEnabled="true" />
+
+        <com.programmersbox.funutils.views.CheckBoxGroup
             android:id="@+id/checkboxGroup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

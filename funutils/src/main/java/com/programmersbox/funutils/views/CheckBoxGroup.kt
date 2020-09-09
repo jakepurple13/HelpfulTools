@@ -127,6 +127,7 @@ class CheckBoxGroup : LinearLayout {
             headCheckBox.isActivated = false
             headCheckBox.isChecked = true
         }
+        if (isInEditMode) addCheckBoxHeader(0, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 
     private val accentColor by lazy { context.colorFromTheme(R.attr.colorAccent, Color.BLACK) }
@@ -167,7 +168,7 @@ class CheckBoxGroup : LinearLayout {
         when (groupCheckAction) {
             GROUP_TYPE_CHECK -> defaultHeaderAction()
             GROUP_TYPE_ENABLE -> if (groupCheckAction == GROUP_TYPE_ENABLE && id == DEFAULT_HEADER_ID) headCheckBox.isChecked = isChecked
-            GROUP_TYPE_CUSTOM -> groupCustomAction?.onGroupHeaderChange(this, headCheckBox) ?: defaultHeaderAction()
+            GROUP_TYPE_CUSTOM -> groupCustomAction?.onGroupHeaderChange(this, id, headCheckBox, isChecked) ?: defaultHeaderAction()
         }
 
         headCheckBox.setOnCheckedChangeListener(mChildOnCheckedChangeListener)
@@ -234,7 +235,7 @@ class CheckBoxGroup : LinearLayout {
     }
 
     override fun addView(child: View, index: Int, params: ViewGroup.LayoutParams) {
-        addCheckBoxHeader(0, params)
+        if (!isInEditMode) addCheckBoxHeader(0, params)
         val marginAddedParams = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         if (child is CheckBox) {
             innerMarginValue?.let {
@@ -320,7 +321,8 @@ class CheckBoxGroup : LinearLayout {
         /**
          * How to handle the [headerCheckBox] on changed
          */
-        fun onGroupHeaderChange(group: CheckBoxGroup, headerCheckBox: CheckBox) = group.defaultHeaderAction()
+        fun onGroupHeaderChange(group: CheckBoxGroup, @IdRes checkedId: Int, headerCheckBox: CheckBox, isChecked: Boolean) =
+            group.defaultHeaderAction()
     }
 
     /**

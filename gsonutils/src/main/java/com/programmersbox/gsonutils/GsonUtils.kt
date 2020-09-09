@@ -11,6 +11,7 @@ import com.google.gson.reflect.TypeToken
 import com.programmersbox.helpfulutils.defaultSharedPref
 import com.programmersbox.helpfulutils.sharedPrefDelegate
 import com.programmersbox.helpfulutils.sharedPrefNotNullDelegate
+import com.programmersbox.helpfulutils.sharedPrefNotNullDelegateSync
 import kotlin.properties.ReadOnlyProperty
 import kotlin.reflect.KProperty
 
@@ -115,7 +116,7 @@ inline fun <reified T> String?.fromJson(vararg adapters: Pair<Class<*>, Any>): T
  * An easy way to register type adapters
  */
 fun GsonBuilder.registerTypeAdapters(vararg adapters: Pair<Class<*>, Any>): GsonBuilder =
-    adapters.forEach { registerTypeAdapter(it.first, it.second) }.let { this }
+    apply { adapters.forEach { registerTypeAdapter(it.first, it.second) } }
 
 /**
  * Difference between this and [sharedPrefDelegate] is that this automatically uses [SharedPreferences.getObject] and [SharedPreferences.Editor.putObject]
@@ -140,6 +141,18 @@ inline fun <reified T> sharedPrefNotNullObjectDelegate(
     noinline setter: SharedPreferences.Editor.(key: String, value: T) -> SharedPreferences.Editor = SharedPreferences.Editor::putObject,
     noinline prefs: Context.() -> SharedPreferences = { defaultSharedPref }
 ) = sharedPrefNotNullDelegate(prefs = prefs, key = key, getter = getter, setter = setter, defaultValue = defaultValue)
+
+/**
+ * Difference between this and [sharedPrefNotNullObjectDelegate] is that this will commit the changes synchronously
+ * @see sharedPrefNotNullObjectDelegate
+ */
+inline fun <reified T> sharedPrefNotNullObjectDelegateSync(
+    defaultValue: T,
+    key: String? = null,
+    noinline getter: SharedPreferences.(key: String, defaultValue: T) -> T = { k, d -> getObject(k, d)!! },
+    noinline setter: SharedPreferences.Editor.(key: String, value: T) -> SharedPreferences.Editor = SharedPreferences.Editor::putObject,
+    noinline prefs: Context.() -> SharedPreferences = { defaultSharedPref }
+) = sharedPrefNotNullDelegateSync(prefs = prefs, key = key, getter = getter, setter = setter, defaultValue = defaultValue)
 
 /**
  * A way so that you can set global variables instead of needing to initialize them in onCreate

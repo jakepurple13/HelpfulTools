@@ -22,10 +22,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.programmersbox.dragswipe.*
 import com.programmersbox.flowutils.*
 import com.programmersbox.funutils.views.flash
-import com.programmersbox.gsonutils.fromJson
-import com.programmersbox.gsonutils.sharedPrefNotNullObjectDelegate
-import com.programmersbox.gsonutils.sharedPrefObjectDelegate
-import com.programmersbox.gsonutils.toPrettyJson
+import com.programmersbox.gsonutils.*
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
@@ -52,6 +49,8 @@ class MainActivity : AppCompatActivity() {
     private var batteryInformation: Battery? by sharedPrefObjectDelegate()
 
     private var info: DeviceInfo.Info by sharedPrefNotNullObjectDelegate(DeviceInfo.Info())
+
+    private var info2: DeviceInfo.Info by sharedPrefNotNullObjectDelegateSync(DeviceInfo.Info())
 
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
