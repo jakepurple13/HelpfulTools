@@ -13,6 +13,7 @@ import android.service.controls.ControlsProviderService
 import android.service.controls.DeviceTypes
 import android.service.controls.actions.*
 import android.service.controls.templates.RangeTemplate
+import android.service.controls.templates.TemperatureControlTemplate
 import androidx.annotation.RequiresApi
 import io.reactivex.Flowable
 import io.reactivex.processors.ReplayProcessor
@@ -37,14 +38,18 @@ class TestingControlService : ControlsProviderService() {
         )
     }
 
-    override fun createPublisherForAllAvailable(): Flow.Publisher<Control> = FlowAdapters.toFlowPublisher(
-        Flowable.fromIterable(
-            mutableListOf(
-                settingsControl(),
-                slideControl()
+    override fun createPublisherForAllAvailable(): Flow.Publisher<Control> {
+        //do all rest apis/getting data here and map it to a Control
+        return FlowAdapters.toFlowPublisher(
+            Flowable.fromIterable(
+                mutableListOf(
+                    settingsControl(),
+                    slideControl(),
+                    tempControl()
+                )
             )
         )
-    )
+    }
 
     private fun settingsControl() = Control.StatefulBuilder(CONTROL_BUTTON_ID, settingsPendingIntent)
         .setTitle(getString(R.string.settings_button_title))
@@ -70,6 +75,31 @@ class TestingControlService : ControlsProviderService() {
                 50f,
                 1f,
                 "• %.0f%%"
+            )
+        )
+        .setStatus(Control.STATUS_OK)
+        .build()
+
+    private fun tempControl() = Control.StatefulBuilder(TEMP_CONTROL_ID, settingsPendingIntent)
+        .setTitle("Change Me!")
+        .setSubtitle("Please?")
+        .setStructure(getString(R.string.structure_home))
+        .setCustomColor(ColorStateList.valueOf(Color.parseColor("#448aff")))
+        .setDeviceType(DeviceTypes.TYPE_HEATER)
+        .setControlTemplate(
+            TemperatureControlTemplate(
+                TEMP_CONTROL_ID,
+                RangeTemplate(
+                    TEMP_CONTROL_ID,
+                    0f,
+                    100f,
+                    50f,
+                    1f,
+                    null
+                ),
+                TemperatureControlTemplate.MODE_HEAT_COOL,
+                TemperatureControlTemplate.MODE_HEAT_COOL,
+                TemperatureControlTemplate.FLAG_MODE_HEAT_COOL
             )
         )
         .setStatus(Control.STATUS_OK)
@@ -119,11 +149,39 @@ class TestingControlService : ControlsProviderService() {
                                 100f,
                                 action.newValue,
                                 1f,
-                                "• %.0f%%"
+                                null
                             )
                         )
                         .build()
                     updatePublisher.onNext(control)
+                }
+
+                if(controlId == TEMP_CONTROL_ID) {
+                    consumer.accept(ControlAction.RESPONSE_OK)
+                    Control.StatefulBuilder(TEMP_CONTROL_ID, settingsPendingIntent)
+                        .setTitle("Change Me!")
+                        .setSubtitle("Please?")
+                        .setStructure(getString(R.string.structure_home))
+                        .setCustomColor(ColorStateList.valueOf(Color.parseColor("#448aff")))
+                        .setDeviceType(DeviceTypes.TYPE_HEATER)
+                        .setControlTemplate(
+                            TemperatureControlTemplate(
+                                TEMP_CONTROL_ID,
+                                RangeTemplate(
+                                    TEMP_CONTROL_ID,
+                                    0f,
+                                    100f,
+                                    action.newValue,
+                                    1f,
+                                    null
+                                ),
+                                TemperatureControlTemplate.MODE_HEAT_COOL,
+                                TemperatureControlTemplate.MODE_HEAT_COOL,
+                                TemperatureControlTemplate.FLAG_MODE_HEAT_COOL
+                            )
+                        )
+                        .setStatus(Control.STATUS_OK)
+                        .build()
                 }
             }
 
@@ -173,6 +231,34 @@ class TestingControlService : ControlsProviderService() {
             controls.add(control)
         }
 
+        if (controlIds.contains(TEMP_CONTROL_ID)) {
+            val control = Control.StatefulBuilder(TEMP_CONTROL_ID, settingsPendingIntent)
+                .setTitle("Change Me!")
+                .setSubtitle("Please?")
+                .setStructure(getString(R.string.structure_home))
+                .setCustomColor(ColorStateList.valueOf(Color.parseColor("#448aff")))
+                .setDeviceType(DeviceTypes.TYPE_HEATER)
+                .setControlTemplate(
+                    TemperatureControlTemplate(
+                        TEMP_CONTROL_ID,
+                        RangeTemplate(
+                            TEMP_CONTROL_ID,
+                            0f,
+                            100f,
+                            50f,
+                            1f,
+                            "• %.0f%%"
+                        ),
+                        TemperatureControlTemplate.MODE_HEAT_COOL,
+                        TemperatureControlTemplate.MODE_HEAT_COOL,
+                        TemperatureControlTemplate.FLAG_MODE_HEAT_COOL
+                    )
+                )
+                .setStatus(Control.STATUS_OK)
+                .build()
+            updatePublisher.onNext(control)
+            controls.add(control)
+        }
         return FlowAdapters.toFlowPublisher(Flowable.fromIterable(controls))
     }
 
@@ -180,6 +266,7 @@ class TestingControlService : ControlsProviderService() {
         private const val CONTROL_REQUEST_CODE = 100
         private const val CONTROL_BUTTON_ID = "button_id"
         private const val SLIDE_CONTROL_ID = "slide_id"
+        private const val TEMP_CONTROL_ID = "temp_id"
     }
 
 }
