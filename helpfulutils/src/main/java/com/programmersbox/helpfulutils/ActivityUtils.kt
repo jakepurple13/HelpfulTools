@@ -9,6 +9,7 @@ import android.provider.Settings
 import android.view.View
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
@@ -130,4 +131,15 @@ fun ComponentActivity.addSecureFlag() {
  */
 fun ComponentActivity.clearSecureFlag() {
     window?.clearFlags(WindowManager.LayoutParams.FLAG_SECURE)
+}
+
+enum class ThemeSetting(val type: Int) {
+    SYSTEM(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM),
+    LIGHT(AppCompatDelegate.MODE_NIGHT_NO),
+    NIGHT(AppCompatDelegate.MODE_NIGHT_YES);
+
+    companion object {
+        val currentThemeSetting get() = values().find { it.type == AppCompatDelegate.getDefaultNightMode() }
+        fun setTheme(setting: ThemeSetting) = AppCompatDelegate.setDefaultNightMode(setting.type)
+    }
 }

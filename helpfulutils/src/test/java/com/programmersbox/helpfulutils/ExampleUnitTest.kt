@@ -75,6 +75,10 @@ class ExampleUnitTest {
         val z = itemRangeOf(1, 2, 3).toMutableItemRange()
         val c = listOf(1, 2, 3).toMutableItemRange()
         val n = items.toNumberRange()
+        val f = list removeFrom FixedListLocation.START
+        val z1 = fixedListOf(10, 1, 2, 3, 4, 5)
+        val f1 = z1 removeFrom FixedListLocation.END
+        val f2 = FixedListLocation.END removeFrom z1
     }
 
     @Test
@@ -794,6 +798,27 @@ class ExampleUnitTest {
         val x = f.let(::asdf)
 
         println(x)
+    }
+
+    class CustomFixedList(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : FixedList<Int>(fixedSize, location) {
+        fun asdf() {
+            singleSizeCheck()
+            multipleSizeCheck()
+        }
+    }
+
+    class CustomFixedMap(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : FixedMap<Int, Int>(fixedSize, location) {
+        fun asdf() {
+            singleSizeCheck()
+            multipleSizeCheck()
+        }
+    }
+
+    class CustomFixedSet(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : FixedSet<Int>(fixedSize, location) {
+        fun asdf() {
+            singleSizeCheck()
+            multipleSizeCheck()
+        }
     }
 
 }

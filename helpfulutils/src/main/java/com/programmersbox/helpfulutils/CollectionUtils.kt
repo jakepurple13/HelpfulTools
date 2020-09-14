@@ -93,8 +93,39 @@ fun <T> sizedSetOf(amount: Int = 1, item: (Int) -> T): Set<T> = mutableSetOf<T>(
  */
 val <T> List<T>.lastWithIndex: Pair<Int, T> get() = lastIndex to last()
 
+/**
+ * Remove an element from [MutableList] at [location]
+ */
+infix fun <T> MutableList<T>.removeFrom(location: FixedListLocation) = removeAt(
+    when (location) {
+        FixedListLocation.START -> 0
+        FixedListLocation.END -> lastIndex
+    }
+)
+
+/**
+ * Remove an element from [list] at [FixedListLocation] location
+ */
+infix fun <T> FixedListLocation.removeFrom(list: MutableList<T>) = list.removeAt(
+    when (this) {
+        FixedListLocation.START -> 0
+        FixedListLocation.END -> list.lastIndex
+    }
+)
+
+/**
+ * Returns an empty new [FixedList]
+ */
 fun <T> Iterable<T>.toFixedList(size: Int) = FixedList(size, c = toMutableList())
+
+/**
+ * Returns an empty new [FixedSet]
+ */
 fun <T> Iterable<T>.toFixedSet(size: Int) = FixedSet(size, c = toMutableSet())
+
+/**
+ * Returns an empty new [FixedMap]
+ */
 fun <K, V> Map<out K, V>.toFixedMap(size: Int) = FixedMap(size, c = toMutableMap())
 
 enum class FixedListLocation {

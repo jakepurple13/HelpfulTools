@@ -68,12 +68,11 @@ class ExampleUnitTest {
 
     }
 
+    fun <In, Out> cached2(f: (In) -> Out): (In) -> Out = mutableMapOf<In, Out>().let { { `in`: In -> it.computeIfAbsent(`in`, f) } }
+
     fun <In, Out> cached(f: (In) -> Out): (In) -> Out {
         val cache = mutableMapOf<In, Out>()
-
-        return { input: In ->
-            cache.computeIfAbsent(input, f)
-        }
+        return { input: In -> cache.computeIfAbsent(input, f) }
     }
 
     @Test
@@ -85,6 +84,14 @@ class ExampleUnitTest {
         /* value of cos for 2π is now cached */
 
         println(measureNanoTime { cachedCos(Math.PI * 2) }) // 6286 ns
+
+        val cachedCos2 = cached2 { x: Double -> cos(x) }
+
+        println(measureNanoTime { cachedCos2(Math.PI * 2) }) // 329378 ns
+
+        /* value of cos for 2π is now cached */
+
+        println(measureNanoTime { cachedCos2(Math.PI * 2) }) // 6286 ns
     }
 
 }
