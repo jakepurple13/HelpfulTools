@@ -68,9 +68,7 @@ object Loged {
      * If you want to add an interceptor to add the logs to a certain location, make a class that implements [LogedInterceptor]
      */
     fun logedInterceptor(block: (level: LogLevel, tag: String, msg: String) -> Unit) {
-        logedInterceptor = object : LogedInterceptor {
-            override fun log(level: LogLevel, tag: String, msg: String) = block(level, tag, msg)
-        }
+        logedInterceptor = LogedInterceptor { level, tag, msg -> block(level, tag, msg) }
     }
 
     /**

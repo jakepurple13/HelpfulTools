@@ -10,6 +10,7 @@ annotation class CardMarker
 
 fun <T> Iterable<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this, listener)
 fun <T> Array<T>.toDeck(listener: (Deck.DeckListenerBuilder<T>.() -> Unit)? = null) = Deck(this.toList(), listener)
+
 class Deck<T> : AbstractDeck<T> {
 
     constructor(cards: Iterable<T> = emptyList()) : super(cards)
@@ -91,9 +92,7 @@ class Deck<T> : AbstractDeck<T> {
          * Set the DrawListener
          */
         @DeckMarker
-        fun onDraw(block: (card: T, size: Int) -> Unit) {
-            drawCard = block
-        }
+        fun onDraw(block: (card: T, size: Int) -> Unit) = apply { drawCard = block }
 
         private var addCards: (List<T>) -> Unit = {}
 
@@ -101,9 +100,7 @@ class Deck<T> : AbstractDeck<T> {
          * Set the AddCardListener
          */
         @DeckMarker
-        fun onAdd(block: (List<T>) -> Unit) {
-            addCards = block
-        }
+        fun onAdd(block: (List<T>) -> Unit) = apply { addCards = block }
 
         private var shuffleDeck: () -> Unit = {}
 
@@ -111,9 +108,7 @@ class Deck<T> : AbstractDeck<T> {
          * Set the ShuffleListener
          */
         @DeckMarker
-        fun onShuffle(block: () -> Unit) {
-            shuffleDeck = block
-        }
+        fun onShuffle(block: () -> Unit) = apply { shuffleDeck = block }
 
         private fun build() = object : DeckListener<T> {
             override fun onAdd(cards: List<T>) = addCards(cards)
@@ -146,9 +141,7 @@ class Deck<T> : AbstractDeck<T> {
          * Set up the [DeckListener]
          */
         @DeckMarker
-        fun deckListener(block: DeckListenerBuilder<T>.() -> Unit) {
-            deckListener = block
-        }
+        fun deckListener(block: DeckListenerBuilder<T>.() -> Unit) = apply { deckListener = block }
 
         private val cardList = mutableListOf<T>()
 
@@ -164,39 +157,39 @@ class Deck<T> : AbstractDeck<T> {
          */
         @Suppress("unused")
         @CardMarker
-        fun DeckBuilder<Card>.card(block: CardBuilder.() -> Unit) = CardBuilder(block).let { cardList.add(Card(it.value, it.suit)) }
+        fun DeckBuilder<Card>.card(block: CardBuilder.() -> Unit) = apply { cardList.add(CardBuilder(block)) }
 
         /**
          * Add a [Card] to the deck
          */
         @Suppress("unused")
         @CardMarker
-        fun DeckBuilder<Card>.card(value: Int, suit: Suit) = cardList.add(Card(value, suit))
+        fun DeckBuilder<Card>.card(value: Int, suit: Suit) = apply { cardList.add(Card(value, suit)) }
 
         /**
          * Add a [Card] to the deck
          */
         @Suppress("unused")
         @CardMarker
-        fun DeckBuilder<Card>.card(vararg pairs: Pair<Int, Suit>) = cardList.addAll(pairs.map { Card(it.first, it.second) })
+        fun DeckBuilder<Card>.card(vararg pairs: Pair<Int, Suit>) = apply { cardList.addAll(pairs.map { Card(it.first, it.second) }) }
 
         /**
          * Add cards to the deck
          */
         @CardMarker
-        fun cards(vararg cards: T) = cardList.addAll(cards)
+        fun cards(vararg cards: T) = apply { cardList.addAll(cards) }
 
         /**
          * Add a deck to the deck
          */
         @CardMarker
-        fun deck(deck: Deck<T>) = cardList.addAll(deck.deckOfCards)
+        fun deck(deck: Deck<T>) = apply { cardList.addAll(deck.deckOfCards) }
 
         /**
          * Add cards to the deck
          */
         @CardMarker
-        fun cards(cards: Iterable<T>) = cardList.addAll(cards)
+        fun cards(cards: Iterable<T>) = apply { cardList.addAll(cards) }
 
         private fun build() = Deck(cardList, DeckListenerBuilder.buildListener(deckListener))
 

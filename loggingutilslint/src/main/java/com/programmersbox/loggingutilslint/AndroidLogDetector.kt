@@ -9,7 +9,7 @@ import org.jetbrains.uast.ULiteralExpression
 import org.jetbrains.uast.UQualifiedReferenceExpression
 
 @Suppress("UnstableApiUsage")
-class AndroidLogDetector : Detector(), UastScanner {
+class AndroidLogDetector : Detector(), UastScanner, SourceCodeScanner {
 
     override fun getApplicableMethodNames(): List<String> = listOf("v", "d", "i", "w", "e", "wtf")
 

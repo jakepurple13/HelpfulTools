@@ -25,8 +25,12 @@ import com.programmersbox.funutils.views.flash
 import com.programmersbox.gsonutils.*
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.*
+import com.programmersbox.rxutils.rxRequestPermissions
 import com.programmersbox.testingplaygroundapp.cardgames.blackjack.BlackjackActivity
 import com.programmersbox.thirdpartyutils.into
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.rxkotlin.addTo
+import io.reactivex.rxkotlin.subscribeBy
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.test_item.view.*
 import kotlinx.coroutines.Dispatchers
@@ -52,10 +56,14 @@ class MainActivity : AppCompatActivity() {
 
     private var info2: DeviceInfo.Info by sharedPrefNotNullObjectDelegateSync(DeviceInfo.Info())
 
+    private val disposable = CompositeDisposable()
+
     @SuppressLint("MissingPermission")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Log.v("asdf", "asdf")
 
         val t = TimeCounter(this, 5, 5.minutes.inMilliseconds.toLong())
         t.plusOne()
@@ -134,6 +142,15 @@ class MainActivity : AppCompatActivity() {
                     .setTitle("Games to Play")
                     .setEnumItems<Games>(Games.values().map(Games::text).toTypedArray()) { item, _ -> startActivity(Intent(this, item.clazz)) }
                     .show()
+            }
+
+        gotoGames
+            .longClicks()
+            .collectOnUi {
+                rxRequestPermissions(Manifest.permission.RECORD_AUDIO)
+                    .doOnError { it.printStackTrace() }
+                    .subscribeBy { println(it) }
+                    .addTo(disposable)
             }
 
         createNotificationChannel("id_channel", importance = NotificationChannelImportance.HIGH)

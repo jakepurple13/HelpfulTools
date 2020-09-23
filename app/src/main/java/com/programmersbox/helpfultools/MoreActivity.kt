@@ -15,10 +15,10 @@ class MoreActivity : AppCompatActivity() {
 
     private val sequenceList = listOf(Directions.UP, Directions.DOWN, Directions.LEFT, Directions.RIGHT)
     private val achieved = { Toast.makeText(this, "You did it!", Toast.LENGTH_SHORT).show() }
-    private val sequenceRest = { Toast.makeText(this, "Sequenced Reset", Toast.LENGTH_SHORT).show() }
+    private val sequenceReset = { Toast.makeText(this, "Sequenced Reset", Toast.LENGTH_SHORT).show() }
 
-    private val sequenceMaker = SequenceMaker(sequenceList, achieved).sequenceReset(sequenceRest)
-    private val timedSequenceMaker = TimedSequenceMaker(sequenceList, 2000, achieved).apply { sequenceReset(sequenceRest) }
+    private val sequenceMaker = SequenceMaker(sequenceList, achieved).sequenceReset(sequenceReset)
+    private val timedSequenceMaker = TimedSequenceMaker(sequenceList, 2000, achieved).apply { sequenceReset(sequenceReset) }
 
     private var sequence: SequenceMaker<Directions>? = null
 

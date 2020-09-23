@@ -220,7 +220,7 @@ fun Context.speechToText(speechListener: SpeechListener, prompt: String = "Say y
 fun Context.speechToText(prompt: String = "Say your text...", speechListenerDsl: SpeechListenerDsl.() -> Unit) =
     speechToText(SpeechListenerDsl.create(speechListenerDsl), prompt)
 
-interface SpeechListener {
+fun interface SpeechListener {
     fun getResult(text: ArrayList<String>?)
     fun onReadyForSpeech(params: Bundle) {}
     fun onEndOfSpeech() {}

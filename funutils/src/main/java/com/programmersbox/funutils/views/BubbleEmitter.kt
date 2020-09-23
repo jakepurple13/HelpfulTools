@@ -20,6 +20,7 @@ import androidx.core.animation.doOnEnd
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.toColorInt
 import androidx.core.view.contains
+import com.programmersbox.funutils.views.BubbleEmitter.BubbleClickListener
 import java.util.*
 import kotlin.math.abs
 import kotlin.random.Random
@@ -99,25 +100,22 @@ class BubbleEmitter @JvmOverloads constructor(
          * Your custom touch on bubble! The logic to find the bubble is written for you.
          * If you feel that you can do a better logic job, go ahead! This is just to make things a little easier
          */
-        fun customBubbleTouch(action: Bubble?.() -> Unit): BubbleEmitter.(MotionEvent?) -> Boolean =
-            { event ->
-                val bool = if (event != null) {
-                    val b1 = bubbleList.find {
-                        val x = abs(it.x.toInt() - event.x.toInt())
-                        val y = abs(it.y.toInt() - event.y.toInt())
-                        (x in 0..10) && (y in 0..10)
-                    }
-                    b1.action()
-                    b1 != null
-                } else
-                    false
-                bool
-            }
+        fun customBubbleTouch(action: CustomBubbleTouchListener): BubbleClickListener = BubbleClickListener { emitter, event ->
+            if (event != null) {
+                val b1 = emitter.bubbleList.find {
+                    val x = abs(it.x.toInt() - event.x.toInt())
+                    val y = abs(it.y.toInt() - event.y.toInt())
+                    (x in 0..10) && (y in 0..10)
+                }
+                action.onBubbleTouch(b1)
+                b1 != null
+            } else false
+        }
 
         /**
          * Bubbles cannot be touched
          */
-        val BUBBLE_TOUCH_RESET: BubbleEmitter.(MotionEvent?) -> Boolean = { false }
+        val BUBBLE_TOUCH_RESET: BubbleClickListener = BubbleClickListener { _, _ -> false }
 
     }
 
@@ -216,20 +214,18 @@ class BubbleEmitter @JvmOverloads constructor(
     /**
      * If you want to change behavior of when you press on the bubbles
      */
-    var touchEvent: BubbleEmitter.(MotionEvent?) -> Boolean = BUBBLE_TOUCH_RESET
+    var touchEvent: BubbleClickListener = BUBBLE_TOUCH_RESET
 
     /**
      * The current list of bubbles, only use for [touchEvent]
      */
-    val bubbleList: MutableList<Bubble>
-        get() = bubbles
+    val bubbleList: MutableList<Bubble> get() = bubbles
 
     private var removeAtEnd = false
 
+    //if (touchEvent(event)) super.onTouchEvent(event) else touchEvent(event)
     @SuppressLint("ClickableViewAccessibility")
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        return touchEvent(event)//if (touchEvent(event)) super.onTouchEvent(event) else touchEvent(event)
-    }
+    override fun onTouchEvent(event: MotionEvent?): Boolean = touchEvent.onBubbleClick(this, event)
 
     override fun onDraw(c: Canvas) {
         super.onDraw(c)
@@ -278,26 +274,17 @@ class BubbleEmitter @JvmOverloads constructor(
     /**
      * if you want to modify how the fill is done in anyway
      */
-    fun fillModify(modify: (Paint) -> Unit): BubbleEmitter {
-        modify(paintFill)
-        return this
-    }
+    fun fillModify(modify: (Paint) -> Unit): BubbleEmitter = apply { modify(paintFill) }
 
     /**
      * if you want to modify how the stroke is done in anyway
      */
-    fun strokeModify(modify: Paint.() -> Unit): BubbleEmitter {
-        paintStroke.modify()
-        return this
-    }
+    fun strokeModify(modify: Paint.() -> Unit): BubbleEmitter = apply { paintStroke.modify() }
 
     /**
      * if you want to modify how the gloss is done in anyway
      */
-    fun glossModify(modify: Paint.() -> Unit): BubbleEmitter {
-        modify(paintGloss)
-        return this
-    }
+    fun glossModify(modify: Paint.() -> Unit): BubbleEmitter = apply { modify(paintGloss) }
 
     /**
      * @param viewGroup the layout you want to attach this BubbleEmitter to
@@ -311,52 +298,42 @@ class BubbleEmitter @JvmOverloads constructor(
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
         }
-    ): BubbleEmitter {
+    ): BubbleEmitter = apply {
         this.viewGroup = viewGroup
         this.params = withParams()
-        return this
     }
 
     /**
      * @param withParams The kind of [ViewGroup.LayoutParams] you want this View to have
      */
-    fun withParams(withParams: () -> ViewGroup.LayoutParams): BubbleEmitter {
-        this.params = withParams()
-        return this
-    }
+    fun withParams(withParams: () -> ViewGroup.LayoutParams): BubbleEmitter = apply { this.params = withParams() }
 
     /**
      * Changes the amount of bubbles that can be shown
      */
-    fun changeBubbleLimit(bubbleLimit: Int = 25): BubbleEmitter {
-        this.bubbleLimit = bubbleLimit
-        return this
-    }
+    fun changeBubbleLimit(bubbleLimit: Int = 25): BubbleEmitter = apply { this.bubbleLimit = bubbleLimit }
 
     /**
      * The size of the bubbles
      */
-    fun setSizeRange(sizeFrom: Int = 20, sizeTo: Int = 80): BubbleEmitter {
+    fun setSizeRange(sizeFrom: Int = 20, sizeTo: Int = 80): BubbleEmitter = apply {
         this.sizeFrom = sizeFrom
         this.sizeTo = sizeTo
-        return this
     }
 
     /**
      * The size of the bubbles
      */
-    fun setSizeRange(range: IntRange = 20..80): BubbleEmitter {
-        this.sizeFrom = range.first
-        this.sizeTo = range.last
-        return this
+    fun setSizeRange(range: IntRange = 20..80): BubbleEmitter = apply {
+        sizeFrom = range.first
+        sizeTo = range.last
     }
 
     /**
      * The distance the bubbles can go
      */
-    fun setDistance(distance: Float): BubbleEmitter {
+    fun setDistance(distance: Float): BubbleEmitter = apply {
         this.distance = distance
-        return this
     }
 
     /**
@@ -365,21 +342,17 @@ class BubbleEmitter @JvmOverloads constructor(
     fun setTimeRange(
         timeFrom: Long = 100,
         timeTo: Long = 500
-    ): BubbleEmitter {
+    ): BubbleEmitter = apply {
         this.timeFrom = timeFrom
         this.timeTo = timeTo
-        return this
     }
 
     /**
      * The time to spawn the bubbles
      */
-    fun setTimeRange(
-        range: LongRange = 100L..500L
-    ): BubbleEmitter {
-        this.timeFrom = range.first
-        this.timeTo = range.last
-        return this
+    fun setTimeRange(range: LongRange = 100L..500L): BubbleEmitter = apply {
+        timeFrom = range.first
+        timeTo = range.last
     }
 
     /**
@@ -457,11 +430,10 @@ class BubbleEmitter @JvmOverloads constructor(
         @ColorInt stroke: Int = Color.rgb(249, 249, 249),
         @ColorInt fill: Int = Color.rgb(236, 236, 236),
         @ColorInt gloss: Int = Color.rgb(255, 255, 255)
-    ): BubbleEmitter {
+    ): BubbleEmitter = apply {
         strokeColorsToUse[0] = stroke
         fillColorsToUse[0] = fill
         glossColorsToUse[0] = gloss
-        return this
     }
 
     /**
@@ -471,11 +443,10 @@ class BubbleEmitter @JvmOverloads constructor(
         @ColorRes stroke: Int = android.R.color.holo_blue_bright,
         @ColorRes fill: Int = android.R.color.holo_blue_dark,
         @ColorRes gloss: Int = android.R.color.white
-    ): BubbleEmitter {
+    ): BubbleEmitter = apply {
         strokeColorsToUse[0] = context.getColor(stroke)
         fillColorsToUse[0] = context.getColor(fill)
         glossColorsToUse[0] = context.getColor(gloss)
-        return this
     }
 
     /**
@@ -485,11 +456,10 @@ class BubbleEmitter @JvmOverloads constructor(
         @ColorInt stroke: Int? = null,
         @ColorInt fill: Int? = null,
         @ColorInt gloss: Int? = null
-    ): BubbleEmitter {
+    ): BubbleEmitter = apply {
         stroke?.let { strokeColorsToUse.add(it) }
         fill?.let { fillColorsToUse.add(it) }
         gloss?.let { glossColorsToUse.add(it) }
-        return this
     }
 
     /**
@@ -499,51 +469,36 @@ class BubbleEmitter @JvmOverloads constructor(
         @ColorRes stroke: Int? = null,
         @ColorRes fill: Int? = null,
         @ColorRes gloss: Int? = null
-    ): BubbleEmitter {
+    ): BubbleEmitter = apply {
         stroke?.let { strokeColorsToUse.add(context.getColor(it)) }
         fill?.let { fillColorsToUse.add(context.getColor(it)) }
         gloss?.let { glossColorsToUse.add(context.getColor(it)) }
-        return this
     }
 
     /**
      * sets the touch event
      */
-    fun setTouchEvent(boolean: Boolean = false) {
-        touchEvent = { boolean }
-    }
+    fun setTouchEvent(bubbleClickListener: BubbleClickListener = BUBBLE_TOUCH_RESET) = apply { touchEvent = bubbleClickListener }
 
     /**
      * sets the emission delay
      */
-    fun setEmissionDelay(delayMillis: Long = 10L * bubbles.size): BubbleEmitter {
-        emissionDelayMillis = delayMillis
-        return this
-    }
+    fun setEmissionDelay(delayMillis: Long = 10L * bubbles.size): BubbleEmitter = apply { emissionDelayMillis = delayMillis }
 
     /**
      * if you want the bubbles to "pop"
      */
-    fun canExplode(boolean: Boolean = true): BubbleEmitter {
-        canExplodes = { boolean }
-        return this
-    }
+    fun canExplode(boolean: Boolean = true): BubbleEmitter = apply { canExplodes = { boolean } }
 
     /**
      * a more controlled "pop" allowing only certain bubbles to pop if you want
      */
-    fun canExplode(boolean: (Bubble) -> Boolean = { true }): BubbleEmitter {
-        canExplodes = boolean
-        return this
-    }
+    fun canExplode(boolean: (Bubble) -> Boolean = { true }): BubbleEmitter = apply { canExplodes = boolean }
 
     /**
      * sets how fast the bubbles move
      */
-    fun setMovementSpeed(speed: Long = 2000L): BubbleEmitter {
-        this.movementSpeed = speed
-        return this
-    }
+    fun setMovementSpeed(speed: Long = 2000L): BubbleEmitter = apply { movementSpeed = speed }
 
     private fun moveAnimation(uuid: UUID, radius: Float): ValueAnimator {
         val animator: ValueAnimator =
@@ -623,6 +578,14 @@ class BubbleEmitter @JvmOverloads constructor(
             interpolator = LinearInterpolator()
         }
         return animator
+    }
+
+    fun interface CustomBubbleTouchListener {
+        fun onBubbleTouch(bubble: Bubble?)
+    }
+
+    fun interface BubbleClickListener {
+        fun onBubbleClick(emitter: BubbleEmitter, event: MotionEvent?): Boolean
     }
 }
 

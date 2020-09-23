@@ -798,6 +798,9 @@ class ExampleUnitTest {
         val x = f.let(::asdf)
 
         println(x)
+
+        val d = listOf(true, false).sortedBy { it }.sortedWith(compareBy<Boolean> { it }.thenBy { it })
+        println(d)
     }
 
     class CustomFixedList(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : FixedList<Int>(fixedSize, location) {

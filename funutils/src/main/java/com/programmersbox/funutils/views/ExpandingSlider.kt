@@ -17,6 +17,7 @@ import android.view.animation.LinearInterpolator
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import com.programmersbox.funutils.R
+import com.programmersbox.funutils.views.ExpandingSlider.SliderListener
 import java.text.DecimalFormat
 import kotlin.math.max
 import kotlin.math.sqrt
@@ -223,11 +224,7 @@ class ExpandingSlider : View {
     fun setListener(listener: SliderListener?) = run { this.listener = listener }
 
     fun setListener(block: ((Float, View?) -> Unit)?) {
-        this.listener = block?.let {
-            object : SliderListener {
-                override fun onValueChanged(value: Float, v: View?) = it(value, v)
-            }
-        }
+        this.listener = block?.let { SliderListener { value, v -> it(value, v) } }
     }
 
     var heightSlider: Float
@@ -376,7 +373,7 @@ class ExpandingSlider : View {
     }
 
     //INTERFACE
-    interface SliderListener {
+    fun interface SliderListener {
         fun onValueChanged(value: Float, v: View?)
     }
 

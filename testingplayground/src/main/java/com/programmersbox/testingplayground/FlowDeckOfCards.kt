@@ -3,6 +3,7 @@ package com.programmersbox.testingplayground
 import com.programmersbox.funutils.cards.AbstractDeck
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Suit
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.flow.asFlow
@@ -20,12 +21,13 @@ class FlowDeck<T> : AbstractDeck<T> {
     private val onShuffleChannel = BroadcastChannel<Unit>(1)
 
     var channelMove = FlowDeckMoveType.SEND
+    var coroutineScope: CoroutineScope = GlobalScope
 
     enum class FlowDeckMoveType { SEND, OFFER }
 
     inner class DrawInfo(val card: T, val size: Int)
 
-    private fun <R> sendChannel(channel: BroadcastChannel<R>, item: R) = GlobalScope.launch {
+    private fun <R> sendChannel(channel: BroadcastChannel<R>, item: R) = coroutineScope.launch {
         when (channelMove) {
             FlowDeckMoveType.SEND -> channel.send(item)
             FlowDeckMoveType.OFFER -> channel.offer(item)

@@ -16,6 +16,7 @@ import com.google.android.material.animation.AnimationUtils
 import com.google.android.material.animation.ArgbEvaluatorCompat
 import com.google.android.material.math.MathUtils.lerp
 import com.programmersbox.funutils.R
+import com.programmersbox.funutils.views.SlideValuePicker.Listener
 import kotlin.properties.ObservableProperty
 import kotlin.reflect.KProperty
 
@@ -192,15 +193,13 @@ open class SlideValuePicker @JvmOverloads constructor(
         listener?.onProgressChanged(progress)
     }
 
-    interface Listener {
+    fun interface Listener {
         fun onProgressChanged(progress: Float)
     }
 
     fun setOnProgressChangeListener(listener: Listener?) = run { this.listener = listener }
     fun setOnProgressChangeListener(listener: (progress: Float) -> Unit) {
-        this.listener = object : Listener {
-            override fun onProgressChanged(progress: Float) = listener(progress)
-        }
+        this.listener = Listener { progress -> listener(progress) }
     }
 
     fun setStartColor(@ColorInt color: Int) {

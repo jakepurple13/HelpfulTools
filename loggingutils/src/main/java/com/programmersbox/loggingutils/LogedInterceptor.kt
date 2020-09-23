@@ -2,7 +2,7 @@ package com.programmersbox.loggingutils
 
 import android.util.Log
 
-interface LogedInterceptor {
+fun interface LogedInterceptor {
     fun log(level: LogLevel, tag: String, msg: String)
 }
 

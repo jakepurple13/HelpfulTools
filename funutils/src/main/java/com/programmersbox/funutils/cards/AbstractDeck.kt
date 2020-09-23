@@ -72,15 +72,15 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
         .let { filtered -> removeAll(filtered).also { filtered.forEach { c -> cardDrawn(c, size) } } }
 
     /**
-     * Draws a card_games.Card!
-     * @throws DeckException if the card_games.Deck is Empty
+     * Draws a [Card]
+     * @throws DeckException if the [AbstractDeck] is Empty
      */
     @Throws(DeckException::class)
     fun draw() = deckOfCards.drawCard()
 
     /**
      * Draws multiple Cards!
-     * @throws DeckException if the card_games.Deck is Empty
+     * @throws DeckException if the [AbstractDeck] is Empty
      */
     @Throws(DeckException::class)
     infix fun draw(amount: Int) = tryCatch("Deck is Empty") { mutableListOf<T>().apply { repeat(amount) { this += draw() } }.toList() }
@@ -113,7 +113,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     /**
      * Add [cards] to the deck
      */
-    infix fun addCards(cards: Iterable<T>) = cards.let { deckOfCards.addCards(*cards.toArray()) }
+    infix fun addCards(cards: Iterable<T>) = deckOfCards.addCards(*cards.toArray())
 
     /**
      * Add [cards] to the deck
@@ -240,7 +240,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
      * @throws DeckException if the card_games.Deck is Empty
      */
     @Throws(DeckException::class)
-    open operator fun minus(amount: Int) = draw(amount)
+    open infix operator fun minus(amount: Int) = draw(amount)
 
     /**
      * Sets [index] of the deck with [card]

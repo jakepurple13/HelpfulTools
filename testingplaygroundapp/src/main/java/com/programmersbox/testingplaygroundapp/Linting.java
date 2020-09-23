@@ -21,5 +21,14 @@ class Linting {
         Loged.INSTANCE.d("World", "Hello", true, true);
         Loged.INSTANCE.wtf("World", "Hello", true, true);
         Loged.INSTANCE.r("World", "Hello", true, true, 2, 3, 4, 5, 6, 7);
+
+        Loged.w("World", "Hello", true, true);
+        Loged.a("World", "Hello", true, true);
+        Loged.i("World", "Hello", true, true);
+        Loged.v("World", "Hello", true, true);
+        Loged.e("World", "Hello", true, true);
+        Loged.d("World", "Hello", true, true);
+        Loged.wtf("World", "Hello", true, true);
+        Loged.r("World", "Hello", true, true, 2, 3, 4, 5, 6, 7);
     }
 }

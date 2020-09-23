@@ -2,6 +2,7 @@ package com.programmersbox.funutils
 
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Deck
+import com.programmersbox.funutils.funutilities.SequenceMaker
 import org.junit.Test
 
 /**
@@ -14,6 +15,9 @@ class ExampleUnitTest {
     fun addition_isCorrect() {
         //assertEquals(4, 2 + 2)
         Deck(Card.RandomCard)
+        val f = SequenceMaker(1, 2, 3) {
+
+        }
     }
 
     @Test
