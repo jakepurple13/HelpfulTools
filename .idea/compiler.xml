@@ -22,8 +22,6 @@
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="dslannotations" target="1.7" />
-      <module name="dslprocessor" target="1.7" />
-      <module name="funutils" target="1.7" />
     </bytecodeTargetLevel>
   </component>
 </project>

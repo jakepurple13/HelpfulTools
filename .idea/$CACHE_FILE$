@@ -5,6 +5,21 @@
       <profile-state>
         <expanded-state>
           <State />
+          <State>
+            <id>Android</id>
+          </State>
+          <State>
+            <id>JUnitJava</id>
+          </State>
+          <State>
+            <id>Java</id>
+          </State>
+          <State>
+            <id>LintAndroid</id>
+          </State>
+          <State>
+            <id>PerformanceLintAndroid</id>
+          </State>
         </expanded-state>
         <selected-state>
           <State>
