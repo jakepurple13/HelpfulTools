@@ -3,9 +3,7 @@ package com.programmersbox.helpfulutils
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffColorFilter
+import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.transition.AutoTransition
@@ -228,3 +226,9 @@ private fun constructSetAndAnimate(context: Context, layoutId: Int, root: Constr
 var EditText.currentText: CharSequence
     get() = text
     set(value) = setText(value)
+
+/**
+ * Saves the view to a bitmap
+ */
+fun View.asBitmap(): Bitmap = Bitmap.createBitmap(layoutParams.width, layoutParams.height, Bitmap.Config.ARGB_8888)
+    .also { bitmap -> draw(Canvas(bitmap)) }
