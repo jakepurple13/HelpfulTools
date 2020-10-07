@@ -67,6 +67,25 @@ val screenState: BroadcastReceiver = Context.screenState {
 
 ```
 
+## [Activity](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/ActivityUtils.kt)
+```kotlin
+
+ComponentActivity.enableImmersiveMode()
+ComponentActivity.hideSystemUI()
+ComponentActivity.showSystemUI()
+ComponentActivity.addSecureFlag()
+ComponentActivity.clearSecureFlag()
+
+ThemeSetting.SYSTEM
+ThemeSetting.LIGHT
+ThemeSetting.NIGHT
+
+//an easy way to get/set the wanted setting. Uses AppCompatDelegate.setDefaultNightMode(setting.type)
+val theme: ThemeSetting? = ThemeSetting.currentThemeSetting
+ThemeSetting.setTheme(ThemeSetting.SYSTEM)
+
+```
+
 ## [Context](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/ContextUtils.kt)
 ```kotlin
 
@@ -80,6 +99,9 @@ Context.speechToText(object : SpeechListener {
 })
 
 Context.textToSpeech("Hello World")
+
+//Runs on ui thread without the need for Context
+runOnUiThread {  }
 
 ```
 
@@ -128,7 +150,7 @@ val notification = NotificationDslBuilder.builder(this, channelId = "testChannel
     }
 }
 
-notificationManager.notify(/*notification id*/, notification)
+notificationManager.notify(/*notification id*/ 1, notification)
 
 ```
 
@@ -150,4 +172,106 @@ recyclerView.quickAdapter(R.layout.support_simple_spinner_dropdown_item, "Jake",
 //this will loop around the items given to it
 var range = ItemRange(1, 2, 3, 4, 5, loop = true)
 range++
+```
+
+## [Collection](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/CollectionUtils.kt)
+```kotlin
+
+val intList = mutableListOf(1, 2, 3)
+
+//added a varargs addAll
+intList.addAll(4, 5, 6)
+
+data class ItemOne(val num: Int)
+
+//creates a list of size. Usually helpful for testing data
+val itemList = sizedListOf<ItemOne>(10) { ItemOne(it) }
+
+itemList.intersect(intList) { item, i -> i == item.num }
+    .let { println(it) } 
+//will print [ItemOne(num=1), ItemOne(num=2), ItemOne(num=3), ItemOne(num=4), ItemOne(num=5), ItemOne(num=6)]
+
+val randomInt = intList.randomRemove() //will randomly remove an element
+val randomPredicateInt = intList.randomRemove { it % 2 == 0 } //will randomly remove an element based on a predicate
+val randomPredicate = intList.random { it % 2 != 0 } //will randomly get an element based on a predicate
+val randomNList = intList.randomN(3) //will randomly get N elements and return a list
+val randomNRemoveList = intList.randomNRemove(3) //will randomly get N elements and return a list
+
+//FixedList will only hold up to X items. Once capacity is reached, it will remove items from location which can be START or END
+val fixedList = FixedList(size = 10, location = FixedListLocation.END, c = listOf(1, 2, 3))
+//Same as FixedList but for sets
+val fixedSet = FixedSet(size = 10, location = FixedListLocation.END, c = setOf(1, 2, 3))
+//Same as FixedList but for maps
+val fixedMap = FixedMap(size = 10, location = FixedListLocation.END, c = mapOf(1 to "Hello", 2 to "World", 3 to "!"))
+
+```
+
+## [DateUtils](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/DateUtils.kt)
+```kotlin
+
+//My own implementation of the Duration/TimeUnit classes
+HelpfulUnit.HOURS.convert(1, HelpfulUnit.MINUTES)
+1.hours.inMinutes
+//It takes the same amount of time as Duration/TimeUnit to do the conversions
+
+```
+
+## [DownloadUtils](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/DownloadUtils.kt)
+```kotlin
+
+//an easy dsl way to use the default download manager
+downloadManager.enqueue(Context) {
+    downloadUri = Uri.parse("downloadUrl")
+    allowOverRoaming = true
+    networkType = DownloadDslManager.NetworkType.WIFI_MOBILE
+    title = "Title"
+    mimeType = "image/jpeg"
+    visibility = DownloadDslManager.NotificationVisibility.COMPLETED
+    destinationInExternalPublicDir(Environment.DIRECTORY_PICTURES, filename)
+}
+
+```
+
+## [Utils](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/Utils.kt)
+These are utils I couldn't classify
+```kotlin
+
+val c = Random.nextColor() //returns a random color
+
+```
+
+## [ViewUtils](https://github.com/jakepurple13/HelpfulTools/blob/master/helpfulutils/src/main/java/com/programmersbox/helpfulutils/ViewUtils.kt)
+```kotlin
+
+TextView.startDrawable = Drawable
+TextView.endDrawable = Drawable
+TextView.topDrawable = Drawable
+TextView.bottomDrawable = Drawable
+
+val b = View.asBitmap() //creates a bitmap based off of the view
+
+val c = Context.colorFromTheme(R.attr.customColor, Color.BLACK) //gets a color based off of a theme
+
+//These three will set the visibility
+View.gone()
+View.invisible()
+View.visible()
+
+ViewGroup.animateChildren {
+    //uses transition manager to give default animations.
+    //for example; if you use View.gone(), it will animate the view going away without the need to do it yourself
+}
+
+Drawable.changeDrawableColor(Color.BLUE) //will mutate and add a color filter
+
+View.hideKeyboard()
+View.showKeyboard()
+
+AlertDialog.Builder(Context)
+    .setCustomTitle(R.layout.customTitle) { /*setup the title view here*/ }
+    .setView(R.layout.customView) { /*setup the view here*/ }
+    .setEnumItems(*ViewEnums.values().map { it.name }.toTypedArray()) { e, d ->
+        //e is the enum. It does go by ordinal
+    }
+    
 ```
