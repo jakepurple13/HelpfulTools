@@ -34,3 +34,25 @@ Glide.with(context)
         resourceReady { image, _ -> println("Image is a bitmap!") }
     }
 ```
+
+# [CustomChromeTabs](https://github.com/jakepurple13/HelpfulTools/blob/master/thirdpartyutils/src/main/java/com/programmersbox/thirdpartyutils/BrowserUtils.kt)
+```kotlin
+//Opens a url in a custom chrome tab
+Context.openInCustomChromeBrowser("https://www.google.com") {
+    //modify the tab
+}
+
+//Also have it working for TextViews
+val tv = TextView(context)
+
+tv.transformationMethod = ChromeCustomTabTransformationMethod(context) {
+    //modify the tab
+    setStartAnimations(context, R.anim.slide_in_right, R.anim.slide_out_left)
+}
+tv.movementMethod = LinkMovementMethod.getInstance()
+```
+
+# [Retrofit](https://github.com/jakepurple13/HelpfulTools/blob/master/thirdpartyutils/src/main/java/com/programmersbox/thirdpartyutils/RetrofitUtils.kt)
+```kotlin
+//wip
+```

@@ -4,10 +4,7 @@ import android.view.View
 import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.ticker
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 
 /**
  * Creates a timer via flow
@@ -21,6 +18,11 @@ fun timerFlow(delayMillis: Long, startInMs: Long = delayMillis, action: suspend 
  */
 fun <T> Flow<T>.collectOnUi(scope: CoroutineScope = GlobalScope, action: (value: T) -> Unit) =
     scope.launch { collect { scope.launch(Dispatchers.Main) { action(it) } } }
+
+/**
+ * [combine]s this to [flow] as a Pair
+ */
+fun <T, R> Flow<T>.with(flow: Flow<R>) = combine(flow) { t, f -> t to f }
 
 /**
  * collect from the flow on the ui loop

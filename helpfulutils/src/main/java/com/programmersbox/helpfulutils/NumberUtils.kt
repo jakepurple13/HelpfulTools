@@ -2,6 +2,7 @@ package com.programmersbox.helpfulutils
 
 import java.util.*
 import kotlin.math.min
+import kotlin.math.round
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -157,3 +158,12 @@ fun <T : Number> T.stringForTime(): String {
  * @return a string of random characters of [this] length
  */
 fun <T : Number> T.randomString(): String = StringBuilder().apply { repeat(toInt()) { append((Random.nextInt(96) + 32).toChar()) } }.toString()
+
+/**
+ * A way to round a number to [decimals] places
+ */
+fun Number.round(decimals: Int): Double {
+    var multiplier = 1.0
+    repeat(decimals) { multiplier *= 10 }
+    return round(toDouble() * multiplier) / multiplier
+}
