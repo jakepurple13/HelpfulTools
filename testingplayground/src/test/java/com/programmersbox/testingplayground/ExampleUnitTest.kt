@@ -1,7 +1,10 @@
 package com.programmersbox.testingplayground
 
+import com.programmersbox.funutils.cards.AbstractDeck
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Deck
+import com.programmersbox.gsonutils.fromJson
+import com.programmersbox.gsonutils.toJson
 import com.programmersbox.helpfulutils.*
 import com.programmersbox.loggingutils.FrameType
 import com.programmersbox.loggingutils.Loged
@@ -13,6 +16,10 @@ import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import org.junit.Before
 import org.junit.Test
 import kotlin.random.Random
@@ -39,6 +46,67 @@ class ExampleUnitTest {
         //ARGB(a=133, r=198, g=134, b=34) works
         //ARGB(a=0, r=163, g=36, b=194)
         return Colors.RGB(red, green, blue).also { println(it) }.toInt()
+    }
+
+    @Serializable
+    data class SerializeTest(val r: Int, val g: Int, val b: Int)
+
+    inline fun <reified T> T.toJsonX(json: Json = Json) = json.encodeToString(this)
+    inline fun <reified T> T.toPrettyJsonX() = Json { prettyPrint = true }.encodeToString(this)
+    inline fun <reified T> String.fromJsonX(json: Json = Json) = json.decodeFromString<T>(this)
+
+    @Test
+    fun serializableTesting() {
+
+        run {
+            val s = SerializeTest(25, 64, 128)
+
+            println(s)
+
+            val f = Json.encodeToString(s)
+
+            println(f)
+
+            val s1 = Json.decodeFromString<SerializeTest>(f)
+
+            println(s1)
+        }
+
+        println("-".repeat(50))
+
+        run {
+            val s = SerializeTest(25, 64, 128)
+
+            println(s)
+
+            val f = s.toJson()
+
+            println(f)
+
+            val s1 = f.fromJson<SerializeTest>()
+
+            println(s1)
+        }
+
+        println("-".repeat(50))
+
+        run {
+
+            val format = Json { encodeDefaults = true }
+
+            @Serializable
+            data class Project(
+                val name: String,
+                val language: String = "Kotlin",
+                val website: String? = null
+            )
+
+            val data = Project("kotlinx.serialization")
+            println(data)
+            println(format.encodeToString(data))
+
+        }
+
     }
 
     @Test
@@ -475,4 +543,11 @@ class FixedSizeList<T>(maxSize: Int = 1) : FixedList<T>(maxSize) {
     override fun add(index: Int, element: T) = super.add(index, element).also { singleSizeCheck() }
     override fun addAll(elements: Collection<T>): Boolean = super.addAll(elements).also { multipleSizeCheck() }
     override fun addAll(index: Int, elements: Collection<T>): Boolean = super.addAll(index, elements).also { multipleSizeCheck() }
+}
+
+class FixedDeck<T>(cards: Iterable<T> = emptyList()) : AbstractDeck<T>(cards) {
+    override val deckOfCards: FixedList<T> = cards.toFixedList(10)
+    override fun cardAdded(vararg card: T) {}
+    override fun cardDrawn(card: T, size: Int) {}
+    override fun deckShuffled() {}
 }

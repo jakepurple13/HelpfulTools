@@ -10,7 +10,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
 
     constructor(vararg cards: T) : this(cards.toList())
 
-    protected val deckOfCards: MutableList<T> = cards.toMutableList()
+    protected open val deckOfCards: MutableList<T> = cards.toMutableList()
 
     /**
      * The size of the deck
@@ -18,7 +18,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     val size: Int get() = deckOfCards.size
 
     /**
-     * A non immutable version of the deck
+     * An immutable version of the deck
      */
     val deck: List<T> get() = deckOfCards.toList()
 

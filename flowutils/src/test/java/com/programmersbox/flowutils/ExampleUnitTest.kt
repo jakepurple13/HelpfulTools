@@ -1,9 +1,9 @@
 package com.programmersbox.flowutils
 
 import kotlinx.coroutines.*
-import kotlinx.coroutines.channels.ReceiveChannel
-import kotlinx.coroutines.channels.produce
+import kotlinx.coroutines.channels.*
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.selects.select
@@ -184,6 +184,28 @@ class ExampleUnitTest {
 
         Unit
     }
+
+    @Test
+    fun broadcastChannelQuickCheck() = runBlocking {
+
+        val b = BroadcastChannel<Int>(Channel.CONFLATED)
+
+        b.sendBlocking(4)
+        val c = b.asFlow()
+
+        launch {
+            c.collect { println(it) }
+        }
+
+        b.sendBlocking(5)
+
+        launch {
+            c.collect { println(it) }
+        }
+
+        b.sendBlocking(6)
+
+    }.let { Unit }
 
     private fun methodReturningJob() = GlobalScope.launch {
         println("Before Delay")
