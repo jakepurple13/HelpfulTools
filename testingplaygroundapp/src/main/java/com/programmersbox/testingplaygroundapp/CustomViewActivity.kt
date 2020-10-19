@@ -1,15 +1,13 @@
 package com.programmersbox.testingplaygroundapp
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
 import android.os.Bundle
 import android.view.animation.OvershootInterpolator
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.graphics.drawable.toBitmap
 import com.google.android.material.snackbar.Snackbar
 import com.programmersbox.funutils.views.animateTo0
-import com.programmersbox.helpfulutils.batteryInformation
+import com.programmersbox.helpfulutils.battery
 import com.programmersbox.helpfulutils.batteryIntentFilter
 import com.programmersbox.helpfulutils.nextColor
 import kotlinx.android.synthetic.main.activity_custom_view.*
@@ -22,13 +20,7 @@ import kotlin.random.Random
 
 class CustomViewActivity : AppCompatActivity() {
 
-    private val battery by lazy {
-        object : BroadcastReceiver() {
-            override fun onReceive(context: Context, intent: Intent) = batteryInformation(context, intent).let {
-                loading.progress = it.percent.toInt()
-            }
-        }
-    }
+    private val battery by lazy { battery(false) { loading.progress = it.percent.toInt() } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,6 +30,7 @@ class CustomViewActivity : AppCompatActivity() {
         loading.emptyColor = Random.nextColor()
         loading.setImageResource(R.drawable.ace1)
         loading.setImageDrawable(getDrawable(R.drawable.ace2))
+        loading.setImageBitmap(getDrawable(R.drawable.ace2)?.toBitmap())
 
         loading.animationDuration(2500L)
         loading.animateInterpolator(OvershootInterpolator())
@@ -49,14 +42,18 @@ class CustomViewActivity : AppCompatActivity() {
                 while (count <= 100) {
                     delay(50)
                     runOnUiThread {
-                        //loading.progress = ++count
-                        loading.animateTo(++count, loading.progress)
+                        loading.progress = ++count
                     }
                 }
                 runOnUiThread {
                     Snackbar.make(loading, "Finished", Snackbar.LENGTH_SHORT).show()
                 }
             }
+        }
+
+        startButton.setOnLongClickListener {
+            loading.animateTo0()
+            true
         }
 
         val batteryConnect = MutableStateFlow(false)
@@ -70,14 +67,14 @@ class CustomViewActivity : AppCompatActivity() {
                         unregisterReceiver(battery)
                     }
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    //e.printStackTrace()
                 }
             }
         }
 
         batteryButton.setOnClickListener {
-            //batteryConnect.value = !batteryConnect.value
-            loading.animateTo0()
+            batteryConnect.value = !batteryConnect.value
+            batteryButton.text = "Battery: ${batteryConnect.value}"
         }
 
         batteryButton.setOnLongClickListener {

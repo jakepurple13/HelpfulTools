@@ -18,12 +18,13 @@ fun Context.timeTick(received: (context: Context, intent: Intent) -> Unit) = obj
 //--------------------------
 /**
  * This will give updates whenever the battery changes
+ * @param register if true, it will automatically register the BroadcastReceiver with the intent from [batteryIntentFilter]
  * @see Intent.ACTION_BATTERY_CHANGED
  */
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-fun Context.battery(batteryInfo: (info: Battery) -> Unit) = object : BroadcastReceiver() {
+fun Context.battery(register: Boolean = true, batteryInfo: (info: Battery) -> Unit) = object : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) = batteryInfo(batteryInformation(context, intent))
-}.also { registerReceiver(it, batteryIntentFilter()) }
+}.also { if (register) registerReceiver(it, batteryIntentFilter()) }
 
 /**
  * This will give the current status
