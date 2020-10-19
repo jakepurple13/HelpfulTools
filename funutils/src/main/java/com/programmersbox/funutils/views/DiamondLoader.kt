@@ -15,7 +15,7 @@ import com.programmersbox.funutils.R
 import kotlin.math.hypot
 
 
-class WatchDogsLoader : View {
+class DiamondLoader : View {
     constructor(context: Context) : super(context) {
         init(null)
     }
@@ -35,12 +35,12 @@ class WatchDogsLoader : View {
     }
 
     private fun init(attrs: AttributeSet?) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.WatchDogsLoader)
-        progress = a.getInt(R.styleable.WatchDogsLoader_progress, if (isInEditMode) 75 else 0)
-        loadingWidth = a.getDimension(R.styleable.WatchDogsLoader_lineWidth, 5f)
-        progressColor = a.getColor(R.styleable.WatchDogsLoader_progressColor, Color.BLUE)
-        emptyColor = a.getColor(R.styleable.WatchDogsLoader_emptyColor, Color.DKGRAY)
-        bitmap = a.getDrawable(R.styleable.WatchDogsLoader_src)?.toBitmap()
+        val a = context.obtainStyledAttributes(attrs, R.styleable.DiamondLoader)
+        progress = a.getInt(R.styleable.DiamondLoader_progress, if (isInEditMode) 75 else 0)
+        loadingWidth = a.getDimension(R.styleable.DiamondLoader_lineWidth, 5f)
+        progressColor = a.getColor(R.styleable.DiamondLoader_progressColor, Color.BLUE)
+        emptyColor = a.getColor(R.styleable.DiamondLoader_emptyColor, Color.DKGRAY)
+        bitmap = a.getDrawable(R.styleable.DiamondLoader_src)?.toBitmap()
         a.recycle()
         //if (isInEditMode) addCheckBoxHeader(0, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
@@ -208,6 +208,6 @@ class WatchDogsLoader : View {
 
 }
 
-fun WatchDogsLoader.animateTo0() {
+fun DiamondLoader.animateTo0() {
     animateTo(0, progress)
 }

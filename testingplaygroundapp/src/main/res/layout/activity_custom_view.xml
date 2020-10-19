@@ -8,7 +8,7 @@
     android:clipChildren="false"
     tools:context=".CustomViewActivity">
 
-    <com.programmersbox.funutils.views.WatchDogsLoader
+    <com.programmersbox.funutils.views.DiamondLoader
         android:id="@+id/loading"
         android:layout_width="300dp"
         android:layout_height="300dp"

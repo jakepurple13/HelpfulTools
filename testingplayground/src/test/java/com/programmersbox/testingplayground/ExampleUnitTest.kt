@@ -58,8 +58,6 @@ class ExampleUnitTest {
     @Test
     fun serializableTesting() {
 
-        //TODO: Make a square loading bar like in Watch Dogs
-
         run {
             val s = SerializeTest(25, 64, 128)
 
