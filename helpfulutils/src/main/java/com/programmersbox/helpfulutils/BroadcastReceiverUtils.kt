@@ -108,7 +108,7 @@ private fun batteryInformation(context: Context, intent: Intent?): Battery {
     return Battery(batteryPct, isCharging, type, health, technology, temp, voltage, cap)
 }
 
-private fun batteryIntentFilter() = IntentFilter().apply {
+fun batteryIntentFilter() = IntentFilter().apply {
     addAction(Intent.ACTION_POWER_CONNECTED)
     addAction(Intent.ACTION_POWER_DISCONNECTED)
     addAction(Intent.ACTION_BATTERY_CHANGED)

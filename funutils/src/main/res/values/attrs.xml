@@ -64,4 +64,12 @@
         </attr>
     </declare-styleable>
 
+    <declare-styleable name="WatchDogsLoader">
+        <attr name="progress" format="integer" />
+        <attr name="lineWidth" format="dimension" />
+        <attr name="progressColor" format="color" />
+        <attr name="emptyColor" format="color" />
+        <attr name="src" format="reference" />
+    </declare-styleable>
+
 </resources>

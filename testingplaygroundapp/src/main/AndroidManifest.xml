@@ -12,6 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".CustomViewActivity"></activity>
         <activity android:name=".CheckboxTestActivity" />
         <activity android:name=".BindingActivity" />
         <activity android:name=".cardgames.uno.UnoActivity" />
@@ -31,14 +32,14 @@
         <receiver android:name=".ActionService" />
         <receiver android:name=".ReplyService" />
 
-        <service
+        <!--<service
             android:name=".TestingControlService"
             android:label="test_label"
             android:permission="android.permission.BIND_CONTROLS">
             <intent-filter>
                 <action android:name="android.service.controls.ControlsProviderService" />
             </intent-filter>
-        </service>
+        </service>-->
     </application>
 
 </manifest>
