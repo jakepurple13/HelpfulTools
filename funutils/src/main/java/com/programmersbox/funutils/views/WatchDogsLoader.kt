@@ -1,16 +1,18 @@
 package com.programmersbox.funutils.views
 
+import android.animation.ValueAnimator
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.Interpolator
+import android.view.animation.LinearInterpolator
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.programmersbox.funutils.R
-import kotlin.math.pow
-import kotlin.math.sqrt
+import kotlin.math.hypot
 
 
 class WatchDogsLoader : View {
@@ -65,7 +67,7 @@ class WatchDogsLoader : View {
 
     var progress: Int = if (isInEditMode) 75 else 0
         set(value) {
-            field = value
+            field = if (value > 100) 100 else if (value < 0) 0 else value
             postInvalidate()
         }
 
@@ -87,12 +89,6 @@ class WatchDogsLoader : View {
 
     private val progressPaint by lazy { newStrokePaint { color = progressColor } }
 
-    private var listener: LoaderListener? = null
-
-    fun setAnimationListener(listener: LoaderListener?) {
-        this.listener = listener
-    }
-
     private var halfWidth = 0f
     private var halfHeight = 0f
 
@@ -104,21 +100,9 @@ class WatchDogsLoader : View {
 
     override fun onDraw(canvas: Canvas) {
         canvas.save()
-
-        canvas.drawRhombus(
-            halfWidth,
-            halfHeight,
-            halfWidth,
-            emptyPaint
-        )
-
-        canvas.drawProgress(
-            halfWidth,
-            halfHeight,
-            width.toFloat(),
-            progressPaint
-        )
-
+        canvas.addImage(halfWidth, halfHeight, halfWidth)
+        canvas.drawRhombus(halfWidth, halfHeight, halfWidth, emptyPaint)
+        canvas.drawProgress(halfWidth, halfHeight, width.toFloat(), progressPaint)
         canvas.restore()
     }
 
@@ -131,19 +115,29 @@ class WatchDogsLoader : View {
         path.lineTo(x, y + width) // Back to Top
         path.close()
         drawPath(path, paint)
+        path.reset()
+    }
+
+    private fun Canvas.addImage(x: Float, y: Float, width: Float) {
+        val path = Path()
+        path.moveTo(x, y + width) // Top
+        path.lineTo(x - width, y) // Left
+        path.lineTo(x, y - width) // Bottom
+        path.lineTo(x + width, y) // Right
+        path.lineTo(x, y + width) // Back to Top
+        path.close()
         clipPath(path)
         bitmap?.let { drawBitmap(it, x - it.width / 2, y - it.height / 2, null) }
+        path.reset()
     }
 
     private fun Canvas.drawProgress(x: Float, y: Float, width: Float, paint: Paint) {
 
         val halfWidth = width / 2
+        val length = hypot(x, y)
+        val ratio = ((width / 2 / 2 / 2) * 100) / length
 
         val path = Path()
-
-        //val fullWidth = width * 2
-        val length = sqrt(width.pow(2) + y.pow(2))
-        val ratio = ((width / 2 / 2) * 100) / length
 
         path.moveTo(x, y - halfWidth) // Top
 
@@ -179,21 +173,41 @@ class WatchDogsLoader : View {
         if (progress >= 100) {
             //path.lineTo(x, y - width)
             path.close()
-            listener?.onComplete()
         }
 
         drawPath(path, paint)
+        path.reset()
     }
 
     private fun newStrokePaint(block: Paint.() -> Unit = {}) = Paint().apply {
         isAntiAlias = true
         style = Paint.Style.STROKE
-        strokeWidth = loadingWidth
-        strokeCap = Paint.Cap.ROUND
+        strokeWidth = loadingWidth * 2
+        strokeCap = Paint.Cap.BUTT
     }.apply(block)
 
-    fun interface LoaderListener {
-        fun onComplete()
+    private val currentAnimator = ValueAnimator.ofInt().apply {
+        duration = 1000
+        interpolator = LinearInterpolator()
+        addUpdateListener { animation -> progress = animation.animatedValue as Int }
     }
 
+    fun animateTo(destination: Int, current: Int = progress) {
+        currentAnimator.cancel()
+        currentAnimator.setIntValues(current, destination)
+        currentAnimator.start()
+    }
+
+    fun animateInterpolator(interpolator: Interpolator) {
+        currentAnimator.interpolator = interpolator
+    }
+
+    fun animationDuration(durationMs: Long = 1000L) {
+        currentAnimator.duration = durationMs
+    }
+
+}
+
+fun WatchDogsLoader.animateTo0() {
+    animateTo(0, progress)
 }

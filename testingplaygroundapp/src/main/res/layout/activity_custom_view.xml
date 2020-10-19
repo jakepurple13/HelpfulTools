@@ -4,6 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
+    android:clipChildren="false"
     tools:context=".CustomViewActivity">
 
     <com.programmersbox.funutils.views.WatchDogsLoader
@@ -12,11 +14,11 @@
         android:layout_height="300dp"
         android:layout_centerInParent="true"
         app:emptyColor="@color/cardview_dark_background"
-        app:lineWidth="5dp"
-        app:progress="80"
+        app:lineWidth="30dp"
+        app:progress="1"
         app:progressColor="#029345"
         app:src="@drawable/ace1"
-        tools:src="@tools:sample/backgrounds/scenic" />
+        tools:src="@tools:sample/avatars" />
 
     <Button
         android:id="@+id/startButton"
@@ -33,5 +35,21 @@
         android:layout_below="@id/startButton"
         android:layout_centerHorizontal="true"
         android:text="Battery" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_below="@id/batteryButton"
+        android:layout_centerHorizontal="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <SeekBar
+        android:id="@+id/progressSlider"
+        android:layout_below="@id/progressBar"
+        android:layout_centerHorizontal="true"
+        android:min="0"
+        android:max="100"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

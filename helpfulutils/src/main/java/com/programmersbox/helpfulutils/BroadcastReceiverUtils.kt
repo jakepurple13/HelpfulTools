@@ -48,7 +48,7 @@ enum class ChargeType { USB, AC, WIRELESS, NONE }
 enum class BatteryHealth { COLD, DEAD, GOOD, OVER_VOLTAGE, OVERHEAT, UNSPECIFIED_FAILURE, UNKNOWN }
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
-private fun batteryInformation(context: Context, intent: Intent?): Battery {
+fun batteryInformation(context: Context, intent: Intent?): Battery {
     //percentage
     val level: Int = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
     val scale: Int = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
