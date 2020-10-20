@@ -12,6 +12,7 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.programmersbox.funutils.R
+import com.programmersbox.helpfulutils.colorFromTheme
 import com.programmersbox.helpfulutils.nextColor
 import kotlin.math.hypot
 import kotlin.random.Random
@@ -94,8 +95,14 @@ class DiamondLoader : View {
         val a = context.obtainStyledAttributes(attrs, R.styleable.DiamondLoader)
         progress = a.getInt(R.styleable.DiamondLoader_progress, if (isInEditMode) 50 else 0)
         loadingWidth = a.getDimension(R.styleable.DiamondLoader_lineWidth, 5f)
-        progressColor = a.getColor(R.styleable.DiamondLoader_progressColor, if (isInEditMode) Random.nextColor() else Color.BLUE)
-        emptyColor = a.getColor(R.styleable.DiamondLoader_emptyColor, if (isInEditMode) Random.nextColor() else Color.DKGRAY)
+        progressColor = a.getColor(
+            R.styleable.DiamondLoader_progressColor,
+            context.colorFromTheme(R.attr.colorAccent, if (isInEditMode) Random.nextColor() else Color.BLUE)
+        )
+        emptyColor = a.getColor(
+            R.styleable.DiamondLoader_emptyColor,
+            context.colorFromTheme(R.attr.colorControlHighlight, if (isInEditMode) Random.nextColor() else Color.DKGRAY)
+        )
         bitmap = a.getDrawable(R.styleable.DiamondLoader_src)?.toBitmap()
         a.recycle()
     }
