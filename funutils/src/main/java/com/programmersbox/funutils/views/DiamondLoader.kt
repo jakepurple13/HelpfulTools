@@ -104,46 +104,47 @@ class DiamondLoader : View {
 
     override fun onDraw(canvas: Canvas) {
         canvas.save()
-        canvas.addImage(halfWidth, halfHeight, halfWidth)
-        canvas.drawRhombus(halfWidth, halfHeight, halfWidth, emptyPaint)
-        canvas.drawProgress(halfWidth, halfHeight, width.toFloat(), progressPaint)
+        canvas.addImage(halfWidth, halfHeight, halfWidth, halfHeight)
+        canvas.drawRhombus(halfWidth, halfHeight, halfWidth, halfHeight, emptyPaint)
+        canvas.drawProgress(halfWidth, halfHeight, width.toFloat(), height.toFloat(), progressPaint)
         canvas.restore()
     }
 
-    private fun Canvas.drawRhombus(x: Float, y: Float, width: Float, paint: Paint) {
+    private fun Canvas.drawRhombus(x: Float, y: Float, width: Float, height: Float, paint: Paint) {
         val path = Path()
-        path.moveTo(x, y + width) // Top
+        path.moveTo(x, y + height) // Top
         path.lineTo(x - width, y) // Left
-        path.lineTo(x, y - width) // Bottom
+        path.lineTo(x, y - height) // Bottom
         path.lineTo(x + width, y) // Right
-        path.lineTo(x, y + width) // Back to Top
+        path.lineTo(x, y + height) // Back to Top
         path.close()
         drawPath(path, paint)
         path.reset()
     }
 
-    private fun Canvas.addImage(x: Float, y: Float, width: Float) {
+    private fun Canvas.addImage(x: Float, y: Float, width: Float, height: Float) {
         val path = Path()
-        path.moveTo(x, y + width) // Top
+        path.moveTo(x, y + height) // Top
         path.lineTo(x - width, y) // Left
-        path.lineTo(x, y - width) // Bottom
+        path.lineTo(x, y - height) // Bottom
         path.lineTo(x + width, y) // Right
-        path.lineTo(x, y + width) // Back to Top
+        path.lineTo(x, y + height) // Back to Top
         path.close()
         clipPath(path)
         bitmap?.let { drawBitmap(it, x - it.width / 2, y - it.height / 2, null) }
         path.reset()
     }
 
-    private fun Canvas.drawProgress(x: Float, y: Float, width: Float, paint: Paint) {
+    private fun Canvas.drawProgress(x: Float, y: Float, width: Float, height: Float, paint: Paint) {
 
         val halfWidth = width / 2
+        val halfHeight = height / 2
         val length = hypot(x, y)
         val ratio = ((width / 2 / 2 / 2) * 100) / length
 
         val path = Path()
 
-        path.moveTo(x, y - halfWidth)
+        path.moveTo(x, y - halfHeight)
 
         //top to right
         if (progress > 0) {
@@ -156,7 +157,7 @@ class DiamondLoader : View {
         if (progress > 25) {
             val ratioProgress = ratio * (50 - progress)
             val bottomProgress = if (progress > 50) 0f else ratioProgress
-            path.lineTo(x + bottomProgress, y + halfWidth - bottomProgress)
+            path.lineTo(x + bottomProgress, y + halfHeight - bottomProgress)
         }
 
         //bottom to left
@@ -170,7 +171,7 @@ class DiamondLoader : View {
         if (progress > 75) {
             val ratioProgress = ratio * (100 - progress)
             val topProgress = if (progress > 100) 0f else ratioProgress
-            path.lineTo(x - topProgress, y - halfWidth + topProgress)
+            path.lineTo(x - topProgress, y - halfHeight + topProgress)
         }
 
         //finished!
