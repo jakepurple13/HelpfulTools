@@ -12,7 +12,9 @@ import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import com.programmersbox.funutils.R
+import com.programmersbox.helpfulutils.nextColor
 import kotlin.math.hypot
+import kotlin.random.Random
 
 
 class DiamondLoader : View {
@@ -23,12 +25,21 @@ class DiamondLoader : View {
             postInvalidate()
         }
 
-    private var loadingWidth: Float = 5f
+    /**
+     * change the width of the progress bar
+     */
+    var loadingWidth: Float = 5f
+        set(value) {
+            field = value
+            emptyPaint.strokeWidth = value
+            progressPaint.strokeWidth = value
+            postInvalidate()
+        }
 
     /**
      * the current progress of the loader
      */
-    var progress: Int = if (isInEditMode) 75 else 0
+    var progress: Int = if (isInEditMode) 50 else 0
         set(value) {
             field = if (value > 100) 100 else if (value < 0) 0 else value
             postInvalidate()
@@ -37,7 +48,7 @@ class DiamondLoader : View {
     /**
      * the color of the non loaded area
      */
-    var emptyColor = Color.WHITE
+    var emptyColor = if (isInEditMode) Random.nextColor() else Color.WHITE
         set(value) {
             field = value
             emptyPaint.color = value
@@ -49,7 +60,7 @@ class DiamondLoader : View {
     /**
      * the color of the loaded area
      */
-    var progressColor = Color.BLUE
+    var progressColor = if (isInEditMode) Random.nextColor() else Color.BLUE
         set(value) {
             field = value
             progressPaint.color = value
@@ -79,21 +90,14 @@ class DiamondLoader : View {
         init(attrs)
     }
 
-    private fun <T> getOrThrow(block: () -> T) = try {
-        block()
-    } catch (e: Exception) {
-        null
-    }
-
     private fun init(attrs: AttributeSet?) {
         val a = context.obtainStyledAttributes(attrs, R.styleable.DiamondLoader)
-        progress = a.getInt(R.styleable.DiamondLoader_progress, if (isInEditMode) 75 else 0)
+        progress = a.getInt(R.styleable.DiamondLoader_progress, if (isInEditMode) 50 else 0)
         loadingWidth = a.getDimension(R.styleable.DiamondLoader_lineWidth, 5f)
-        progressColor = a.getColor(R.styleable.DiamondLoader_progressColor, Color.BLUE)
-        emptyColor = a.getColor(R.styleable.DiamondLoader_emptyColor, Color.DKGRAY)
+        progressColor = a.getColor(R.styleable.DiamondLoader_progressColor, if (isInEditMode) Random.nextColor() else Color.BLUE)
+        emptyColor = a.getColor(R.styleable.DiamondLoader_emptyColor, if (isInEditMode) Random.nextColor() else Color.DKGRAY)
         bitmap = a.getDrawable(R.styleable.DiamondLoader_src)?.toBitmap()
         a.recycle()
-        //if (isInEditMode) addCheckBoxHeader(0, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT))
     }
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {

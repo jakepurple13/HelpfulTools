@@ -34,20 +34,32 @@
         android:layout_centerHorizontal="true"
         android:text="Battery" />
 
-    <ProgressBar
-        android:id="@+id/progressBar"
-        android:layout_below="@id/batteryButton"
-        android:layout_centerHorizontal="true"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <SeekBar
         android:id="@+id/progressSlider"
-        android:layout_below="@id/progressBar"
-        android:layout_centerHorizontal="true"
-        android:min="0"
-        android:max="100"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@id/batteryButton"
+        android:layout_centerHorizontal="true"
+        android:max="100"
+        android:min="0" />
+
+    <com.programmersbox.funutils.views.ExpandingSlider
+        android:id="@+id/lineWidthChanger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/progressSlider"
+        app:slider_initialValue="5"
+        app:slider_maxValue="100"
+        app:slider_minValue="1"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        app:slider_preciseStepSize="1"
+        app:slider_resultColor="@android:color/primary_text_dark"
+        app:slider_resultSize="24sp"
+        app:slider_showBubble="true"
+        app:slider_showIndicator="true"
+        app:slider_showValue="true"
+        app:slider_stepSize="5"
+        app:slider_unit="dp" />
 
 </RelativeLayout>

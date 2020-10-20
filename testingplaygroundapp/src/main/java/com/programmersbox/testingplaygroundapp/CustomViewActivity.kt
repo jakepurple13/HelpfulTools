@@ -92,5 +92,9 @@ class CustomViewActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
         })
+
+        lineWidthChanger.setListener { fl, view ->
+            loading.loadingWidth = fl
+        }
     }
 }
