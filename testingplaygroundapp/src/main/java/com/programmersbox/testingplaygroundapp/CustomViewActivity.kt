@@ -1,5 +1,6 @@
 package com.programmersbox.testingplaygroundapp
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.animation.OvershootInterpolator
 import android.widget.SeekBar
@@ -22,6 +23,7 @@ class CustomViewActivity : AppCompatActivity() {
 
     private val battery by lazy { battery(false) { loading.progress = it.percent.toInt() } }
 
+    @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_custom_view)
@@ -93,7 +95,7 @@ class CustomViewActivity : AppCompatActivity() {
 
         })
 
-        lineWidthChanger.setListener { fl, view ->
+        lineWidthChanger.setListener { fl, _ ->
             loading.loadingWidth = fl
         }
     }

@@ -11,12 +11,10 @@ import android.view.animation.LinearInterpolator
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.drawable.toDrawable
 import com.programmersbox.funutils.R
 import com.programmersbox.helpfulutils.colorFromTheme
-import com.programmersbox.helpfulutils.nextColor
 import kotlin.math.hypot
-import kotlin.random.Random
-
 
 class DiamondLoader : View {
 
@@ -25,6 +23,13 @@ class DiamondLoader : View {
             field = value
             postInvalidate()
         }
+
+    /**
+     * the image in the center
+     */
+    var drawable: Drawable?
+        get() = bitmap?.toDrawable(resources)
+        set(value) = setImageDrawable(value)
 
     /**
      * change the width of the progress bar
@@ -49,7 +54,7 @@ class DiamondLoader : View {
     /**
      * the color of the non loaded area
      */
-    var emptyColor = if (isInEditMode) Random.nextColor() else Color.WHITE
+    var emptyColor = Color.DKGRAY
         set(value) {
             field = value
             emptyPaint.color = value
@@ -61,7 +66,7 @@ class DiamondLoader : View {
     /**
      * the color of the loaded area
      */
-    var progressColor = if (isInEditMode) Random.nextColor() else Color.BLUE
+    var progressColor = Color.BLUE
         set(value) {
             field = value
             progressPaint.color = value
@@ -95,14 +100,8 @@ class DiamondLoader : View {
         val a = context.obtainStyledAttributes(attrs, R.styleable.DiamondLoader)
         progress = a.getInt(R.styleable.DiamondLoader_progress, if (isInEditMode) 50 else 0)
         loadingWidth = a.getDimension(R.styleable.DiamondLoader_lineWidth, 5f)
-        progressColor = a.getColor(
-            R.styleable.DiamondLoader_progressColor,
-            context.colorFromTheme(R.attr.colorAccent, if (isInEditMode) Random.nextColor() else Color.BLUE)
-        )
-        emptyColor = a.getColor(
-            R.styleable.DiamondLoader_emptyColor,
-            context.colorFromTheme(R.attr.colorControlHighlight, if (isInEditMode) Random.nextColor() else Color.DKGRAY)
-        )
+        progressColor = a.getColor(R.styleable.DiamondLoader_progressColor, context.colorFromTheme(R.attr.colorAccent, Color.BLUE))
+        emptyColor = a.getColor(R.styleable.DiamondLoader_emptyColor, context.colorFromTheme(R.attr.colorControlHighlight, Color.DKGRAY))
         bitmap = a.getDrawable(R.styleable.DiamondLoader_src)?.toBitmap()
         a.recycle()
     }
@@ -150,7 +149,7 @@ class DiamondLoader : View {
 
         val halfWidth = width / 2
         val halfHeight = height / 2
-        val length = hypot(x, y)
+        val length = hypot(halfWidth, halfHeight)
         val ratio = ((width / 2 / 2 / 2) * 100) / length
 
         val path = Path()
