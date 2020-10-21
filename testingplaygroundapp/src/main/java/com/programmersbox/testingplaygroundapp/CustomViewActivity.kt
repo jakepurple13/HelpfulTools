@@ -28,11 +28,11 @@ class CustomViewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_custom_view)
 
-        loading.progressColor = Random.nextColor()
-        loading.emptyColor = Random.nextColor()
+        loading.progressColor = Random.nextColor(255)
+        loading.emptyColor = Random.nextColor(255)
         loading.setImageResource(R.drawable.ace1)
+        loading.setImageBitmap(getDrawable(R.drawable.ace3)?.toBitmap())
         loading.setImageDrawable(getDrawable(R.drawable.ace2))
-        loading.setImageBitmap(getDrawable(R.drawable.ace2)?.toBitmap())
 
         loading.animationDuration(2500L)
         loading.animateInterpolator(OvershootInterpolator())
@@ -88,6 +88,7 @@ class CustomViewActivity : AppCompatActivity() {
         progressSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 loading.progress = progress
+                startButton.text = "Start: $progress"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}

@@ -10,6 +10,7 @@ import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 import androidx.annotation.DrawableRes
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.PathSegment
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.drawable.toDrawable
 import com.programmersbox.funutils.R
@@ -145,48 +146,85 @@ class DiamondLoader : View {
         path.reset()
     }
 
+    private fun PathSegment.toPoint(max: Int, next: Int): PointF {
+        val fProg = if (progress >= max) 1f else {
+            (progress - (next * 25)) / 25f
+        }
+
+        return PointF(
+            start.x + fProg * (end.x - start.x),
+            start.y + fProg * (end.y - start.y)
+        )
+    }
+
     private fun Canvas.drawProgress(x: Float, y: Float, width: Float, height: Float, paint: Paint) {
 
         val halfWidth = width / 2
         val halfHeight = height / 2
         val length = hypot(halfWidth, halfHeight)
-        val ratio = ((width / 2 / 2 / 2) * 100) / length
+        //val ratio = ((width / 2 / 2 / 2) * 100) / length
 
         val path = Path()
-
         path.moveTo(x, y - halfHeight)
 
         //top to right
         if (progress > 0) {
-            val ratioProgress = ratio * (25 - progress)
+            /*val ratioProgress = ratio * (25 - progress)
             val rightProgress = if (progress > 25) 0f else ratioProgress
-            path.lineTo(x + halfWidth - rightProgress, y - rightProgress)
+            path.lineTo(x + halfWidth - rightProgress, y - rightProgress)*/
+
+            val pathSegment = PathSegment(
+                PointF(x, y - halfHeight), 0f,
+                PointF(x + halfWidth, y), 1f
+            )
+            val p2 = pathSegment.toPoint(25, 0)
+            path.lineTo(p2.x, p2.y)
         }
 
         //right to bottom
         if (progress > 25) {
-            val ratioProgress = ratio * (50 - progress)
+            /*val ratioProgress = ratio * (50 - progress)
             val bottomProgress = if (progress > 50) 0f else ratioProgress
-            path.lineTo(x + bottomProgress, y + halfHeight - bottomProgress)
+            path.lineTo(x + bottomProgress, y + halfHeight - bottomProgress)*/
+
+            val pathSegment = PathSegment(
+                PointF(x + halfWidth, y), 0f,
+                PointF(x, y + halfHeight), 1f
+            )
+            val p2 = pathSegment.toPoint(50, 1)
+            path.lineTo(p2.x, p2.y)
         }
 
         //bottom to left
         if (progress > 50) {
-            val ratioProgress = ratio * (75 - progress)
+            /*val ratioProgress = ratio * (75 - progress)
             val leftProgress = if (progress > 75) 0f else ratioProgress
-            path.lineTo(x - halfWidth + leftProgress, y + leftProgress)
+            path.lineTo(x - halfWidth + leftProgress, y + leftProgress)*/
+
+            val pathSegment = PathSegment(
+                PointF(x, y + halfHeight), 0f,
+                PointF(x - halfWidth, y), 1f
+            )
+            val p2 = pathSegment.toPoint(75, 2)
+            path.lineTo(p2.x, p2.y)
         }
 
         //left to top
         if (progress > 75) {
-            val ratioProgress = ratio * (100 - progress)
+            /*val ratioProgress = ratio * (100 - progress)
             val topProgress = if (progress > 100) 0f else ratioProgress
-            path.lineTo(x - topProgress, y - halfHeight + topProgress)
+            path.lineTo(x - topProgress, y - halfHeight + topProgress)*/
+
+            val pathSegment = PathSegment(
+                PointF(x - halfWidth, y), 0f,
+                PointF(x, y - halfHeight), 1f
+            )
+            val p2 = pathSegment.toPoint(100, 3)
+            path.lineTo(p2.x, p2.y)
         }
 
         //finished!
         if (progress >= 100) {
-            //path.lineTo(x, y - width)
             path.close()
         }
 
