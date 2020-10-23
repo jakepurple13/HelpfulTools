@@ -18,7 +18,7 @@
         android:id="@+id/loading"
         android:layout_width="300dp"
         android:layout_height="300dp"
-        android:layout_alignParentTop="true"
+        android:layout_below="@id/lineWidthChanger"
         android:layout_centerHorizontal="true"
         app:lineWidth="30dp"
         app:progress="50"
@@ -46,8 +46,9 @@
         android:id="@+id/progressSlider"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/batteryButton"
+        android:layout_below="@id/heightSlider"
         android:layout_centerHorizontal="true"
+        android:layout_margin="10dp"
         android:max="100"
         android:min="0" />
 
@@ -57,6 +58,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/progressSlider"
         app:slider_initialValue="5"
+        android:layout_margin="10dp"
         app:slider_maxValue="100"
         app:slider_minValue="1"
         android:layout_alignParentStart="true"
@@ -69,5 +71,22 @@
         app:slider_showValue="true"
         app:slider_stepSize="5"
         app:slider_unit="dp" />
+
+    <SeekBar
+        android:layout_margin="10dp"
+        android:id="@+id/heightSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:max="100"
+        android:min="1" />
+
+    <TextClock
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/textClock"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 
 </RelativeLayout>

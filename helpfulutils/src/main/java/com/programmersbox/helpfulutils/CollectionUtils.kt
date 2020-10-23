@@ -66,6 +66,19 @@ fun <T, R> Sequence<T>.groupByCondition(key: (T) -> R, predicate: (key: T, eleme
 fun <T, R> Iterable<T>.foldEverything(map: T.() -> R, operation: (acc: R, T) -> R) = drop(1).fold(first().map(), operation)
 
 /**
+ * checks to see if the [Iterable] contains any duplicates
+ */
+fun <T> Iterable<T>.containsDuplicates(predicate: (i: T, j: T) -> Boolean = { i, j -> i == j }): Boolean {
+    for (i in this.withIndex()) {
+        for (j in this.withIndex()) {
+            if (i.index == j.index) continue
+            if (predicate(i.value, j.value)) return true
+        }
+    }
+    return false
+}
+
+/**
  * An easy way to map an [Iterable] to a [Map]
  */
 fun <T, R, Y> Iterable<T>.toMap(pair: (T) -> Pair<Y, R>) = map(pair).toMap()

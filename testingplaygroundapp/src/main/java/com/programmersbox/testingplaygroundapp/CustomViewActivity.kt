@@ -3,6 +3,7 @@ package com.programmersbox.testingplaygroundapp
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.animation.OvershootInterpolator
+import android.widget.RelativeLayout
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.drawable.toBitmap
@@ -96,8 +97,18 @@ class CustomViewActivity : AppCompatActivity() {
 
         })
 
-        lineWidthChanger.setListener { fl, _ ->
-            loading.loadingWidth = fl
-        }
+        lineWidthChanger.setListener { fl, _ -> loading.loadingWidth = fl }
+
+        heightSlider.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val params: RelativeLayout.LayoutParams = loading.layoutParams as RelativeLayout.LayoutParams
+                params.height = 100 * progress
+                loading.layoutParams = params
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
+        })
     }
 }

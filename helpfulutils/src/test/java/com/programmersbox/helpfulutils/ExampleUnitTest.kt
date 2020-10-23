@@ -125,6 +125,17 @@ class ExampleUnitTest {
         Runtime.getRuntime().exec("say finished").waitFor()
     }
 
+    @Test
+    fun duplicateTesting() {
+        val f = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
+
+        println(f.containsDuplicates { i, i2 -> i == i2 })
+
+        val f1 = listOf(1, 2, 3, 4, 5, 6, 7, 8, 1)
+
+        println(f1.containsDuplicates { i, i2 -> i == i2 })
+    }
+
     class MultipleIterables<T, R, Y>(
         private val list: MutableList<T> = mutableListOf(),
         private val map: MutableMap<R, Y> = mutableMapOf()
