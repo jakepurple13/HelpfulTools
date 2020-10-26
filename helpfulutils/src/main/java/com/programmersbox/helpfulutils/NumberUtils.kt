@@ -3,7 +3,6 @@ package com.programmersbox.helpfulutils
 import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
-import androidx.annotation.Size
 import java.util.*
 import kotlin.math.min
 import kotlin.math.round
@@ -195,7 +194,7 @@ class StepGradient(private var color1: Int, private var color2: Int) {
         /**
          * Allows for multiple gradients in an array
          */
-        fun multipleGradients(steps: IntProgression, @Size(min = 2) vararg colors: Int) = colors
+        fun multipleGradients(steps: IntProgression, vararg colors: Int) = colors
             .drop(1)
             .fold(intArrayOf(colors.first())) { a, c -> intArrayOf(*a, *(a.last() toColor c gradient steps)) }
             .distinct()
@@ -204,7 +203,7 @@ class StepGradient(private var color1: Int, private var color2: Int) {
         /**
          * Allows for multiple gradients in an array
          */
-        fun multipleGradients(steps: IntProgression, @Size(min = 2) colors: List<Int>) = colors
+        fun multipleGradients(steps: IntProgression, colors: List<Int>) = colors
             .drop(1)
             .fold(intArrayOf(colors.first())) { a, c -> intArrayOf(*a, *(a.last() toColor c gradient steps)) }
             .distinct()
