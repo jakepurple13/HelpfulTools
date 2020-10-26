@@ -1,5 +1,9 @@
 package com.programmersbox.helpfulutils
 
+import android.graphics.Color
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.annotation.Size
 import java.util.*
 import kotlin.math.min
 import kotlin.math.round
@@ -167,3 +171,66 @@ fun Number.round(decimals: Int): Double {
     repeat(decimals) { multiplier *= 10 }
     return round(toDouble() * multiplier) / multiplier
 }
+
+class StepGradient(private var color1: Int, private var color2: Int) {
+
+    private var mSteps: Int = 0
+
+    infix fun gradient(f: IntProgression): IntArray {
+        mSteps = f.last
+        return f.map { it.colorStep() }.toIntArray()
+    }
+
+    private fun Int.colorStep(): Int {
+        val c1 = color1.valueOf()
+        val c2 = color2.valueOf()
+        return Color.rgb(
+            (c1.first * (mSteps - this) + c2.first * this) / mSteps,
+            (c1.second * (mSteps - this) + c2.second * this) / mSteps,
+            (c1.third * (mSteps - this) + c2.third * this) / mSteps
+        )
+    }
+
+    companion object {
+        /**
+         * Allows for multiple gradients in an array
+         */
+        fun multipleGradients(steps: IntProgression, @Size(min = 2) vararg colors: Int) = colors
+            .drop(1)
+            .fold(intArrayOf(colors.first())) { a, c -> intArrayOf(*a, *(a.last() toColor c gradient steps)) }
+            .distinct()
+            .toIntArray()
+
+        /**
+         * Allows for multiple gradients in an array
+         */
+        fun multipleGradients(steps: IntProgression, @Size(min = 2) colors: List<Int>) = colors
+            .drop(1)
+            .fold(intArrayOf(colors.first())) { a, c -> intArrayOf(*a, *(a.last() toColor c gradient steps)) }
+            .distinct()
+            .toIntArray()
+    }
+}
+
+/**
+ * Get gradient steps
+ *
+ * e.g.
+ *
+ *    val colors = 0xff0000 toColor 0x0000ff gradient 0..5
+ *
+ * will give five steps to get from the start to the end
+ */
+@RequiresApi(Build.VERSION_CODES.O)
+infix fun Color.toColor(color: Color) = StepGradient(color1 = this.toArgb(), color2 = color.toArgb())
+
+/**
+ * Get gradient steps
+ *
+ * e.g.
+ *
+ *    val colors = 0xff0000 toColor 0x0000ff gradient 0..5
+ *
+ * will give five steps to get from the start to the end
+ */
+infix fun Int.toColor(color: Int) = StepGradient(color1 = this, color2 = color)

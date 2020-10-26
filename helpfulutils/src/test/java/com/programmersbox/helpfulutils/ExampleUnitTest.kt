@@ -27,6 +27,20 @@ import kotlin.time.minutes
  */
 class ExampleUnitTest {
 
+    @Test
+    fun colorTest() {
+        val f = intArrayOf(
+            *(0xff0000 toColor 0x00ff00 gradient 0..5),
+            *(0xff0000 toColor 0x00ff00 gradient 0..5)
+        ).distinct()
+        println(f)
+        val f1 = StepGradient.multipleGradients(
+            0..5,
+            0xff0000, 0x00ff00, 0x0000ff
+        )
+        println(f1)
+    }
+
     data class UtilObject(var string: String, var int: Int?)
 
     @Test

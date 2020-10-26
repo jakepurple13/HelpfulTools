@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
@@ -354,6 +355,25 @@ class MainActivity : AppCompatActivity() {
         Loged.fi(batteryInformation)
         batteryInformation = batteryInfo
         Loged.fi(batteryInformation)
+        colorTester()
+    }
+
+    private fun colorTester() {
+        val f = intArrayOf(
+            *(Color.RED toColor Color.YELLOW gradient 0..5),
+            *(Color.YELLOW toColor Color.GREEN gradient 0..5)
+        )
+            .distinct()
+        println(f)
+        val f1 = StepGradient.multipleGradients(
+            0..5,
+            Color.RED, Color.YELLOW, Color.GREEN
+        )
+            .toList()
+        println(f1)
+
+        val f2 = StepGradient.multipleGradients(0..2, listOf(Color.BLUE))
+        val f3 = StepGradient.multipleGradients(0..2, Color.BLUE)
     }
 
     class DecoratedStyle : NotificationStyle() {
