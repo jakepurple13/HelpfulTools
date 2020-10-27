@@ -14,18 +14,23 @@ sealed class TableModel<T>(val list: List<Pair<CharSequence, T>?>) {
     /**
      * A header model
      */
-    class HeaderModel<T>(text: List<Pair<CharSequence, T>?>) : TableModel<T>(text) {
+    class HeaderModel<T>(list: List<Pair<CharSequence, T>?>) : TableModel<T>(list) {
         constructor(vararg items: Pair<CharSequence, T>?) : this(items.toList())
     }
 
     /**
      * A cell model
      */
-    class CellModel<T>(text: List<Pair<CharSequence, T>?>) : TableModel<T>(text) {
+    class CellModel<T>(list: List<Pair<CharSequence, T>?>) : TableModel<T>(list) {
         constructor(vararg items: Pair<CharSequence, T>?) : this(items.toList())
     }
 
     internal var tableAdapterCreator: TableAdapterCreator<T>? = null
+
+    /**
+     * Use this if you want to change the layout weight of each of the items
+     */
+    var weightArray: FloatArray? = null
 
     internal fun onClick(textView: List<TextView>) {
         tableAdapterCreator?.let { t ->
@@ -92,12 +97,13 @@ class CustomTableHolder<T>(private val binding: TableAdapterItemBinding) : Recyc
 
 @BindingAdapter("createColumns", "creator", "position")
 fun columnCreator(layout: LinearLayout, model: TableModel<*>, creator: TableAdapterCreator<*>, position: Int) {
+    if (model.weightArray?.size ?: model.list.size != model.list.size) throw IndexOutOfBoundsException("WeightArray must have the same number of arguments as the cell count")
     val block = when (model) {
         is TableModel.HeaderModel<*> -> creator::setHeader
         is TableModel.CellModel<*> -> creator::setCell
     }
 
-    layout.weightSum = model.list.size.toFloat()
+    layout.weightSum = model.weightArray?.sum() ?: model.list.size.toFloat()
     model.list
         .map {
             TextView(layout.context).apply {
@@ -106,5 +112,8 @@ fun columnCreator(layout: LinearLayout, model: TableModel<*>, creator: TableAdap
             }.apply { it?.let { block(this, position) } }
         }
         .also(model::onClick)
-        .forEach { layout.addView(it, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f)) }
+        .forEachIndexed { index, textView ->
+            val w = model.weightArray?.get(index) ?: 1.0f
+            layout.addView(textView, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, w))
+        }
 }
