@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.programmersbox.funutils.views.TableModel" />
+
+        <variable
+            name="creator"
+            type="com.programmersbox.funutils.views.TableAdapterCreator" />
+
+        <variable
+            name="position"
+            type="Integer" />
+    </data>
+
+    <LinearLayout
+        android:id="@+id/tableModel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:creator="@{creator}"
+        app:position="@{position}"
+        app:createColumns="@{model}" />
+
+</layout>

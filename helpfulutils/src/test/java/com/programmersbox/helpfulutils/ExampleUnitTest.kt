@@ -37,7 +37,7 @@ class ExampleUnitTest {
         val f1 = StepGradient.multipleGradients(
             0..5,
             0xff0000, 0x00ff00, 0x0000ff
-        )
+        ).toList()
         println(f1)
     }
 

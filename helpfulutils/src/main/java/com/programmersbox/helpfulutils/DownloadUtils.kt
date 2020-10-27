@@ -269,7 +269,7 @@ class DownloadManagerListener internal constructor(private val context: Context)
         fun Cursor.stringValueOrNull(column: String) = getStringOrNull(getColumnIndex(column))
         fun Cursor.intValueOrNull(column: String) = getIntOrNull(getColumnIndex(column))
 
-        Thread(Runnable {
+        Thread {
             while (true) {
                 if (c != null) {
                     while (c.moveToNext()) {
@@ -296,7 +296,7 @@ class DownloadManagerListener internal constructor(private val context: Context)
                 Thread.sleep(updateInterval)
             }
             c.close()
-        }).start()
+        }.start()
     }
 
     companion object {

@@ -4,13 +4,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion '30.0.2'
+    compileSdkVersion latest_sdk
+    buildToolsVersion build_version
 
     defaultConfig {
         applicationId "com.programmersbox.testingplaygroundapp"
         minSdkVersion 27
-        targetSdkVersion 30
+        targetSdkVersion latest_sdk
         versionCode 1
         versionName "1.0"
 
