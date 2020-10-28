@@ -32,3 +32,5 @@ val s = SequenceMaker(1, 2, 3, 4, 5, object : SequenceListener {
 
 ## [Views](https://github.com/jakepurple13/HelpfulTools/blob/master/funutils/src/main/java/com/programmersbox/funutils/views)
 
+## [TableAdapter](https://github.com/jakepurple13/HelpfulTools/blob/master/funutils/src/main/java/com/programmersbox/funutils/views/TableAdapter.kt)
+To use most efficiently, make sure you use a RecyclerView with a vertical orientation and a LinearLayoutManager
