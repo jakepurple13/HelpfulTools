@@ -32,14 +32,16 @@ sealed class TableModel<T>(val list: List<Pair<CharSequence, T>?>) {
      */
     var weightArray: FloatArray? = null
 
-    internal fun onClick(textView: List<TextView>) {
+    internal fun onClick(textView: List<TextView>, position: Int) {
         tableAdapterCreator?.let { t ->
             val block = when (this) {
                 is HeaderModel<*> -> t::headerClick
                 is CellModel<*> -> t::cellClick
             }
 
-            textView.forEachIndexed { index, textView -> list[index]?.second?.let { s -> textView.setOnClickListener { block(textView, s) } } }
+            textView.forEachIndexed { index, textView ->
+                list[index]?.second?.let { s -> textView.setOnClickListener { block(textView, s, position, index) } }
+            }
         }
     }
 }
@@ -48,22 +50,22 @@ interface TableAdapterCreator<T> {
     /**
      * set header theming/styling/anything else
      */
-    fun setHeader(textView: TextView, columnPosition: Int) {}
+    fun setHeader(textView: TextView, rowPosition: Int, columnPosition: Int) {}
 
     /**
      * set cell theming/styling/anything else
      */
-    fun setCell(textView: TextView, rowPosition: Int) {}
+    fun setCell(textView: TextView, rowPosition: Int, columnPosition: Int) {}
 
     /**
      * set header click
      */
-    fun headerClick(textView: TextView, item: T) {}
+    fun headerClick(textView: TextView, item: T, rowPosition: Int, columnPosition: Int) {}
 
     /**
      * set cell click
      */
-    fun cellClick(textView: TextView, item: T) {}
+    fun cellClick(textView: TextView, item: T, rowPosition: Int, columnPosition: Int) {}
 }
 
 class TableAdapter<T>(
@@ -83,6 +85,14 @@ class TableAdapter<T>(
      * Add headers
      */
     fun addHeader(vararg items: Pair<CharSequence, T>?) = addItem(TableModel.HeaderModel(*items))
+
+    /**
+     * get all the items in a specific column
+     *
+     * # Be Aware
+     * if nothing is in a cell, it will return null
+     */
+    fun getColumn(columnPosition: Int) = dataList.map { it.list.getOrNull(columnPosition) }
 }
 
 class CustomTableHolder<T>(private val binding: TableAdapterItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -97,7 +107,9 @@ class CustomTableHolder<T>(private val binding: TableAdapterItemBinding) : Recyc
 
 @BindingAdapter("createColumns", "creator", "position")
 fun columnCreator(layout: LinearLayout, model: TableModel<*>, creator: TableAdapterCreator<*>, position: Int) {
-    if (model.weightArray?.size ?: model.list.size != model.list.size) throw IndexOutOfBoundsException("WeightArray must have the same number of arguments as the cell count")
+    if (model.weightArray?.size ?: model.list.size != model.list.size) {
+        throw IndexOutOfBoundsException("WeightArray must have the same number of arguments as the cell count")
+    }
     val block = when (model) {
         is TableModel.HeaderModel<*> -> creator::setHeader
         is TableModel.CellModel<*> -> creator::setCell
@@ -105,13 +117,13 @@ fun columnCreator(layout: LinearLayout, model: TableModel<*>, creator: TableAdap
 
     layout.weightSum = model.weightArray?.sum() ?: model.list.size.toFloat()
     model.list
-        .map {
+        .mapIndexed { index, pair ->
             TextView(layout.context).apply {
-                text = it?.first
+                text = pair?.first
                 gravity = Gravity.CENTER
-            }.apply { it?.let { block(this, position) } }
+            }.apply { pair?.let { block(this, index, position) } }
         }
-        .also(model::onClick)
+        .also { model.onClick(it, position) }
         .forEachIndexed { index, textView ->
             val w = model.weightArray?.get(index) ?: 1.0f
             layout.addView(textView, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, w))
