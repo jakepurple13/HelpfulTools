@@ -13,15 +13,19 @@ import kotlin.random.Random
 class TableActivity : AppCompatActivity() {
 
     private val adapter by lazy {
-        TableAdapter<Any>(object : TableAdapterCreator<Any> {
-            override fun setHeader(textView: TextView, rowPosition: Int, columnPosition: Int) {
-                textView.setBackgroundColor(Random.nextColor(255))
+        if (Random.nextBoolean()) {
+            TableAdapter<Any>(object : TableAdapterCreator<Any> {
+                override fun setHeader(textView: TextView, rowPosition: Int, columnPosition: Int) = textView.setBackgroundColor(Random.nextColor(255))
+                override fun cellClick(textView: TextView, item: Any, rowPosition: Int, columnPosition: Int) = cellClick(item)
+            })
+        } else {
+            TableAdapter<Any> {
+                header { tv, row, column -> tv.setBackgroundColor(Random.nextColor(255)) }
+                cellOnClick { tv, item, row, column -> cellClick(item) }
+                cell { tv, row, column -> }
+                headerOnClick { tv, item, row, column -> }
             }
-
-            override fun cellClick(textView: TextView, item: Any, rowPosition: Int, columnPosition: Int) {
-                cellClick(item)
-            }
-        })
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

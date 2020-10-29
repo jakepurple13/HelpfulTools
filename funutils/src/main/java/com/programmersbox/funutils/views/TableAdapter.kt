@@ -46,6 +46,9 @@ sealed class TableModel<T>(val list: List<Pair<CharSequence, T>?>) {
     }
 }
 
+@DslMarker
+annotation class TableAdapterMarker
+
 interface TableAdapterCreator<T> {
     /**
      * set header theming/styling/anything else
@@ -66,11 +69,58 @@ interface TableAdapterCreator<T> {
      * set cell click
      */
     fun cellClick(textView: TextView, item: T, rowPosition: Int, columnPosition: Int) {}
+
+    class Builder<T> {
+
+        private var headerFormat: (TextView, Int, Int) -> Unit = { _, _, _ -> }
+        private var cellFormat: (TextView, Int, Int) -> Unit = { _, _, _ -> }
+        private var headerOnClick: (TextView, T, Int, Int) -> Unit = { _, _, _, _ -> }
+        private var cellOnClick: (TextView, T, Int, Int) -> Unit = { _, _, _, _ -> }
+
+        /**
+         * Format the header
+         */
+        @TableAdapterMarker
+        fun header(format: (tv: TextView, row: Int, column: Int) -> Unit) = apply { headerFormat = format }
+
+        /**
+         * Format the cell
+         */
+        @TableAdapterMarker
+        fun cell(format: (tv: TextView, row: Int, column: Int) -> Unit) = apply { cellFormat = format }
+
+        /**
+         * Header onClick
+         */
+        @TableAdapterMarker
+        fun headerOnClick(click: (tv: TextView, item: T, row: Int, column: Int) -> Unit) = apply { headerOnClick = click }
+
+        /**
+         * Cell onClick
+         */
+        @TableAdapterMarker
+        fun cellOnClick(click: (tv: TextView, item: T, row: Int, column: Int) -> Unit) = apply { cellOnClick = click }
+
+        fun build() = object : TableAdapterCreator<T> {
+            override fun setHeader(textView: TextView, rowPosition: Int, columnPosition: Int) = headerFormat(textView, rowPosition, columnPosition)
+            override fun headerClick(textView: TextView, item: T, rowPosition: Int, columnPosition: Int) =
+                headerOnClick(textView, item, rowPosition, columnPosition)
+
+            override fun setCell(textView: TextView, rowPosition: Int, columnPosition: Int) = cellFormat(textView, rowPosition, columnPosition)
+            override fun cellClick(textView: TextView, item: T, rowPosition: Int, columnPosition: Int) =
+                cellOnClick(textView, item, rowPosition, columnPosition)
+        }
+
+        companion object {
+            operator fun <T> invoke(block: Builder<T>.() -> Unit) = Builder<T>().apply(block).build()
+        }
+
+    }
 }
 
-class TableAdapter<T>(
-    private val tableAdapterCreator: TableAdapterCreator<T> = object : TableAdapterCreator<T> {}
-) : DragSwipeAdapter<TableModel<T>, CustomTableHolder<T>>() {
+class TableAdapter<T>(private val tableAdapterCreator: TableAdapterCreator<T>) : DragSwipeAdapter<TableModel<T>, CustomTableHolder<T>>() {
+    constructor(creator: TableAdapterCreator.Builder<T>.() -> Unit = {}) : this(TableAdapterCreator.Builder(creator))
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomTableHolder<T> =
         CustomTableHolder(TableAdapterItemBinding.inflate(parent.context.layoutInflater, parent, false))
 
