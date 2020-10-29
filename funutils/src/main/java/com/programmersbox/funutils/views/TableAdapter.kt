@@ -171,7 +171,7 @@ fun columnCreator(layout: LinearLayout, model: TableModel<*>, creator: TableAdap
             TextView(layout.context).apply {
                 text = pair?.first
                 gravity = Gravity.CENTER
-            }.apply { pair?.let { block(this, index, position) } }
+            }.apply { pair?.let { block(this, position, index) } }
         }
         .also { model.onClick(it, position) }
         .forEachIndexed { index, textView ->

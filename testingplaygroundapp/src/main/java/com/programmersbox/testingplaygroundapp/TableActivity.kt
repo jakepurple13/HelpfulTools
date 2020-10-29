@@ -22,7 +22,7 @@ class TableActivity : AppCompatActivity() {
             TableAdapter<Any> {
                 header { tv, row, column -> tv.setBackgroundColor(Random.nextColor(255)) }
                 cellOnClick { tv, item, row, column -> cellClick(item) }
-                cell { tv, row, column -> }
+                cell { tv, row, column -> if (row % 2 == 0) tv.setBackgroundColor(Random.nextColor(255)) }
                 headerOnClick { tv, item, row, column -> }
             }
         }
