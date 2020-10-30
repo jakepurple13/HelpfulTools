@@ -23,6 +23,7 @@
     <bytecodeTargetLevel target="1.7">
       <module name="dslannotations" target="1.7" />
       <module name="HelpfulTools.app" target="1.8" />
+      <module name="HelpfulTools.buildSrc" target="1.8" />
       <module name="HelpfulTools.dragswipe" target="1.8" />
       <module name="HelpfulTools.dslprocessor" target="1.8" />
       <module name="HelpfulTools.flowutils" target="1.8" />
