@@ -11,6 +11,7 @@ import android.transition.Transition
 import android.transition.TransitionManager
 import android.util.TypedValue
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -232,3 +233,29 @@ var EditText.currentText: CharSequence
  */
 fun View.asBitmap(): Bitmap = Bitmap.createBitmap(layoutParams.width, layoutParams.height, Bitmap.Config.ARGB_8888)
     .also { bitmap -> draw(Canvas(bitmap)) }
+
+/**
+ * Check if [this] is in [view]
+ */
+infix fun PointF.isIn(view: View): Boolean {
+    val rect = Rect(view.left, view.top, view.right, view.bottom)
+    return rect.contains((view.left + x).toInt(), (view.top + y).toInt())
+}
+
+/**
+ * Check if [this] is in [view]
+ */
+operator fun PointF.contains(view: View) = isIn(view)
+
+/**
+ * Check if [this] is in [view]
+ */
+infix fun MotionEvent.isIn(view: View): Boolean {
+    val rect = Rect(view.left, view.top, view.right, view.bottom)
+    return rect.contains((view.left + x).toInt(), (view.top + y).toInt())
+}
+
+/**
+ * Check if [this] is in [view]
+ */
+operator fun MotionEvent.contains(view: View) = isIn(view)

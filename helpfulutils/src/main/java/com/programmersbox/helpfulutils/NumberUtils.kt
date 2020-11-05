@@ -4,6 +4,7 @@ import android.graphics.Color
 import android.os.Build
 import androidx.annotation.RequiresApi
 import java.util.*
+import kotlin.math.abs
 import kotlin.math.min
 import kotlin.math.round
 import kotlin.math.roundToInt
@@ -233,3 +234,23 @@ infix fun Color.toColor(color: Color) = StepGradient(color1 = this.toArgb(), col
  * will give five steps to get from the start to the end
  */
 infix fun Int.toColor(color: Int) = StepGradient(color1 = this, color2 = color)
+
+/**
+ * Find the closest number to [this]
+ */
+fun Int.closestTo(vararg num: Int) = num.minByOrNull { abs(this - it) }!!
+
+/**
+ * Find the closest number to [this]
+ */
+fun Double.closestTo(vararg num: Double) = num.minByOrNull { abs(this - it) }!!
+
+/**
+ * Find the closest number to [this]
+ */
+fun Long.closestTo(vararg num: Long) = num.minByOrNull { abs(this - it) }!!
+
+/**
+ * Find the closest number to [this]
+ */
+fun Float.closestTo(vararg num: Float) = num.minByOrNull { abs(this - it) }!!

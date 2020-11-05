@@ -1,5 +1,6 @@
 package com.programmersbox.testingplaygroundapp
 
+import com.programmersbox.helpfulutils.closestTo
 import com.programmersbox.helpfulutils.sizedListOf
 import com.programmersbox.testingplayground.color
 import com.programmersbox.testingplaygroundapp.cardgames.uno.UnoColor
@@ -62,6 +63,20 @@ class ExampleUnitTestTwo {
             println("$value has been assigned to '${property.name}' in $thisRef.")
             s = value
         }
+    }
+
+    @Test
+    fun closestValueTest() {
+
+        val d = 5.0.closestTo(1.0, 9.0, 10.0, 4.0)
+        println(d)
+        val i = 5.closestTo(1, 9, 10, 4)
+        println(i)
+        val l = 5L.closestTo(1L, 9L, 10L, 4L)
+        println(l)
+        val f = 5.0f.closestTo(1.0f, 9.0f, 10.0f, 4.0f)
+        println(f)
+
     }
 
 }
