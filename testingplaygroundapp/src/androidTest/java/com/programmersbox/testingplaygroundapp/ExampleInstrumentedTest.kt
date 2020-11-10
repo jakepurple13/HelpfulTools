@@ -6,6 +6,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.programmersbox.gsonutils.toJson
 import com.programmersbox.helpfulutils.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -52,6 +54,10 @@ class ExampleInstrumentedTest {
     @Test
     fun nextTry() {
         appContext.powerManager.addThermalStatusListener { }
+
+        GlobalScope.launch {
+
+        }
     }
 
     @Test

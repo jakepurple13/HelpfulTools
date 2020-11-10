@@ -34,6 +34,7 @@ class ExampleInstrumentedTest {
         assertEquals("com.programmersbox.helpfulutils.test", appContext.packageName)
         appContext.setStreamVolume(50, AudioStreamTypes.STREAM_MUSIC)
         println(appContext.getStreamVolume(AudioStreamTypes.STREAM_MUSIC))
+
         BiometricBuilder.biometricBuilder(FragmentActivity(R.layout.device_credential_handler_activity)) {
 
             setExecutor(Executors.newSingleThreadExecutor())
@@ -63,6 +64,7 @@ class ExampleInstrumentedTest {
                 deviceCredentialAllowed = true
             }
         }
+
     }
 
     @Test

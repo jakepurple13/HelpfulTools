@@ -7,6 +7,7 @@ import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.selects.select
+import org.junit.After
 import org.junit.Test
 import kotlin.random.Random
 import kotlin.system.measureTimeMillis
@@ -17,6 +18,15 @@ import kotlin.system.measureTimeMillis
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 class ExampleUnitTest {
+
+    private val disposable = JobDisposable()
+
+    @After
+    fun after() {
+        println(disposable.size)
+        println(disposable)
+        disposable.dispose()
+    }
 
     @Test
     fun flowTest() {
@@ -34,13 +44,13 @@ class ExampleUnitTest {
     @Test
     fun flowItemTest() = runBlocking {
         val f = measureTimeMillis {
-            item.collect { println(it) }
+            item.collect { println(it) }.addTo(disposable)
             delay(1000)
             item(10)
             item.setValue(100)
             delay(1000)
             item.now()
-            GlobalScope.launch { item.flow.collect { println("From item.flow $it") } }
+            disposable += GlobalScope.launch { item.flow.collect { println("From item.flow $it") } }
             item(20)
             delay(1000)
             item.setValue(60)
@@ -55,13 +65,13 @@ class ExampleUnitTest {
     @Test
     fun stateFlowTest() = runBlocking {
         val f = measureTimeMillis {
-            GlobalScope.launch { item2.onStart { emit(item2.value) }.collect { println(it) } }
+            GlobalScope.launch { item2.onStart { emit(item2.value) }.collect { println(it) } }.addTo(disposable)
             delay(1000)
             item2(10)
             item2(100)
             delay(1000)
             item2.now()
-            GlobalScope.launch { item2.onStart { emit(item2.value) }.collect { println("From item.flow $it") } }
+            GlobalScope.launch { item2.onStart { emit(item2.value) }.collect { println("From item.flow $it") } }.addTo(disposable)
             item2(20)
             delay(1000)
             item2(60)
@@ -88,12 +98,12 @@ class ExampleUnitTest {
 
     @Test
     fun flowItemOperatorTest() = runBlocking {
-        booleanItem.collect { println("Boolean: $it") }
-        intItem.collect { println("Int $it") }
-        longItem.collect { println("Long $it") }
-        doubleItem.collect { println("Double $it") }
-        floatItem.collect { println("Float $it") }
-        shortItem.collect { println("Short $it") }
+        booleanItem.collect { println("Boolean: $it") }.addTo(disposable)
+        intItem.collect { println("Int $it") }.addTo(disposable)
+        longItem.collect { println("Long $it") }.addTo(disposable)
+        doubleItem.collect { println("Double $it") }.addTo(disposable)
+        floatItem.collect { println("Float $it") }.addTo(disposable)
+        shortItem.collect { println("Short $it") }.addTo(disposable)
         delay(1000)
         !booleanItem
         newLine("Plus")
@@ -147,7 +157,7 @@ class ExampleUnitTest {
         val listItem = FlowItem(listOf(1, 2, 3, 4, 5))
         println(listItem[3])
         newLine("Mutable")
-        mutableListItem.collect { println("MutableList(${mutableListItem.size}): $it") }
+        mutableListItem.collect { println("MutableList(${mutableListItem.size}): $it") }.addTo(disposable)
         delay(1000)
         println(mutableListItem[2])
         mutableListItem[2] = 10
@@ -195,13 +205,13 @@ class ExampleUnitTest {
 
         launch {
             c.collect { println(it) }
-        }
+        }.addTo(disposable)
 
         b.sendBlocking(5)
 
         launch {
             c.collect { println(it) }
-        }
+        }.addTo(disposable)
 
         b.sendBlocking(6)
 
