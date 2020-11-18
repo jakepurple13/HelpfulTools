@@ -426,3 +426,12 @@ class Finger(
         const val SLOPE_INTOLERANCE = 1
     }
 }
+
+/**
+ * Register a callback to be invoked when a finger/gesture event is sent to this view.
+ * @param numberOfFingers the number of fingers to listen to
+ * @param l the finger listener to attach to this view
+ */
+fun View.setOnFingerDetector(numberOfFingers: Int = 1, l: FingerDetector.FingerListener?) = l
+    ?.let { FingerDetector(numberOfFingers = numberOfFingers).apply { onFingerListener = it } }
+    .apply { setOnTouchListener(this) }

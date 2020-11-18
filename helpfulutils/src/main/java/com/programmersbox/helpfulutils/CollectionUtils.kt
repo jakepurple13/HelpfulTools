@@ -66,6 +66,19 @@ fun <T, R> Sequence<T>.groupByCondition(key: (T) -> R, predicate: (key: T, eleme
 fun <T, R> Iterable<T>.foldEverything(map: T.() -> R, operation: (acc: R, T) -> R) = drop(1).fold(first().map(), operation)
 
 /**
+ * An easy way to use [List.subList]
+ */
+operator fun <T> List<T>.get(range: IntRange) = subList(range.first, range.last)
+
+/**
+ * A way to fill up all lists to make sure they all have the same size
+ */
+infix fun <T> Iterable<Iterable<T>>.fillWith(defaultValue: T): List<List<T>> = maxByOrNull(Iterable<*>::count)
+    ?.count()
+    ?.let { maxSize -> map { it.toMutableList().apply { while (size < maxSize) add(defaultValue) } } }
+    .orEmpty()
+
+/**
  * checks to see if the [Iterable] contains any duplicates
  */
 fun <T> Iterable<T>.containsDuplicates(predicate: (i: T, j: T) -> Boolean = { i, j -> i == j }): Boolean {

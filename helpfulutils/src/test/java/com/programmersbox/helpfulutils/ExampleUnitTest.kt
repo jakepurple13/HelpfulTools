@@ -176,14 +176,23 @@ class ExampleUnitTest {
 
         sizedSetOf(20) { it }.also(::println)
 
-        val l = listOf(1, 2, 3, 4, 5).foldEverything(Int::toInt) { acc: Int, i: Int -> acc + i }
-        println(l)
-        val f = FixedMap<Int, Int>(5, FixedListLocation.END, 5)
+        val l4 = listOf(1, 2, 3, 4, 5).foldEverything(Int::toInt) { acc: Int, i: Int -> acc + i }
+        println(l4)
+        val f4 = FixedMap<Int, Int>(5, FixedListLocation.END, 5)
         val f1 = FixedMap<Int, Int>(5, FixedListLocation.END, 5, 3f)
         val f2 = FixedMap<Int, Int>(5, FixedListLocation.END, 5, 3f, true)
         val s = FixedSet<Int>(5, FixedListLocation.END)
         val s1 = FixedSet<Int>(5, FixedListLocation.END, 5)
         val s2 = FixedSet<Int>(5, FixedListLocation.END, 5, 3f)
+
+        val lToFill = listOf(
+            listOf(1, 2, 3),
+            listOf(1),
+            listOf(1, 2, 3, 4)
+        )
+        println(lToFill)
+        val filled = lToFill fillWith 1
+        println(filled)
     }
 
     @Test

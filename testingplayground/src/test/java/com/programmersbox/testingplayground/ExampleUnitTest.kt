@@ -22,7 +22,12 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import org.junit.Before
 import org.junit.Test
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.random.Random
+import kotlin.time.Duration
+import kotlin.time.DurationUnit
+import kotlin.time.ExperimentalTime
 
 
 /**
@@ -47,6 +52,31 @@ class ExampleUnitTest {
         //ARGB(a=0, r=163, g=36, b=194)
         return Colors.RGB(red, green, blue).also { println(it) }.toInt()
     }
+
+
+    @OptIn(ExperimentalTime::class)
+    @Test
+    fun calendarTesting() {
+
+        val time = "+2:00"
+
+        val (hour, minute) = time.split(":").map { it.toDouble() }
+
+        val h = Duration.convert(hour, DurationUnit.HOURS, DurationUnit.MILLISECONDS)
+        val m = Duration.convert(minute, DurationUnit.MINUTES, DurationUnit.MILLISECONDS)
+
+        println((h + m).toInt())
+
+        val offsetted = Calendar.getInstance()
+            .apply { timeZone.rawOffset = (h + m).toInt() }
+
+        offsetted
+            .let { getCurrentTime2(it.timeInMillis) }
+            .let(::println)
+    }
+
+    private fun getCurrentTime2(offset: Long) = SimpleDateFormat("yyyy-MM-dd h:mm a", Locale.getDefault()).format(offset)
+
 
     @Serializable
     data class SerializeTest(val r: Int, val g: Int, val b: Int)

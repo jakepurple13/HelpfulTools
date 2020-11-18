@@ -137,6 +137,16 @@ class TableAdapter<T>(private val tableAdapterCreator: TableAdapterCreator<T>) :
     fun addHeader(vararg items: Pair<CharSequence, T>?) = addItem(TableModel.HeaderModel(*items))
 
     /**
+     * Add cell
+     */
+    fun addCell(item: TableModel.CellModel<T>) = addItem(item)
+
+    /**
+     * Add header
+     */
+    fun addHeader(item: TableModel.HeaderModel<T>) = addItem(item)
+
+    /**
      * get all the items in a specific column
      *
      * # Be Aware
