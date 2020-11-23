@@ -28,6 +28,52 @@ import kotlin.time.minutes
 class ExampleUnitTest {
 
     @Test
+    fun eightRandomDates() {
+
+        println(1L.isDateBetween(1L, 1L))
+
+        println("Hello world")
+
+        println(
+            listOf(
+                Date.UTC(2020, 3, 5, 3, 3, 3),
+                Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+                Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+                Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+                Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+                Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+                Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+                Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+            )
+                .joinToString("\n")
+        )
+
+        listOf(
+            Date.UTC(2020, 3, 5, 3, 3, 3),
+            Date.UTC(2020, 3, 6, 3, 3, 3),
+            Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+            Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+            Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+            Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+            Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+            Date.UTC(2020, Random.nextInt(0, 11), 5, 3, 3, 3),
+        )
+            .groupBy {
+                val prev: Calendar = Calendar.getInstance().apply { time = Date(it) }
+                prev.set(Calendar.DAY_OF_WEEK, Calendar.SUNDAY)
+                prev.set(Calendar.HOUR_OF_DAY, 0)
+                prev.set(Calendar.MINUTE, 0)
+                prev.set(Calendar.SECOND, 0)
+
+                val next = prev.clone() as Calendar
+                next.add(Calendar.DATE, 7)
+
+                prev.time.time to next.time.time
+            }
+            .let { println(it) }
+    }
+
+    @Test
     fun colorTest() {
         val f = intArrayOf(
             *(0xff0000 toColor 0x00ff00 gradient 0..5),

@@ -3,6 +3,7 @@ package com.programmersbox.funutils
 import com.programmersbox.funutils.cards.Card
 import com.programmersbox.funutils.cards.Deck
 import com.programmersbox.funutils.funutilities.SequenceMaker
+import com.programmersbox.funutils.views.TableModel
 import org.junit.Test
 
 /**
@@ -18,6 +19,13 @@ class ExampleUnitTest {
         val f = SequenceMaker(1, 2, 3) {
 
         }
+
+        val cell = TableModel.CellModel("asdf" to "asd;lfj")
+        println(cell)
+        val header = TableModel.HeaderModel("asdf" to "asd;lfj")
+        println(header)
+        val t = cell as TableModel<String>
+        println(t)
     }
 
     @Test

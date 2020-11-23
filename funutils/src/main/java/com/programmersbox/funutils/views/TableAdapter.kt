@@ -4,6 +4,7 @@ import android.view.Gravity
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.annotation.CallSuper
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.programmersbox.dragswipe.DragSwipeAdapter
@@ -44,6 +45,8 @@ sealed class TableModel<T>(val list: List<Pair<CharSequence, T>?>) {
             }
         }
     }
+
+    override fun toString(): String = "TableModel.${this::class.java.simpleName}(list=$list)"
 }
 
 @DslMarker
@@ -118,12 +121,13 @@ interface TableAdapterCreator<T> {
     }
 }
 
-class TableAdapter<T>(private val tableAdapterCreator: TableAdapterCreator<T>) : DragSwipeAdapter<TableModel<T>, CustomTableHolder<T>>() {
+open class TableAdapter<T>(private val tableAdapterCreator: TableAdapterCreator<T>) : DragSwipeAdapter<TableModel<T>, CustomTableHolder<T>>() {
     constructor(creator: TableAdapterCreator.Builder<T>.() -> Unit = {}) : this(TableAdapterCreator.Builder(creator))
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CustomTableHolder<T> =
         CustomTableHolder(TableAdapterItemBinding.inflate(parent.context.layoutInflater, parent, false))
 
+    @CallSuper
     override fun CustomTableHolder<T>.onBind(item: TableModel<T>, position: Int) = setBinding(item, tableAdapterCreator)
 
     /**
@@ -152,7 +156,9 @@ class TableAdapter<T>(private val tableAdapterCreator: TableAdapterCreator<T>) :
      * # Be Aware
      * if nothing is in a cell, it will return null
      */
-    fun getColumn(columnPosition: Int) = dataList.map { it.list.getOrNull(columnPosition) }
+    fun getColumn(columnPosition: Int) = dataList.map { it.list.getOrNull(columnPosition)?.second }
+
+    operator fun get(index: Int) = dataList[index].list.map { it?.second }
 }
 
 class CustomTableHolder<T>(private val binding: TableAdapterItemBinding) : RecyclerView.ViewHolder(binding.root) {
