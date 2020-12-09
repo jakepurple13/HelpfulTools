@@ -103,7 +103,7 @@ fun Number.toDate() = Date(toLong())
 /**
  * Check if a date is between [min] and [max]
  */
-fun Date.isBetween(min: Date, max: Date) = after(min) && before(max)
+fun Date.isBetween(min: Date, max: Date) = after(min) && before(max) || this == min || this == max
 
 /**
  * Check if a date is between [min] and [max]
