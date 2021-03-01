@@ -27,6 +27,18 @@ import kotlin.time.minutes
  */
 class ExampleUnitTest {
 
+    @Test
+    fun listInstancesTest() {
+
+        val l = listOf(1, 2, 3, "Hello", "World")
+
+        println(l.noneIsInstance<Char>())
+        println(l.anyIsInstance<Int>())
+        println(l.allIsInstance<String>())
+        println(l.countInstance<Int>())
+
+    }
+
     tailrec fun longestSequence(list: List<Int>, currentIndex: Int, longestSeq: Int, currentSeq: Int): Int =
         if (list.getOrNull(currentIndex + 1) == null) {
             if (currentSeq > longestSeq) currentSeq else longestSeq

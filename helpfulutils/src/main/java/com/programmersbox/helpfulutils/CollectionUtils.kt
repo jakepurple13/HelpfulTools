@@ -71,6 +71,26 @@ fun <T, R> Iterable<T>.foldEverything(map: T.() -> R, operation: (acc: R, T) -> 
 operator fun <T> List<T>.get(range: IntRange) = subList(range.first, range.last)
 
 /**
+ * checks is there is no instance of [T]
+ */
+inline fun <reified T> Iterable<*>.noneIsInstance() = none { it is T }
+
+/**
+ * checks is there is any instance of [T]
+ */
+inline fun <reified T> Iterable<*>.anyIsInstance() = any { it is T }
+
+/**
+ * checks is there is only instances of [T]
+ */
+inline fun <reified T> Iterable<*>.allIsInstance() = all { it is T }
+
+/**
+ * counts all the instances of [T]
+ */
+inline fun <reified T> Iterable<*>.countInstance() = count { it is T }
+
+/**
  * A way to fill up all lists to make sure they all have the same size
  */
 infix fun <T> Iterable<Iterable<T>>.fillWith(defaultValue: T): List<List<T>> = maxByOrNull(Iterable<*>::count)
