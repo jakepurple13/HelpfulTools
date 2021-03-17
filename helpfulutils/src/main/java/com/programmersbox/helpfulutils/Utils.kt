@@ -37,6 +37,7 @@ inline fun <T, R> T.whatIfNotNull(
 /**
  * @return a random color
  */
+@JvmOverloads
 fun Random.nextColor(
     alpha: Int = nextInt(0, 255),
     red: Int = nextInt(0, 255),
@@ -47,6 +48,7 @@ fun Random.nextColor(
 /**
  * @return a random color
  */
+@JvmOverloads
 fun Random.nextRangeColor(
     alpha: IntRange = 0..255,
     red: IntRange = 0..255,
@@ -57,6 +59,7 @@ fun Random.nextRangeColor(
 /**
  * @return a random string of [length]
  */
+@JvmOverloads
 fun Random.nextString(length: Int = 1) = StringBuilder().apply { repeat(length) { append((nextInt(96) + 32).toChar()) } }.toString()
 
 /**

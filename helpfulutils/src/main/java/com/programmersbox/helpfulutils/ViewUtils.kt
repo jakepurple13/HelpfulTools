@@ -47,6 +47,7 @@ fun View.postDelayed(delayMillis: Long, block: () -> Unit) = postDelayed(block, 
 /**
  * get a color from the theme
  */
+@JvmOverloads
 @ColorInt
 fun Context.colorFromTheme(@AttrRes colorAttr: Int, @ColorInt defaultColor: Int = Color.BLACK): Int = TypedValue().run typedValue@{
     this@colorFromTheme.theme.resolveAttribute(colorAttr, this@typedValue, true).run { if (this) data else defaultColor }
@@ -56,6 +57,7 @@ fun Context.colorFromTheme(@AttrRes colorAttr: Int, @ColorInt defaultColor: Int 
  * Starts a transition manager
  */
 @RequiresApi(Build.VERSION_CODES.KITKAT)
+@JvmOverloads
 fun <T : ViewGroup> T.animateChildren(transition: Transition? = AutoTransition(), block: T.() -> Unit) =
     TransitionManager.beginDelayedTransition(this, transition).apply { block() }
 

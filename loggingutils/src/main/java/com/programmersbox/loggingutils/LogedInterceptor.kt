@@ -3,7 +3,15 @@ package com.programmersbox.loggingutils
 import android.util.Log
 
 fun interface LogedInterceptor {
-    fun log(level: LogLevel, tag: String, msg: String)
+    /**
+     * The log interceptor
+     * @param level The level of the log.
+     * @param tag The tag.
+     * @param msg The msg.
+     * @return true if you want the log to be printed to the console, false if you don't
+     * @see LogLevel
+     */
+    fun log(level: LogLevel, tag: String, msg: String): Boolean
 }
 
 enum class LogLevel {

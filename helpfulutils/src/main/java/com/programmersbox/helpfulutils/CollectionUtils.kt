@@ -101,6 +101,7 @@ infix fun <T> Iterable<Iterable<T>>.fillWith(defaultValue: T): List<List<T>> = m
 /**
  * checks to see if the [Iterable] contains any duplicates
  */
+@JvmOverloads
 fun <T> Iterable<T>.containsDuplicates(predicate: (i: T, j: T) -> Boolean = { i, j -> i == j }): Boolean {
     for (i in this.withIndex()) {
         for (j in this.withIndex()) {
@@ -120,18 +121,21 @@ fun <T, R, Y> Iterable<T>.toMap(pair: (T) -> Pair<Y, R>) = map(pair).toMap()
  * Creates a list of [amount] size
  * Useful for random information
  */
+@JvmOverloads
 fun <T> sizedListOf(amount: Int = 1, item: (Int) -> T): List<T> = mutableListOf<T>().apply { repeat(amount) { this += item(it) } }
 
 /**
  * Creates a map of [amount] size
  * Useful for random information
  */
+@JvmOverloads
 fun <T, R> sizedMapOf(amount: Int = 1, item: (Int) -> Pair<T, R>): Map<T, R> = mutableMapOf<T, R>().apply { repeat(amount) { this += item(it) } }
 
 /**
  * Creates set of [amount] size
  * Useful for random information
  */
+@JvmOverloads
 fun <T> sizedSetOf(amount: Int = 1, item: (Int) -> T): Set<T> = mutableSetOf<T>().apply { repeat(amount) { this += item(it) } }
 
 /**
@@ -208,16 +212,19 @@ open class FixedList<T> : ArrayList<T> {
      */
     var removeFrom: FixedListLocation = FixedListLocation.END
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : super() {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: Collection<T>) : super(c.toMutableList()) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, initialCapacity: Int) : super(initialCapacity) {
         this.fixedSize = fixedSize
         this.removeFrom = location
@@ -269,16 +276,19 @@ fun <K, V> fixedMapOf(size: Int, vararg elements: Pair<K, V>): FixedMap<K, V> = 
 
 open class FixedMap<K, V> : LinkedHashMap<K, V> {
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : super() {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, initialCapacity: Int) : super(initialCapacity) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, initialCapacity: Int, loadFactor: Float) : super(
         initialCapacity,
         loadFactor
@@ -287,11 +297,13 @@ open class FixedMap<K, V> : LinkedHashMap<K, V> {
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: Map<out K, V>?) : super(c?.toMutableMap()) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(
         fixedSize: Int,
         location: FixedListLocation = FixedListLocation.END,
@@ -359,21 +371,25 @@ fun <T> fixedSetOf(size: Int, vararg elements: T): FixedSet<T> = FixedSet(size, 
 
 open class FixedSet<T> : HashSet<T> {
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END) : super() {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, initialCapacity: Int) : super(initialCapacity) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, c: Collection<T>) : super(c.toMutableSet()) {
         this.fixedSize = fixedSize
         this.removeFrom = location
     }
 
+    @JvmOverloads
     constructor(fixedSize: Int, location: FixedListLocation = FixedListLocation.END, initialCapacity: Int, loadFactor: Float) : super(
         initialCapacity,
         loadFactor

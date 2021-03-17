@@ -148,7 +148,7 @@ fun <T> sharedPrefNotNullDelegateSync(
     private val keys: KProperty<*>.() -> String get() = { key ?: name }
     override operator fun getValue(thisRef: Context, property: KProperty<*>): T = thisRef.prefs().getter(property.keys(), defaultValue)
     override operator fun setValue(thisRef: Context, property: KProperty<*>, value: T) =
-        thisRef.prefs().edit().setter(property.keys(), value).commit().let { Unit }
+        thisRef.prefs().edit().setter(property.keys(), value).commit().let {}
 }
 
 /**

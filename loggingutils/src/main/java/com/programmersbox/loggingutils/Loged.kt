@@ -67,7 +67,7 @@ object Loged {
     /**
      * If you want to add an interceptor to add the logs to a certain location, make a class that implements [LogedInterceptor]
      */
-    fun logedInterceptor(block: (level: LogLevel, tag: String, msg: String) -> Unit) {
+    fun logedInterceptor(block: (level: LogLevel, tag: String, msg: String) -> Boolean) {
         logedInterceptor = LogedInterceptor { level, tag, msg -> block(level, tag, msg) }
     }
 
@@ -99,8 +99,9 @@ object Loged {
      */
     private fun delegate(tag: String, msg: Any?, level: Int, threadName: Boolean, showPretty: Boolean = SHOW_PRETTY) =
         logedInterceptor?.log(LogLevel(level), tag, msg.toString())
+            .let { if (it == false) return }
             .also { if (showPretty) prettyLog(tag, msg, level, threadName) else log(tag, msg, level, threadName) }
-            .let { Unit }
+            .let {}
 
     /**
      * Error log
