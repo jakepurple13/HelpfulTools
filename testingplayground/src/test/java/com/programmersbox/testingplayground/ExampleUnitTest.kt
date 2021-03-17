@@ -566,6 +566,14 @@ class ExampleUnitTest {
         } else constructor.newInstance(paramTypes.map { randomData<Any>(it) })
     }
 
+    @Test
+    fun fixedDeckTest() {
+        val f = FixedDeck(0..5)
+        println(f)
+        f.addCards(0..10)
+        println(f)
+    }
+
 }
 
 class FixedSizeList<T>(maxSize: Int = 1) : FixedList<T>(maxSize) {

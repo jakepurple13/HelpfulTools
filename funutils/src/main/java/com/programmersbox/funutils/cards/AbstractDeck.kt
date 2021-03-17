@@ -163,11 +163,13 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     /**
      * Shuffles the deck
      */
+    @JvmOverloads
     fun shuffle(seed: Long? = null) = deckOfCards.shuffle(seed?.let { Random(seed) } ?: Random.Default).also { deckShuffled() }
 
     /**
      * Truly shuffles the deck by shuffling it 7 times
      */
+    @JvmOverloads
     fun trueRandomShuffle(seed: Long? = null) = repeat(7) { shuffle(seed) }
 
     /**
@@ -184,6 +186,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
      * Randomly gets a card
      * @throws DeckException if none of the cards match the [predicate]
      */
+    @JvmOverloads
     @Throws(DeckException::class)
     fun random(predicate: (T) -> Boolean = { true }) = deck.filter(predicate).tryCatch("Card Not Found") { it.random() }
 
@@ -191,6 +194,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
      * Randomly draws a card
      * @throws DeckException if none of the cards match the [predicate]
      */
+    @JvmOverloads
     @Throws(DeckException::class)
     fun randomDraw(predicate: (T) -> Boolean = { true }) = deck.filter(predicate).tryCatch("Card Not Found") { it.random().also { c -> remove(c) } }
 
@@ -250,22 +254,22 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     /**
      * Adds [card] to this deck
      */
-    operator fun plusAssign(card: T) = addCard(card).let { Unit }
+    operator fun plusAssign(card: T) = addCard(card).let { }
 
     /**
      * Adds [cards] to this deck
      */
-    operator fun plusAssign(cards: Iterable<T>) = addCards(cards).let { Unit }
+    operator fun plusAssign(cards: Iterable<T>) = addCards(cards).let { }
 
     /**
      * Adds the cards from [deck] to this deck
      */
-    operator fun plusAssign(deck: AbstractDeck<T>) = addDeck(deck).let { Unit }
+    operator fun plusAssign(deck: AbstractDeck<T>) = addDeck(deck).let { }
 
     /**
      * Removes [card] from the deck if it's there
      */
-    open operator fun minusAssign(card: T) = remove(card).let { Unit }
+    open operator fun minusAssign(card: T) = remove(card).let { }
 
     /**
      * Draws a Card!
@@ -307,6 +311,7 @@ abstract class AbstractDeck<T>(cards: Iterable<T> = emptyList()) {
     /**
      * Splits the deck into [cuts] decks, shuffles each of them, then shuffles the order oof them all, then puts them back together
      */
+    @JvmOverloads
     open fun cutShuffle(cuts: Int = 2) {
         val tempDeck = splitInto(cuts)
         deckOfCards.clear()
