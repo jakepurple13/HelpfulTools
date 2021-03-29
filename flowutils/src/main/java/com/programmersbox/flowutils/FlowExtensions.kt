@@ -2,6 +2,8 @@ package com.programmersbox.flowutils
 
 import android.view.View
 import kotlinx.coroutines.*
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.channels.ticker
 import kotlinx.coroutines.flow.*
@@ -36,6 +38,25 @@ fun <T> FlowItem<T>.collectOnUI(scope: CoroutineScope = GlobalScope, action: (va
 fun <T, R : View> FlowItem<T>.bindToUI(view: R, action: R.(T) -> Unit) = collect { view.post { view.action(it) } }
 
 //----------------------------------------------------------------------------------------------------------------------------------------------------
+
+/**
+ * Putting together [Flow.onEach] and [Flow.buffer] in that other
+ */
+fun <T> Flow<T>.onEachBuffer(
+    capacity: Int = Channel.BUFFERED, onBufferOverflow: BufferOverflow = BufferOverflow.SUSPEND, action: suspend (T) -> Unit
+) = onEach(action).buffer(capacity, onBufferOverflow)
+
+/**
+ * [Flow.combine] [other] and [Flow.filter] them with [predicate] before [Flow.map] the first
+ */
+fun <T, R> Flow<T>.withFilter(other: Flow<R>, predicate: (t: T, r: R) -> Boolean) = combine(other) { i, j -> i to j }
+    .filter { predicate(it.first, it.second) }.map { it.first }
+
+/**
+ * @see withFilter except that the predicate is whatever [other] is
+ */
+fun <T> Flow<T>.withBooleanFilter(other: Flow<Boolean>) = combine(other) { i, j -> i to j }
+    .filter { it.second }.map { it.first }
 
 fun <T> T.asStateFlow() = MutableStateFlow(this)
 
