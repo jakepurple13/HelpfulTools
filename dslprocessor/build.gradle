@@ -20,8 +20,8 @@ compileTestKotlin {
 dependencies {
     implementation 'com.squareup:kotlinpoet:1.8.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.4.32"
-    implementation 'com.google.auto.service:auto-service:1.0-rc7'
-    annotationProcessor 'com.google.auto.service:auto-service:1.0-rc6'
+    implementation 'com.google.auto.service:auto-service:1.0'
+    annotationProcessor 'com.google.auto.service:auto-service:1.0'
     kapt 'com.google.auto.service:auto-service:1.0-rc6'
     //implementation "me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0"
     implementation project(':dslannotations')
