@@ -24,7 +24,7 @@ allprojects {
         jcenter()
         maven { url "https://jitpack.io" }
     }
-    apply from: "$rootDir/versions.gradle"
+    apply from: "$rootDir/versionsfolder/build.gradle"
 }
 
 task clean(type: Delete) {
