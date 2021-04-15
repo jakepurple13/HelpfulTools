@@ -1,8 +1,16 @@
 package com.programmersbox.flowutils
 
-import kotlinx.coroutines.Job
+import android.os.Environment
+import kotlinx.coroutines.*
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.net.HttpURLConnection
+import java.net.MalformedURLException
+import java.net.URL
 import java.util.*
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.coroutines.CoroutineContext
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 
@@ -13,6 +21,93 @@ class JobReset : ReadWriteProperty<Any?, Job?> {
     private val job: AtomicReference<Job?> = AtomicReference(null)
     override fun getValue(thisRef: Any?, property: KProperty<*>): Job? = job.get()
     override fun setValue(thisRef: Any?, property: KProperty<*>, value: Job?) = job.getAndSet(value)?.cancel().let { Unit }
+}
+
+abstract class CoroutineTask<Progress, Result> : CoroutineScope {
+    protected open val job: Job = Job()
+    override val coroutineContext: CoroutineContext get() = Dispatchers.Main + job
+
+    /**
+     * Publishes the current progress
+     * calls [onProgressUpdate] on the UI thread
+     */
+    protected suspend fun publishProgress(vararg values: Progress) = withContext(Dispatchers.Main) { onProgressUpdate(values) }
+    open fun onProgressUpdate(values: Array<out Progress>) {}
+    abstract suspend fun doInBackground(): Result
+    open fun onPreExecute() {}
+    open fun onPostExecute(result: Result) {}
+    fun cancel() = job.cancel()
+    fun execute() = launch {
+        onPreExecute()
+        val result = withContext(Dispatchers.IO) { doInBackground() } // runs in background thread without blocking the Main Thread
+        onPostExecute(result)
+    }
+
+}
+
+/**
+ * DownloadUrl
+ *
+ * A way to download a file from a url while getting the download percentage
+ *
+ * @param downloadUrl The url to download
+ * @param outputFolder the folder to place the downloaded file in
+ * @param outputName the name of the file
+ */
+@Suppress("BlockingMethodInNonBlockingContext")
+abstract class DownloadUrl(
+    private val downloadUrl: String,
+    private val outputFolder: String = Environment.getExternalStorageDirectory().toString() + "/Download/",
+    private val outputName: String
+) : CoroutineTask<Int, Boolean>() {
+
+    abstract override fun onPreExecute()
+    abstract override fun onPostExecute(result: Boolean)
+    abstract override fun onProgressUpdate(values: Array<out Int>)
+
+    /**
+     * Modify the connection by adding headers or anything else
+     */
+    open fun HttpURLConnection.headers() {}
+
+    override suspend fun doInBackground(): Boolean { // to run code in Background Thread
+        // do async work
+        var flag = false
+
+        try {
+            val url = URL(downloadUrl)
+            val c = url.openConnection() as HttpURLConnection
+            c.requestMethod = "GET"
+            c.headers()
+            c.connect()
+            val file = File(outputFolder)
+            file.mkdirs()
+            val outputFile = File(file, outputName)
+
+            if (outputFile.exists()) outputFile.delete()
+
+            val fos = FileOutputStream(outputFile)
+            val inputStream = c.inputStream
+            val totalSize = c.contentLength.toFloat() //size of file
+
+            val buffer = ByteArray(1024)
+            var len1: Int
+            var downloaded = 0f
+            while (inputStream.read(buffer).also { len1 = it } != -1) {
+                fos.write(buffer, 0, len1)
+                downloaded += len1
+                publishProgress((downloaded * 100 / totalSize).toInt())
+            }
+            fos.close()
+            inputStream.close()
+            flag = true
+        } catch (e: MalformedURLException) {
+            flag = false
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+        return flag
+    }
 }
 
 /**
