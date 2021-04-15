@@ -166,7 +166,7 @@ class CustomTableHolder<T>(private val binding: TableAdapterItemBinding) : Recyc
         item.tableAdapterCreator = creator
         binding.model = item
         binding.creator = creator
-        binding.position = adapterPosition
+        binding.position = absoluteAdapterPosition
         binding.executePendingBindings()
     }
 }

@@ -134,7 +134,7 @@ interface DragSwipeActions<T> {
         viewHolder: RecyclerView.ViewHolder,
         target: RecyclerView.ViewHolder,
         dragSwipeAdapter: DragSwipeAdapter<T, *>
-    ) = dragSwipeAdapter.swapItems(viewHolder.adapterPosition, target.adapterPosition)
+    ) = dragSwipeAdapter.swapItems(viewHolder.absoluteAdapterPosition, target.absoluteAdapterPosition)
 
     /**
      * when the element is swiped
@@ -142,7 +142,7 @@ interface DragSwipeActions<T> {
      * @param direction the direction swiped
      */
     fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Direction, dragSwipeAdapter: DragSwipeAdapter<T, *>) {
-        dragSwipeAdapter.removeItem(viewHolder.adapterPosition)
+        dragSwipeAdapter.removeItem(viewHolder.absoluteAdapterPosition)
     }
 
     /**

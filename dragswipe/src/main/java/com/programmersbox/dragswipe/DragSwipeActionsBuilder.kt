@@ -14,7 +14,7 @@ annotation class DragSwipeMarker
 class DragSwipeActionBuilder<T> {
 
     private var moved: (RecyclerView, RecyclerView.ViewHolder, RecyclerView.ViewHolder, DragSwipeAdapter<T, *>) -> Unit =
-        { _, viewHolder, target, dragSwipeAdapter -> dragSwipeAdapter.swapItems(viewHolder.adapterPosition, target.adapterPosition) }
+        { _, viewHolder, target, dragSwipeAdapter -> dragSwipeAdapter.swapItems(viewHolder.absoluteAdapterPosition, target.absoluteAdapterPosition) }
 
     /**
      * @see DragSwipeActions.onMove
@@ -30,7 +30,7 @@ class DragSwipeActionBuilder<T> {
     ) = run { moved = block }
 
     private var swiped: (RecyclerView.ViewHolder, Direction, DragSwipeAdapter<T, *>) -> Unit =
-        { viewHolder, _, dragSwipeAdapter -> dragSwipeAdapter.removeItem(viewHolder.adapterPosition) }
+        { viewHolder, _, dragSwipeAdapter -> dragSwipeAdapter.removeItem(viewHolder.absoluteAdapterPosition) }
 
     /**
      * @see DragSwipeActions.onSwiped
