@@ -2,6 +2,7 @@
 
 package com.programmersbox.flowutils
 
+import android.annotation.SuppressLint
 import android.view.DragEvent
 import android.view.KeyEvent
 import android.view.MotionEvent
@@ -13,27 +14,26 @@ import androidx.core.widget.doBeforeTextChanged
 import androidx.core.widget.doOnTextChanged
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
 import kotlinx.coroutines.flow.callbackFlow
 
 fun View.clicks(): Flow<Unit> = callbackFlow { setOnClickListener { offer(Unit) };awaitClose() }
 fun View.longClicks(): Flow<Unit> = callbackFlow { setOnLongClickListener { offer(Unit);true };awaitClose() }
-fun View.touches(): Flow<MotionEvent> = BroadcastChannel<MotionEvent>(1).apply { setOnTouchListener { _, event -> offer(event);true } }.asFlow()
-fun View.drags(): Flow<DragEvent> = BroadcastChannel<DragEvent>(1).apply { setOnDragListener { _, event -> offer(event) } }.asFlow()
-fun View.keyPress(): Flow<KeyEvent> = BroadcastChannel<KeyEvent>(1).apply { setOnKeyListener { _, _, event -> offer(event);true } }.asFlow()
-fun TextView.textChange() = BroadcastChannel<CharSequence?>(1).apply { doOnTextChanged { text, _, _, _ -> offer(text) } }.asFlow()
-fun TextView.beforeTextChange() = BroadcastChannel<CharSequence?>(1).apply { doBeforeTextChanged { text, _, _, _ -> offer(text) } }.asFlow()
-fun TextView.afterTextChange() = BroadcastChannel<CharSequence?>(1).apply { doAfterTextChanged { offer(it) } }.asFlow()
-fun CompoundButton.checked() = BroadcastChannel<Boolean>(1).apply { setOnCheckedChangeListener { _, isChecked -> offer(isChecked) } }.asFlow()
+fun View.touches(): Flow<MotionEvent> = callbackFlow<MotionEvent> { setOnTouchListener { _, event -> offer(event);true };awaitClose() }
+fun View.drags(): Flow<DragEvent> = callbackFlow<DragEvent> { setOnDragListener { _, event -> offer(event) };awaitClose() }
+fun View.keyPress(): Flow<KeyEvent> = callbackFlow<KeyEvent> { setOnKeyListener { _, _, event -> offer(event);true };awaitClose() }
+fun TextView.textChange(): Flow<CharSequence?> = callbackFlow { doOnTextChanged { text, _, _, _ -> offer(text) };awaitClose() }
+fun TextView.beforeTextChange(): Flow<CharSequence?> = callbackFlow { doBeforeTextChanged { text, _, _, _ -> offer(text) };awaitClose() }
+fun TextView.afterTextChange(): Flow<CharSequence?> = callbackFlow<CharSequence?> { doAfterTextChanged { offer(it) };awaitClose() }
+fun CompoundButton.checked(): Flow<Boolean> = callbackFlow { setOnCheckedChangeListener { _, isChecked -> offer(isChecked) };awaitClose() }
 
 //------------------------------------------
 enum class RecyclerViewScroll { START, END }
 
 fun RecyclerView.scrollReached() = callbackFlow<RecyclerViewScroll> {
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
+        @SuppressLint("SwitchIntDef")
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
             super.onScrollStateChanged(recyclerView, newState)
             if (newState == RecyclerView.SCROLL_STATE_IDLE) {
