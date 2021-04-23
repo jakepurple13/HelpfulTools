@@ -37,6 +37,11 @@ fun <T> FlowItem<T>.collectOnUI(scope: CoroutineScope = GlobalScope, action: (va
  */
 fun <T, R : View> FlowItem<T>.bindToUI(view: R, action: R.(T) -> Unit) = collect { view.post { view.action(it) } }
 
+/**
+ * An easier way to check if the current value is an enum type
+ */
+fun <T : Enum<T>> Flow<T>.isEnum(vararg types: T) = map { it in types }
+
 //----------------------------------------------------------------------------------------------------------------------------------------------------
 
 /**
