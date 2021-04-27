@@ -4,12 +4,10 @@ import android.view.View
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.channels.BroadcastChannel
 import kotlinx.coroutines.channels.SendChannel
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 /**
@@ -19,15 +17,15 @@ import kotlinx.coroutines.launch
 @ExperimentalCoroutinesApi
 @Deprecated("As of 1.3.6, Native coroutines have something similar/probably better", ReplaceWith("MutableStateFlow(startingValue)"))
 class FlowItem<T>(startingValue: T, capacity: Int = 1) {
-    private val itemBroadcast = BroadcastChannel<T>(capacity)
-    private val itemFlow = itemBroadcast.asFlow().onStart { emit(flowItem) }
+    private val itemBroadcast = MutableStateFlow(startingValue)//BroadcastChannel<T>(capacity)
+    private val itemFlow = itemBroadcast//itemBroadcast.asFlow().onStart { emit(flowItem) }
 
     /**
      * the flow
      */
     val flow get() = itemFlow
     private var flowItem: T = startingValue
-        set(value) = run { field = value }.also { itemBroadcast.sendLaunch(value) }
+        set(value) = run { field = value }.also { itemBroadcast.tryEmit(value) }
 
     /**
      * collect from the flow

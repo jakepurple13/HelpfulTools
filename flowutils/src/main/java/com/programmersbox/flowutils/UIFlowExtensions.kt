@@ -18,15 +18,18 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
-fun View.clicks(): Flow<Unit> = callbackFlow { setOnClickListener { offer(Unit) };awaitClose() }
-fun View.longClicks(): Flow<Unit> = callbackFlow { setOnLongClickListener { offer(Unit);true };awaitClose() }
-fun View.touches(): Flow<MotionEvent> = callbackFlow<MotionEvent> { setOnTouchListener { _, event -> offer(event);true };awaitClose() }
-fun View.drags(): Flow<DragEvent> = callbackFlow<DragEvent> { setOnDragListener { _, event -> offer(event) };awaitClose() }
-fun View.keyPress(): Flow<KeyEvent> = callbackFlow<KeyEvent> { setOnKeyListener { _, _, event -> offer(event);true };awaitClose() }
-fun TextView.textChange(): Flow<CharSequence?> = callbackFlow { doOnTextChanged { text, _, _, _ -> offer(text) };awaitClose() }
-fun TextView.beforeTextChange(): Flow<CharSequence?> = callbackFlow { doBeforeTextChanged { text, _, _, _ -> offer(text) };awaitClose() }
-fun TextView.afterTextChange(): Flow<CharSequence?> = callbackFlow<CharSequence?> { doAfterTextChanged { offer(it) };awaitClose() }
-fun CompoundButton.checked(): Flow<Boolean> = callbackFlow { setOnCheckedChangeListener { _, isChecked -> offer(isChecked) };awaitClose() }
+fun View.clicks(): Flow<Unit> = callbackFlow { setOnClickListener { trySend(Unit).isSuccess };awaitClose() }
+fun View.longClicks(): Flow<Unit> = callbackFlow { setOnLongClickListener { trySend(Unit).isSuccess;true };awaitClose() }
+
+@SuppressLint("ClickableViewAccessibility")
+fun View.touches(): Flow<MotionEvent> = callbackFlow<MotionEvent> { setOnTouchListener { _, event -> trySend(event).isSuccess;true };awaitClose() }
+fun View.drags(): Flow<DragEvent> = callbackFlow<DragEvent> { setOnDragListener { _, event -> trySend(event).isSuccess };awaitClose() }
+fun View.keyPress(): Flow<KeyEvent> = callbackFlow<KeyEvent> { setOnKeyListener { _, _, event -> trySend(event).isSuccess;true };awaitClose() }
+fun TextView.textChange(): Flow<CharSequence?> = callbackFlow { doOnTextChanged { text, _, _, _ -> trySend(text).isSuccess };awaitClose() }
+fun TextView.beforeTextChange(): Flow<CharSequence?> = callbackFlow { doBeforeTextChanged { text, _, _, _ -> trySend(text).isSuccess };awaitClose() }
+fun TextView.afterTextChange(): Flow<CharSequence?> = callbackFlow<CharSequence?> { doAfterTextChanged { trySend(it).isSuccess };awaitClose() }
+fun CompoundButton.checked(): Flow<Boolean> =
+    callbackFlow { setOnCheckedChangeListener { _, isChecked -> trySend(isChecked).isSuccess };awaitClose() }
 
 //------------------------------------------
 enum class RecyclerViewScroll { START, END }
@@ -52,7 +55,7 @@ fun RecyclerView.scrollReached() = callbackFlow<RecyclerViewScroll> {
                         else -> null
                     }
                     else -> null
-                }?.let(::offer)
+                }?.let { trySend(it).isSuccess }
             }
         }
     })

@@ -11,7 +11,7 @@ open class TimedSequenceMaker<T>(sequence: List<T>, private val timeout: Long = 
         override fun onFinish(): Unit = resetSequence().also { this@TimedSequenceMaker.sequenceListener?.onFail() }
     }
 
-    override fun nextItem(item: T) = timeoutTimer?.start().let { Unit }
+    override fun nextItem(item: T) = timeoutTimer?.start().let { }
     override fun addNewItem(item: T) {
         timeoutTimer?.cancel()
         super.addNewItem(item)

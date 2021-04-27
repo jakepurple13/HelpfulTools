@@ -30,7 +30,7 @@ class FlowDeck<T> : AbstractDeck<T> {
     private fun <R> sendChannel(channel: BroadcastChannel<R>, item: R) = coroutineScope.launch {
         when (channelMove) {
             FlowDeckMoveType.SEND -> channel.send(item)
-            FlowDeckMoveType.OFFER -> channel.offer(item)
+            FlowDeckMoveType.OFFER -> channel.trySend(item).isSuccess
         }
     }.let { Unit }
 
