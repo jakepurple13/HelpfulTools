@@ -5,8 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Notification
 import android.app.PendingIntent
 import android.content.BroadcastReceiver
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -335,6 +337,13 @@ class MainActivity : AppCompatActivity() {
                 num(5)
             }
         }*/
+
+        val testName = ComponentName(this, TestingControlService::class.java)
+        val testEnabled = packageManager.getComponentEnabledSetting(testName)
+        Loged.fa(testEnabled == PackageManager.COMPONENT_ENABLED_STATE_ENABLED, "Testing is:")
+        packageManager.setComponentEnabledSetting(testName, PackageManager.COMPONENT_ENABLED_STATE_ENABLED, PackageManager.DONT_KILL_APP)
+        val testEnabled1 = packageManager.getComponentEnabledSetting(testName)
+        Loged.fa(testEnabled1 == PackageManager.COMPONENT_ENABLED_STATE_ENABLED, "Testing is:")
 
         val flow = FlowItemBuilder.buildFlow<Int> {
             this.item = 5

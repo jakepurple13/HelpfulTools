@@ -1,8 +1,6 @@
 package com.programmersbox.testingplaygroundapp
-/*
 
 import android.app.PendingIntent
-import android.content.Context
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -15,6 +13,7 @@ import android.service.controls.DeviceTypes
 import android.service.controls.actions.*
 import android.service.controls.templates.RangeTemplate
 import android.service.controls.templates.TemperatureControlTemplate
+import android.util.Log
 import androidx.annotation.RequiresApi
 import io.reactivex.Flowable
 import io.reactivex.processors.ReplayProcessor
@@ -26,21 +25,32 @@ import java.util.function.Consumer
 class TestingControlService : ControlsProviderService() {
 
     private lateinit var updatePublisher: ReplayProcessor<Control>
+
+    //This is what shows on long press
     private val settingsPendingIntent by lazy {
-        val context: Context = baseContext
-        val i = Intent(Settings.ACTION_SETTINGS).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-        }
         PendingIntent.getActivity(
-            context,
+            baseContext,
             CONTROL_REQUEST_CODE,
-            i,
+            Intent(Settings.ACTION_SETTINGS).apply { flags = Intent.FLAG_ACTIVITY_NEW_TASK },
             PendingIntent.FLAG_UPDATE_CURRENT
         )
     }
 
     override fun createPublisherForAllAvailable(): Flow.Publisher<Control> {
         //do all rest apis/getting data here and map it to a Control
+        Log.e("TestingControlService", "Hello")
+        return FlowAdapters.toFlowPublisher(
+            Flowable.fromIterable(
+                mutableListOf(
+                    settingsControl(),
+                    slideControl(),
+                    tempControl()
+                )
+            )
+        )
+    }
+
+    override fun createPublisherForSuggested(): Flow.Publisher<Control>? {
         return FlowAdapters.toFlowPublisher(
             Flowable.fromIterable(
                 mutableListOf(
@@ -111,6 +121,7 @@ class TestingControlService : ControlsProviderService() {
         action: ControlAction,
         consumer: Consumer<Int>
     ) {
+        Log.e("TestingControlService", "Hello")
         when (action) {
 
             is BooleanAction -> {
@@ -190,10 +201,12 @@ class TestingControlService : ControlsProviderService() {
 
             }
         }
+        consumer.accept(ControlAction.RESPONSE_OK)
     }
 
     override fun createPublisherFor(controlIds: MutableList<String>): Flow.Publisher<Control> {
         updatePublisher = ReplayProcessor.create()
+        Log.e("TestingControlService", "Hello")
         val controls = mutableListOf<Control>()
         if (controlIds.contains(CONTROL_BUTTON_ID)) {
             val control = Control.StatefulBuilder(CONTROL_BUTTON_ID, settingsPendingIntent)
@@ -271,4 +284,3 @@ class TestingControlService : ControlsProviderService() {
     }
 
 }
-*/

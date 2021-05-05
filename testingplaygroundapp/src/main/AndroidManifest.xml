@@ -3,6 +3,7 @@
     package="com.programmersbox.testingplaygroundapp">
 
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.BIND_CONTROLS" />
 
     <application
         android:name=".TestApp"
@@ -12,7 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TableActivity"></activity>
+        <activity android:name=".TableActivity" />
         <activity android:name=".CustomViewActivity" />
         <activity android:name=".CheckboxTestActivity" />
         <activity android:name=".BindingActivity" />
@@ -32,6 +33,19 @@
 
         <receiver android:name=".ActionService" />
         <receiver android:name=".ReplyService" />
+
+        <service
+            android:name=".TestingControlService"
+            android:exported="true"
+            android:enabled="false"
+            android:label="Control Test"
+            android:icon="@drawable/ace1"
+            android:permission="android.permission.BIND_CONTROLS">
+            <intent-filter>
+                <action android:name="android.service.controls.ControlsProviderService" />
+            </intent-filter>
+        </service>
+
     </application>
 
 </manifest>
