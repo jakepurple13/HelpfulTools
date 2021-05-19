@@ -53,7 +53,7 @@ fun <T : Any> Observable<*>.filterIsInstance(kClass: KClass<T>): Observable<T> =
 
 class BehaviorDelegate<T> internal constructor(private val subject: BehaviorSubject<T>) : ReadWriteProperty<Any?, T?> {
     override operator fun getValue(thisRef: Any?, property: KProperty<*>): T? = subject.value
-    override operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) = value?.let(subject::onNext).let { Unit }
+    override operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T?) = value?.let(subject::onNext).let { }
 }
 
 /**

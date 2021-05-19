@@ -20,7 +20,7 @@ import kotlin.reflect.KProperty
 class JobReset : ReadWriteProperty<Any?, Job?> {
     private val job: AtomicReference<Job?> = AtomicReference(null)
     override fun getValue(thisRef: Any?, property: KProperty<*>): Job? = job.get()
-    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Job?) = job.getAndSet(value)?.cancel().let { Unit }
+    override fun setValue(thisRef: Any?, property: KProperty<*>, value: Job?) = job.getAndSet(value)?.cancel().let { }
 }
 
 abstract class CoroutineTask<Progress, Result> : CoroutineScope {

@@ -281,7 +281,7 @@ class NotificationDslBuilder(
     @NotificationActionMarker
     fun actionAction(block: NotificationAction.Action.() -> Unit) = NotificationAction.Action(context).apply(block)
 
-    operator fun NotificationAction.unaryPlus() = actions.add(this).let { Unit }
+    operator fun NotificationAction.unaryPlus() = actions.add(this).let { }
 
     /**
      * @see Notification.Builder.setAutoCancel
@@ -716,7 +716,7 @@ abstract class NotificationStyle {
          * @see Notification.InboxStyle.addLine
          */
         @NotificationStyleMarker
-        fun addLine(vararg cs: CharSequence) = lines.addAll(cs).let { Unit }
+        fun addLine(vararg cs: CharSequence) = lines.addAll(cs).let { }
 
         /**
          * @see Notification.InboxStyle.setBigContentTitle
@@ -941,19 +941,19 @@ sealed class NotificationAction(private val context: Context) {
 
         private val choices = mutableListOf<CharSequence>()
 
-        operator fun CharSequence.unaryPlus() = choices.add(this).let { Unit }
+        operator fun CharSequence.unaryPlus() = choices.add(this).let { }
 
         /**
          * @see RemoteInput.Builder.setChoices
          */
         @NotificationActionMarker
-        fun addChoice(s: CharSequence) = choices.add(s).let { Unit }
+        fun addChoice(s: CharSequence) = choices.add(s).let { }
 
         /**
          * @see RemoteInput.Builder.setChoices
          */
         @NotificationActionMarker
-        fun addChoices(vararg s: CharSequence) = choices.addAll(s).let { Unit }
+        fun addChoices(vararg s: CharSequence) = choices.addAll(s).let { }
 
         internal fun buildRemoteInput() = RemoteInput.Builder(resultKey)
             .setLabel(label)

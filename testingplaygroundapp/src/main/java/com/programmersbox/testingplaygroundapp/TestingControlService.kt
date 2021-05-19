@@ -273,7 +273,7 @@ class TestingControlService : ControlsProviderService() {
             updatePublisher.onNext(control)
             controls.add(control)
         }
-        return FlowAdapters.toFlowPublisher(Flowable.fromIterable(controls))
+        return FlowAdapters.toFlowPublisher(updatePublisher)
     }
 
     companion object {

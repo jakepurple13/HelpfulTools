@@ -1,14 +1,12 @@
 package com.programmersbox.helpfulutils.views
 
-import android.content.Context
-import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 
-class OverScrollBehavior(context: Context, attributeSet: AttributeSet) : CoordinatorLayout.Behavior<View>() {
+class OverScrollBehavior : CoordinatorLayout.Behavior<View>() {
 
     companion object {
         private const val OVER_SCROLL_AREA = 4
