@@ -37,6 +37,7 @@ dependencies {
     implementation rxjavaBinding
     implementation rxkotlinBinding
     implementation project(":helpfulutils")
+    implementation "org.reactivestreams:reactive-streams:1.0.3"
 }
 
 
