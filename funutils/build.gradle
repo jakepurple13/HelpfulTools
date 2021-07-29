@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 //apply plugin: 'com.github.dcendents.android-maven'
 //group = 'com.github.jakepurple13'
+apply plugin: 'maven-publish'
+
 android {
     compileSdkVersion latest_sdk
     buildToolsVersion build_version
