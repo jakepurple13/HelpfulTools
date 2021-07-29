@@ -1,8 +1,8 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'com.github.dcendents.android-maven'
-group = 'com.github.jakepurple13'
+//apply plugin: 'com.github.dcendents.android-maven'
+//group = 'com.github.jakepurple13'
 android {
     compileSdkVersion latest_sdk
     buildToolsVersion build_version
@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion latest_sdk
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
