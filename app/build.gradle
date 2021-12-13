@@ -67,7 +67,7 @@ dependencies {
     implementation project(':testingplayground')
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutines_version"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$coroutines_version"
-    implementation "com.squareup.okhttp3:okhttp:4.9.1"
+    implementation "com.squareup.okhttp3:okhttp:4.9.3"
     implementation rxkotlin
     implementation rxjava
     implementation 'com.jakewharton.rxbinding2:rxbinding:2.2.0'
