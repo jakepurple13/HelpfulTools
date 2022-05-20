@@ -47,7 +47,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     implementation coreKTX
     implementation appcompat
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
     implementation recyclerview
     implementation material
     testImplementation 'junit:junit:4.13.2'
